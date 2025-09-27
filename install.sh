@@ -9,7 +9,6 @@ parted -s /dev/sda -- set 1 boot on
 
 parted -s /dev/sda -- mkpart primary linux-swap -8GB 100%
 
-
 # format the partitions
 yes | mkfs.ext4 -L nixos /dev/sda1
 
