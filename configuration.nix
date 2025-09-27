@@ -120,8 +120,6 @@ in
     pkgs.polkit_gnome
     pkgs.git
     pkgs.zenity
-    pkgs.arduino-ide
-    pkgs.inkscape
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -154,7 +152,7 @@ in
 
   # Import SSH keys
   users.users."taplab".openssh.authorizedKeys.keys = [
-  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAStHhSwi6dqHzFolLTjd7HkXypiuATg+Jfo4K9ACCXi clamt@nixos"
+  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH/sXIx+I7BCq6T4QfiEWqvh+E1d9+y4CrTijURf5Wsq clamt"
   ];
 
 
@@ -166,9 +164,4 @@ in
   programs.zsh.enable = true;
 
   users.defaultUserShell = pkgs.zsh;
-
-
-  # idk if this actually does anything anymore
-  services.xserver.videoDrivers = [ "intel" ];
-  hardware.graphics.enable = true;
 }
