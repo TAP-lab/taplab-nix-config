@@ -10,12 +10,6 @@ export GDK_BACKEND=x11
 # Prompt user for a name using Zenity GUI
 input_name=$(zenity --entry --title="Enter Your Username" --text="Username:")
 
-# If user cancels, exit
-if [[ $? -ne 0 ]]; then
-    echo "Operation cancelled."
-    exit 1
-fi
-
 # Replace CHANGETHISNAME with the inputted name in accounts.json
 sed -i "s/CHANGETHISNAME/$input_name/g" accounts.json
 
