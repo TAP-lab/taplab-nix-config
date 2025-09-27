@@ -32,6 +32,6 @@ rm /mnt/etc/nixos/configuration.nix
 
 cp * /mnt/etc/nixos -r
 
-nixos-install
+nixos-install --no-root-passwd
 
 reboot
