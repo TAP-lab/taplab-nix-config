@@ -34,6 +34,7 @@ in {
     mkdir -p ~/.local/share/PrismLauncher/instances
     cp -r --no-preserve=mode,ownership /etc/nixos/resources/taplab ~/.local/share/PrismLauncher/instances
   '';
+  
   # Copy the accounts file
   home.activation.copyAccountFile = ''
     mkdir -p ~/.local/share/PrismLauncher

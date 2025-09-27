@@ -1,4 +1,4 @@
-# personal shell config - not necessary for final build
+# personal shell config - not necessary for final build but nice to have
 
 { config, pkgs, lib, ... }:
 
