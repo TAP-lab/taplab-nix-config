@@ -1,5 +1,25 @@
 set -e
 
+parted -s /dev/sda -- mklabel msdos
+
+parted -s /dev/sda -- mkpart primary 1MB -8GB
+
+parted -s /dev/sda -- set 1 boot on
+
+parted -s /dev/sda -- mkpart primary linux-swap -8GB 100%
+
+yes | mkfs.ext4 -L nixos /dev/sda1
+
+mkswap -L swap /dev/sda2
+
+sleep 1
+
+mount /dev/disk/by-label/nixos /mnt
+
+swapon /dev/sda2
+
+nixos-generate-config --root /mnt
+
 cd /tmp
 
 nix-env -iA nixos.git
@@ -8,14 +28,10 @@ git clone https://github.com/clamlum2/taplab-nix-config.git
 
 cd taplab-nix-config
 
-sudo rm /etc/nixos/configuration.nix
+rm /mnt/etc/nixos/configuration.nix
 
-sudo cp * /etc/nixos -r
+cp * /mnt/etc/nixos -r
 
-sudo nixos-rebuild switch
-
-cd /tmp
-
-rm -rf taplab-nix-config
+nixos-install --no-root-passwd
 
 reboot
