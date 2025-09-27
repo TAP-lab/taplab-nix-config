@@ -12,6 +12,8 @@ yes | mkfs.ext4 -L nixos /dev/sda1
 
 mkswap -L swap /dev/sda2
 
+sleep 1
+
 mount /dev/disk/by-label/nixos /mnt
 
 swapon /dev/sda2
