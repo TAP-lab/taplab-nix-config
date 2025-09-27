@@ -14,4 +14,4 @@ sudo cp * /etc/nixos -r
 
 sudo nixos-rebuild switch
 
-sudo reboot
+reboot
