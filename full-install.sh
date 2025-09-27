@@ -1,12 +1,12 @@
 set -e
 
-parted /dev/sda -- mklabel msdos
+parted -s /dev/sda -- mklabel msdos
 
-parted /dev/sda -- mkpart primary 1MB -8GB
+parted -s /dev/sda -- mkpart primary 1MB -8GB
 
-parted /dev/sda -- set 1 boot on
+parted -s /dev/sda -- set 1 boot on
 
-parted /dev/sda -- mkpart primary linux-swap -8GB 100%
+parted -s /dev/sda -- mkpart primary linux-swap -8GB 100%
 
 mkfs.ext4 -L nixos /dev/sda1
 
@@ -31,5 +31,7 @@ rm /mnt/etc/nixos/configuration.nix
 cp * /mnt/etc/nixos -r
 
 nixos-install
+
+passwd taplab
 
 reboot
