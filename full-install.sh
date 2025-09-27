@@ -8,7 +8,7 @@ parted -s /dev/sda -- set 1 boot on
 
 parted -s /dev/sda -- mkpart primary linux-swap -8GB 100%
 
-mkfs.ext4 -L nixos /dev/sda1
+mkfs.ext4 -yL nixos /dev/sda1
 
 mkswap -L swap /dev/sda2
 
