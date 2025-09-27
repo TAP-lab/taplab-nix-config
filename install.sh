@@ -1,6 +1,6 @@
 set -e
 
-cd ~/Downloads
+cd /tmp
 
 nix-env -iA nixos.git
 
@@ -13,5 +13,9 @@ sudo rm /etc/nixos/configuration.nix
 sudo cp * /etc/nixos -r
 
 sudo nixos-rebuild switch
+
+cd /tmp
+
+rm -rf taplab-nix-config
 
 reboot
