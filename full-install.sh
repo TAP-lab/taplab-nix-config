@@ -34,6 +34,4 @@ cp * /mnt/etc/nixos -r
 
 nixos-install
 
-passwd taplab
-
 reboot
