@@ -1,4 +1,5 @@
 # personal shell config - not necessary for final build but nice to have
+# includes update function, would need to be implemented elsewhere if this is not used
 
 { config, pkgs, lib, ... }:
 
