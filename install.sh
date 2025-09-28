@@ -37,7 +37,7 @@ cd taplab-nix-config
 rm /mnt/etc/nixos/configuration.nix
 
 # copy the new configuration files
-rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' * /etc/nixos/
+rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' * /mnt/etc/nixos/
 
 # install the os
 nixos-install --no-root-passwd
