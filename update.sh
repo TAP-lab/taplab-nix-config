@@ -10,4 +10,8 @@ sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --e
 
 sudo nixos-rebuild switch --generation-name "updated from script"
 
+cd /tmp
+
+rm -rf taplab-nix-config
+
 reboot
