@@ -1,29 +1,19 @@
-set -e
+REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"
+CONFIG_DIR="$HOME/nix-config"
+BRANCH="${1:-main}"
 
-# Ensure the script is run with sudo privileges for unattended execution
-sudo echo
-
-cd /tmp
-
-# Clean up any previous update attempts
-rm -rf taplab-nix-config
-
-# Clone the latest configuration
-git clone https://github.com/clamlum2/taplab-nix-config.git
-
-cd taplab-nix-config
-
-# Copy the configuration files to /etc/nixos, excluding certain files
-sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' * /etc/nixos/
-
-# Rebuild the NixOS system 
-sudo nixos-rebuild switch --profile-name "updated from script $(date '+%Y-%m-%d_%H-%M-%S')"
-
-cd /tmp
-
-# Clean up
-rm -rf taplab-nix-config
-
-echo
-echo
-echo "Update complete, please reboot if the drivers/kernel were updated."
+if [ -d "$CONFIG_DIR/.git" ]; then
+    echo "Repo found at $CONFIG_DIR. Updating..."
+    cd "$CONFIG_DIR" || { echo "Failed to cd to $CONFIG_DIR"; exit 1; }
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    echo "On branch: $CURRENT_BRANCH"
+    git pull origin "$CURRENT_BRANCH"
+    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
+    sudo nixos-rebuild switch --profile-name "config updated ($CURRENT_BRANCH) $(date '+%Y-%m-%d_%H-%M-%S')"
+else
+    echo "Repo not found. Cloning branch '$BRANCH' to $CONFIG_DIR..."
+    git clone --branch "$BRANCH" "$REPO_URL" "$CONFIG_DIR"
+    cd "$CONFIG_DIR" || { echo "Failed to cd to $CONFIG_DIR"; exit 1; }
+    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
+    sudo nixos-rebuild switch --profile-name "config updated ($BRANCH) $(date '+%Y-%m-%d_%H-%M-%S')"
+fi
