@@ -42,4 +42,8 @@ rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclud
 # install the os
 nixos-install --no-root-passwd
 
+cd /tmp
+
+mv taplab-nix-config /mnt/home/taplab/nix-config
+
 reboot
