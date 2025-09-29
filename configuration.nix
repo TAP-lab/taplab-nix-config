@@ -106,4 +106,18 @@ in
   programs.zsh.enable = true;
 
   users.defaultUserShell = pkgs.zsh;
+
+  services.flatpak.enable = true;
+
+  services.flatpak.remotes = [
+    {
+      name = "flathub";
+      url = "https://flathub.org/repo/flathub.flatpakrepo";
+      extraOptions = ""; # optional
+    }
+  ];
+
+  services.flatpak.packages = [
+    "com.bambulab.BambuStudio"
+  ];
 }
