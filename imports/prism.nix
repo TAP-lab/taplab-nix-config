@@ -63,6 +63,6 @@ in {
     Exec=$HOME/.local/share/PrismLauncher/offline.sh
     Icon=grass
     Categories=Game;
-    Comment=Use this to play Minecraft on the SurvivalLAB server.
+    Comment=Use this to play Minecraft on the TAP-Lab server.
   '';
 }
