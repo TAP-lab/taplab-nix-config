@@ -1,5 +1,7 @@
 set -e
- 
+
+sudo echo
+
 cd /tmp
 
 git clone https://github.com/clamlum2/taplab-nix-config.git
