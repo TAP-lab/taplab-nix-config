@@ -1,18 +1,23 @@
 set -e
 
+# get disk parameter or default to /dev/sda
+DISK=${1:-/dev/sda}
+
+echo "Installing NixOS on disk: $DISK"
+
 # partition the disk
-parted -s /dev/sda -- mklabel msdos
+parted -s $DISK -- mklabel msdos
 
-parted -s /dev/sda -- mkpart primary 1MB -8GB
+parted -s $DISK -- mkpart primary 1MB -8GB
 
-parted -s /dev/sda -- set 1 boot on
+parted -s $DISK -- set 1 boot on
 
-parted -s /dev/sda -- mkpart primary linux-swap -8GB 100%
+parted -s $DISK -- mkpart primary linux-swap -8GB 100%
 
 # format the partitions
-yes | mkfs.ext4 -L nixos /dev/sda1
+yes | mkfs.ext4 -L nixos ${DISK}1
 
-mkswap -L swap /dev/sda2
+mkswap -L swap ${DISK}2
 
 # prevents errors
 sleep 1
@@ -21,7 +26,7 @@ sleep 1
 mount /dev/disk/by-label/nixos /mnt
 
 # enable the swap partition
-swapon /dev/sda2
+swapon ${DISK}2
 
 # generate the hardware configuration file
 nixos-generate-config --root /mnt
