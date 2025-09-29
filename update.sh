@@ -14,4 +14,4 @@ cd /tmp
 
 rm -rf taplab-nix-config
 
-reboot
+echo "Update complete, please reboot if the drivers/kernel were updated."
