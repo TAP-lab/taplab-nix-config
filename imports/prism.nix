@@ -63,6 +63,6 @@ in {
     Exec=$HOME/.local/share/PrismLauncher/offline.sh
     Icon=grass
     Categories=Game;
-    Description=Use this to play minecraft on the SurvivalLAB server.
+    Comment=Use this to play minecraft on the SurvivalLAB server.
   '';
 }
