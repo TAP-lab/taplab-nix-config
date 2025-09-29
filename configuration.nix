@@ -90,6 +90,7 @@ in
     pkgs.git
     pkgs.zenity
     pkgs.bambu-studio
+    pkgs.arduino-ide
   ];
 
   # Enable the OpenSSH daemon.
