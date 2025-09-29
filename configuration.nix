@@ -89,6 +89,7 @@ in
     pkgs.kitty
     pkgs.git
     pkgs.zenity
+    pkgs.bambu-studio
   ];
 
   # Enable the OpenSSH daemon.
@@ -106,6 +107,4 @@ in
   programs.zsh.enable = true;
 
   users.defaultUserShell = pkgs.zsh;
-
-  services.flatpak.enable = true;
 }
