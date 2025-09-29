@@ -24,4 +24,6 @@ cd /tmp
 # Clean up
 rm -rf taplab-nix-config
 
+echo
+echo
 echo "Update complete, please reboot if the drivers/kernel were updated."
