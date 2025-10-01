@@ -25,6 +25,7 @@ in
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  system.stateVersion = "25.05";
 
   # Enable networking
   networking.hostName = "nixos";
@@ -94,16 +95,6 @@ in
     pkgs.bambu-studio
     pkgs.arduino-ide
     pkgs.inkscape
-  ];
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-  system.stateVersion = "25.05";
-
-
-  # Import SSH keys - for testing use
-  users.users."taplab".openssh.authorizedKeys.keys = [
-  "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH/sXIx+I7BCq6T4QfiEWqvh+E1d9+y4CrTijURf5Wsq clamt"
   ];
 
   # Enable Zsh as default shell
