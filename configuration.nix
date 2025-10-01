@@ -13,9 +13,11 @@ in
       (import "${home-manager}/nixos")
     ];
 
+  # Use GRUB as the boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
 
+  # Home Manager configuration
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
@@ -24,8 +26,8 @@ in
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Enable networking
   networking.hostName = "nixos";
-
   networking.networkmanager.enable = true;
 
   # Set your time zone.
@@ -96,19 +98,18 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
   system.stateVersion = "25.05";
 
 
-  # Import SSH keys
+  # Import SSH keys - for testing use
   users.users."taplab".openssh.authorizedKeys.keys = [
   "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH/sXIx+I7BCq6T4QfiEWqvh+E1d9+y4CrTijURf5Wsq clamt"
   ];
 
   # Enable Zsh as default shell
   programs.zsh.enable = true;
-
   users.defaultUserShell = pkgs.zsh;
 
+  # Enable Flatpak
   services.flatpak.enable = true;
 }
