@@ -91,6 +91,7 @@ in
     pkgs.zenity
     pkgs.bambu-studio
     pkgs.arduino-ide
+    pkgs.inkscape
   ];
 
   # Enable the OpenSSH daemon.
