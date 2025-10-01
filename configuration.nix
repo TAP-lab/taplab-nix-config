@@ -109,4 +109,6 @@ in
   programs.zsh.enable = true;
 
   users.defaultUserShell = pkgs.zsh;
+
+  services.flatpak.enable = true;
 }
