@@ -14,8 +14,9 @@ in
     ];
 
   # Use GRUB as the boot loader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.efi.efiSysMountPoint = "/boot";
 
   # Home Manager configuration
   home-manager.useUserPackages = true;
