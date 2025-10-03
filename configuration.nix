@@ -102,6 +102,7 @@ in
     pkgs.p7zip
     pkgs.blender
     pkgs.vscode
+    pkgs.luanti
   ];
 
   # Enable Zsh as default shell
