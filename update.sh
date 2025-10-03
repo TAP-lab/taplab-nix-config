@@ -11,6 +11,9 @@ if [ -d "$CONFIG_DIR/.git" ]; then
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
     sudo nixos-rebuild switch --upgrade --profile-name "config updated ($CURRENT_BRANCH) $(date '+%Y-%m-%d_%H-%M-%S')"
     sudo nix-collect-garbage -d
+    echo
+    echo
+    echo "Please reboot if drivers/kernel were updated."
 else
     echo "Repo not found. Cloning branch '$BRANCH' to $CONFIG_DIR..."
     git clone --branch "$BRANCH" "$REPO_URL" "$CONFIG_DIR"
@@ -18,4 +21,7 @@ else
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
     sudo nixos-rebuild switch --upgrade --profile-name "config updated ($BRANCH) $(date '+%Y-%m-%d_%H-%M-%S')"
     sudo nix-collect-garbage -d
+    echo
+    echo
+    echo "Please reboot if drivers/kernel were updated."
 fi
