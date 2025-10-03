@@ -14,8 +14,8 @@
     ./imports/prism.nix
   ];
 
-  xdg.configFile."kscreenlockerrc".text = ''
-    [Daemon]
-    RequirePassword=false
-  '';
+#  xdg.configFile."kscreenlockerrc".text = ''
+#    [Daemon]
+#    RequirePassword=false
+#  '';
 }
