@@ -88,7 +88,6 @@ in
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
-    pkgs.kitty
     pkgs.git
     pkgs.zenity
     pkgs.blockbench
