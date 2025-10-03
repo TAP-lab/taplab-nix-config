@@ -16,6 +16,8 @@
 
 #  xdg.configFile."kscreenlockerrc".text = ''
 #    [Daemon]
-#    RequirePassword=false
+#    Autolock=false
+#    LockOnResume=false
+#    Timeout=0
 #  '';
 }
