@@ -94,6 +94,19 @@ in
     pkgs.kitty
     pkgs.git
     pkgs.zenity
+    pkgs.blockbench
+    pkgs.arduino-ide
+    pkgs.microsoft-edge
+    pkgs.vlc
+    pkgs.freecad
+    pkgs.krita
+    pkgs.orca-slicer
+    pkgs.nomacs
+    pkgs.inkscape
+    pkgs.p7zip
+    pkgs.blender
+    pkgs.vscode
+    pkgs.rustdesk
   ];
 
   # Enable Zsh as default shell
