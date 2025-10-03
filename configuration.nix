@@ -96,7 +96,7 @@ in
     pkgs.zenity
     pkgs.blockbench
     pkgs.arduino-ide
-    pkgs.microsoft-edge
+    pkgs.chromium
     pkgs.vlc
     pkgs.freecad
     pkgs.krita
