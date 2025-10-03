@@ -106,7 +106,6 @@ in
     pkgs.p7zip
     pkgs.blender
     pkgs.vscode
-    pkgs.rustdesk
   ];
 
   # Enable Zsh as default shell
