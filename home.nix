@@ -14,10 +14,10 @@
     ./imports/prism.nix
   ];
 
-#  xdg.configFile."kscreenlockerrc".text = ''
-#    [Daemon]
-#    Autolock=false
-#    LockOnResume=false
-#    Timeout=0
-#  '';
+  xdg.configFile."kscreenlockerrc".text = ''
+    [Daemon]
+    Autolock=false
+    LockOnResume=false
+    Timeout=0
+  '';
 }
