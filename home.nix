@@ -14,6 +14,7 @@
     ./imports/prism.nix
   ];
 
+  # Disable automatic screen locking
   xdg.configFile."kscreenlockerrc".text = ''
     [Daemon]
     Autolock=false
