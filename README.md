@@ -638,3 +638,21 @@ The instance gets copied to the correct location during the activation phase of 
 
 ### `resources/grass.png`
 This is is simply the default minecraft icon, used for the desktop entry of the minecraft script.
+
+
+
+
+## TODO
+In no particular order
+
+- Set up a proper user account with a secure password.
+- Set up Microsoft Edge with automatic login to the TAPLab account.
+- Set up a local binary cache for faster installs/updates.
+- Comprehensive testing across all laptops and apps to ensure everything works as expected.
+- Potentially host this on a local git server for easier access.
+- Set up wifi out of the box on the installed system.
+- Find the best solution for hiding/notifying about the prism launcher login prompt.
+- Set up auto-updates for the system.
+- Move shell alias to bash config and remove zsh
+- Set up more KDE settings and move to separate file.
+- Move packages to separate file for clearer configuration.nix
