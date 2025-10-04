@@ -49,4 +49,7 @@ rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclud
 
 nixos-install --no-root-passwd
 
+cd /tmp
+cp -r taplab-nix-config/ /mnt/home/taplab/
+
 reboot
