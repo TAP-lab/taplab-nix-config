@@ -89,7 +89,14 @@ in
 
   environment.systemPackages = with pkgs; [
     pkgs.git
+
+    # for the minecraft script
     pkgs.zenity
+
+    # i use kitty on my pc and ssh tends to break if the host doesn't have it
+    pkgs.kitty
+
+    # taplab apps
     pkgs.blockbench
     pkgs.arduino-ide
     pkgs.chromium
@@ -103,7 +110,6 @@ in
     pkgs.blender
     pkgs.vscode
     pkgs.luanti
-    pkgs.kitty
   ];
 
   # Enable Zsh as default shell
