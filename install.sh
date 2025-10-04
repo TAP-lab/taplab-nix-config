@@ -20,6 +20,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo "Installing NixOS on disk: $DISK"
+echo "Using configuration branch: $BRANCH"
 
 parted -s $DISK -- mklabel msdos
 parted -s $DISK -- mkpart primary 1MB -8GB
@@ -33,6 +34,8 @@ sleep 1
 
 mount /dev/disk/by-label/nixos /mnt
 swapon ${DISK}2
+
+echo "Disks successfully partitioned and formatted."
 
 nixos-generate-config --root /mnt
 
