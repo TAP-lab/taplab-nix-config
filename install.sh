@@ -50,6 +50,4 @@ rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclud
 
 nixos-install --no-root-passwd
 
-git clone --branch "$BRANCH" https://github.com/clamlum2/taplab-nix-config.git /mnt/home/taplab/nix-config
-
 reboot
