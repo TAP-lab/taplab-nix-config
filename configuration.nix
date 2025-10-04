@@ -103,6 +103,7 @@ in
     pkgs.blender
     pkgs.vscode
     pkgs.luanti
+    pkgs.kitty
   ];
 
   # Enable Zsh as default shell
@@ -111,4 +112,7 @@ in
 
   # Enable Flatpak
   services.flatpak.enable = true;
+
+  # Enable OpenSSH server
+  services.openssh.enable = true;
 }
