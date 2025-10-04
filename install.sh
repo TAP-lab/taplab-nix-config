@@ -1,50 +1,56 @@
 set -e
 
-# get disk parameter or default to /dev/sda
+# takes the trailing argument after the script as what disk to install to.
+# this defaults to /dev/sda and should be correct for all laptops with only one disk in them
+# if unsure check the disks by running "lsblk" and look for the disk you wish to use
 DISK=${1:-/dev/sda}
 
 echo "Installing NixOS on disk: $DISK"
 
-# partition the disk
+# this set of commands partitions the selected disk
+# makes a msdos partition table for BIOS boot support (these laptops won't work with uefi, not sure why)
 parted -s $DISK -- mklabel msdos
 
+# patitions the disk with the necessary boot, main, and swap partitions
 parted -s $DISK -- mkpart primary 1MB -8GB
-
 parted -s $DISK -- set 1 boot on
-
 parted -s $DISK -- mkpart primary linux-swap -8GB 100%
 
-# format the partitions
+# formats the main partition to ext4
 yes | mkfs.ext4 -L nixos ${DISK}1
 
+# enables the sawp partition
 mkswap -L swap ${DISK}2
 
-# prevents errors
+# prevents mount command from running before the formatting is complete
 sleep 1
 
-# mount the partitions
+# mounts the mian partition so that nixos can be isntalled to it
 mount /dev/disk/by-label/nixos /mnt
 
-# enable the swap partition
+# enables the swap partition in case it is needed
 swapon ${DISK}2
 
-# generate the hardware configuration file
+# generates the laptop-specific hardware configuration file
 nixos-generate-config --root /mnt
 
+# changes to working in the temp directory
 cd /tmp
 
-# download the configuration files
+# downloads the configuration files from github
 git clone https://github.com/clamlum2/taplab-nix-config.git
-
 cd taplab-nix-config
 
-# remove the existing configuration file
+# removes the automatically generated configuration file
 rm /mnt/etc/nixos/configuration.nix
 
-# copy the new configuration files
+# copies the configuration files to the new system
 rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' * /mnt/etc/nixos/
 
-# install the os
+# installs the os, skipping the root password to allow for unattened installation
 nixos-install --no-root-passwd
 
+# automatically reboots to the newly installed os
 reboot
+
+# NEED TO FIGURE OUT LOCAL CACHING
