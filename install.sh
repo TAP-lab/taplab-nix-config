@@ -51,7 +51,6 @@ nixos-install --no-root-passwd
 
 mkdir /mnt/home/taplab/nix-config/
 cp -r * /mnt/home/taplab/nix-config/
-chown -R taplab:taplab /mnt/home/taplab/nix-config/
 chmod -R u+rwX /mnt/home/taplab/nix-config/
 
 reboot
