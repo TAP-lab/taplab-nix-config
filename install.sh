@@ -14,7 +14,8 @@ while [[ $# -gt 0 ]]; do
 			shift 2
 			;;
 		*)
-			shift
+			echo "Error: Unknown argument: $1" >&2
+			exit 1
 			;;
 	esac
 done
