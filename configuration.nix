@@ -111,4 +111,7 @@ in
 
   # Enable Flatpak
   services.flatpak.enable = true;
+
+  # Enable OpenSSH server
+  services.openssh.enable = true;
 }
