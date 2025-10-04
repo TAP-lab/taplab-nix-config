@@ -17,6 +17,9 @@ echo
 
 if [ -d "$CONFIG_DIR/.git" ]; then
     echo "Repo found at $CONFIG_DIR, pulling changes..."
+    cd "$CONFIG_DIR"
+    git pull --rebase origin "$BRANCH"
 else
     echo "Repo not found, cloning to $CONFIG_DIR..."
+    git clone --branch "$BRANCH" "$REPO_URL" "$CONFIG_DIR"
 fi
