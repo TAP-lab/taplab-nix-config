@@ -20,7 +20,7 @@
     shellAliases = {
       nrt = "sudo nixos-rebuild test";
       nrs = "sudo nixos-rebuild switch";
-      updatenix = "sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/refs/heads/main/update.sh)";
+      updatenix = "sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
       cdnix = "cd /etc/nixos/";
     };
 
