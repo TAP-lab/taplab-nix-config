@@ -1,53 +1,49 @@
-# defines the repo that the configuration will be pulled from
-REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"
+set -e
 
-# defines the location of the nix config
+REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"
 CONFIG_DIR="$HOME/nix-config"
 
-# defined the branch to use, will it from take the trailing arugment, or default to "main"
-BRANCH="${1:-main}"
+sudo echo
 
-# checks if the nix-config repo is already present      NEED TO UPDATE, CURRENTLY POORLY IMPLEMENTED
-if [ -d "$CONFIG_DIR/.git" ]; then
-    echo "Repo found at $CONFIG_DIR. Updating..."
-    cd "$CONFIG_DIR"
-
-    # gets the currently downloaded branch      ALSO NEED TO UPDATE
-    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-    echo "On branch: $CURRENT_BRANCH"
-
-    # updates the repo to the latest version
-    git pull origin "$CURRENT_BRANCH"
-
-    # moves the new configuration files to the nix directory
-    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
-
-    # rebuilds the nix config and updates the system
-    sudo nixos-rebuild switch --upgrade --profile-name "config updated ($CURRENT_BRANCH) $(date '+%Y-%m-%d_%H-%M-%S')"
-
-    # deletes unused files
-    sudo nix-collect-garbage -d
-    echo
-    echo
-    echo "Please reboot if drivers/kernel were updated."
+if [ -z "$1" ]; then
+    if [ -d "$CONFIG_DIR/.git" ]; then
+        BRANCH=$(git -C "$CONFIG_DIR" rev-parse --abbrev-ref HEAD)
+    else
+        BRANCH="main"
+    fi
 else
-    echo "Repo not found. Cloning branch '$BRANCH' to $CONFIG_DIR..."
-
-    # clones the repo to be used
-    git clone --branch "$BRANCH" "$REPO_URL" "$CONFIG_DIR"
-    cd "$CONFIG_DIR"
-
-    # moves the new configuration files to the nix directory
-    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
-
-    # rebuilds the nix config and updates the system
-    sudo nixos-rebuild switch --upgrade --profile-name "config updated ($BRANCH) $(date '+%Y-%m-%d_%H-%M-%S')"
-    
-    # deletes unused files
-    sudo nix-collect-garbage -d
-    echo
-    echo
-    echo "Please reboot if drivers/kernel were updated."
+    BRANCH="$1"
 fi
 
-# GOING TO UPDATE WHOLE SCRIPT
+echo
+echo "Using branch: $BRANCH"
+echo
+
+if [ -d "$CONFIG_DIR/.git" ]; then
+    echo "Repo found at $CONFIG_DIR, pulling changes..."
+    cd "$CONFIG_DIR"
+    CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    if [ "$CURRENT_BRANCH" != "$BRANCH" ]; then
+        echo "Current branch ($CURRENT_BRANCH) is different from target branch ($BRANCH)."
+        git checkout "$BRANCH"
+    fi
+    git pull --rebase origin "$BRANCH"
+    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
+    sudo nixos-rebuild switch --upgrade
+    sudo nix-collect-garbage -d
+    echo
+    echo
+    echo "Update complete!"
+    echo "Please reboot if drivers/kernel were updated."
+else
+    echo "Repo not found, cloning to $CONFIG_DIR..."
+    git clone --branch "$BRANCH" "$REPO_URL" "$CONFIG_DIR"
+    cd "$CONFIG_DIR"
+    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
+    sudo nixos-rebuild switch --upgrade
+    sudo nix-collect-garbage -d
+    echo
+    echo
+    echo "Update complete!"
+    echo "Please reboot if drivers/kernel were updated."
+fi
