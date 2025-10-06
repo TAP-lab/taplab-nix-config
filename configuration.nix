@@ -122,14 +122,7 @@ in
   # Enable OpenSSH server
   services.openssh.enable = true;
 
-  nix = {
-    settings = {
-      substituters = [
-        "http://192.168.1.180"
-      ];
-      trusted-public-keys = [
-        "localserver:3u7X2SzwmbwsZDyIM3vFEI5/0mf76Wd5DTL4jaWAk98="
-      ];
-    };
-  };
+  nix.settings.substituters = [ "http://192.168.1.180:5000" ];
+  nix.settings.trusted-substituters = [ "http://192.168.1.180:5000" ];
+  nix.settings.trusted-public-keys = [ "local-cache:hCuO1qKsO9DuwvGqG180WyTIXPq6Gv36GWUBeux0CrA=" ];
 }
