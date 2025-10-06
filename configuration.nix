@@ -126,10 +126,9 @@ in
     settings = {
       substituters = [
         "http://192.168.1.180"
-        "https://cache.nixos.org/"
       ];
       trusted-public-keys = [
-        "localcache:Y9wt/GD0ZabZcOrbYYr9ImMLGw/82Bc5b+dBrqyL9RM="
+        "192.168.1.180:zRQ7LwpjNvGoQG7hgPleYQ1PqkRtKI/0rX6q3tUqVKU="
       ];
     };
   };
