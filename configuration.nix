@@ -128,7 +128,7 @@ in
         "http://192.168.1.180"
       ];
       trusted-public-keys = [
-        "192.168.1.180:zRQ7LwpjNvGoQG7hgPleYQ1PqkRtKI/0rX6q3tUqVKU"
+        "localcache:ntmgfrzUdxhbjERXfuYP5aEzpY6T/BhDOm81Eikd8Ms"
       ];
     };
   };
