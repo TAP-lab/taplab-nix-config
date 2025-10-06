@@ -121,4 +121,17 @@ in
 
   # Enable OpenSSH server
   services.openssh.enable = true;
+
+  nix = {
+    settings = {
+      substituters = [
+        "http://192.168.1.180"
+        "https://cache.nixos.org/"
+      ];
+      trusted-public-keys = [
+        "binarycache.example.com-1:dsafdafDFW123fdasfa123124FADSAD"
+        "192.168.1.180:nrNDjyVsV8ZOt9Nj8jqZYqTk7PHotbk20qNUO0jpH5k="
+      ];
+    };
+  };
 }
