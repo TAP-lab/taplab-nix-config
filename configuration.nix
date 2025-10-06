@@ -129,7 +129,7 @@ in
         "https://cache.nixos.org/"
       ];
       trusted-public-keys = [
-        "192.168.1.180:nrNDjyVsV8ZOt9Nj8jqZYqTk7PHotbk20qNUO0jpH5k="
+        "192.168.1.180:nrNDjyVsV8ZOt9Nj8jqZYqTk7PHotbk20qNUO0jpH5k=%"
       ];
     };
   };
