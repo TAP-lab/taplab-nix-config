@@ -128,7 +128,7 @@ in
         "http://192.168.1.180"
       ];
       trusted-public-keys = [
-        "localcache:ntmgfrzUdxhbjERXfuYP5aEzpY6T/BhDOm81Eikd8Ms"
+        "localcache:ntmgfrzUdxhbjERXfuYP5aEzpY6T/BhDOm81Eikd8Ms="
       ];
     };
   };
