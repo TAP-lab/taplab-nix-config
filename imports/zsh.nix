@@ -19,6 +19,7 @@
     # Define useful shell aliases
     shellAliases = {
       updatenix = "sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
+      syncstore = "nix-copy-closure --to root@192.168.1.15 $(nix-store -qR /nix/store/*) && ssh root@192.168.1.15 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'";
     };
 
     history.size = 10000;
