@@ -11,6 +11,7 @@ in
     [
       ./hardware-configuration.nix
       (import "${home-manager}/nixos")
+      ./imports/cache.nix
     ];
 
   # Use GRUB as the boot loader.
