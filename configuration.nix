@@ -125,6 +125,7 @@ in
   nix = {
     settings = {
       substituters = [
+        "https://cache.nixos.org"
         "http://192.168.1.180"
       ];
       trusted-public-keys = [
