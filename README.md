@@ -656,3 +656,8 @@ Things I need to do before this is fully ready. In no particular order
 - Move shell alias to bash config and remove zsh
 - Set up more KDE settings and move to separate file.
 - Move packages to separate file for clearer configuration.nix
+
+
+I SPENT 4 HOURS TRYING TO MAKE A CACHE WORK [THIS GUIDE](https://github.com/mcdonc/.nixconfig/blob/master/videos/nix-serve/script.rst) IS WHAT MADE IT WORK
+
+remembering for when i have to do it again
