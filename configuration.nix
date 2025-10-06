@@ -127,9 +127,9 @@ in
       substituters = [
         "http://192.168.1.180"
       ];
-      trusted-public-keys = [
-        "localcache:5sF3fy4p83+r82vqRdFnaDfIqA2BeMLYf9+M1pBVvVJm8AWtzU9Tneww58e9jlsjuBYkx87yMS8n9evsxpM9Aw=="
-      ];
+      #trusted-public-keys = [
+      #  "localcache:5sF3fy4p83+r82vqRdFnaDfIqA2BeMLYf9+M1pBVvVJm8AWtzU9Tneww58e9jlsjuBYkx87yMS8n9evsxpM9Aw=="
+      #];
     };
   };
 }
