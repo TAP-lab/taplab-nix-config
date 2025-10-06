@@ -4,27 +4,27 @@
 { config, pkgs, lib, ... }:
 
 {
+  # Enables zsh for Home Manager
   programs.zsh = {
     enable = true;
 
 
-    # Enable oh-my-zsh with some plugins and a custom theme
+    # Enables oh-my-zsh with some plugins and my custom theme
     oh-my-zsh = {
       enable = true;
       plugins = [ "git" "colorize" ];
       theme = "custom";
     };
 
-
-    # Define useful shell aliases
+    # Defines the update alias to easily run the update script
     shellAliases = {
       updatenix = "sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
     };
 
+    # Sets the history size to a large value
     history.size = 10000;
 
-
-    # Enable zsh plugins manager zplug with some useful plugins
+    # Enables the zplug plugin manager with some useful plugins
     zplug = {
       enable = true;
       plugins = [
@@ -34,14 +34,14 @@
     };
 
 
-    # Enable custom theme
+    # Enables the custom theme
     initContent = lib.mkOrder 550 ''
       export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom" 
     '';
   };
 
 
-  # Custom theme
+  # Defines the custom theme, I think I broke the git part
   home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''
     PROMPT="%F{cyan}%n@%f"
     PROMPT+="%{$fg[blue]%}%M "
