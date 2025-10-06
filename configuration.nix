@@ -127,8 +127,8 @@ in
       substituters = [
         "http://192.168.1.180"
       ];
-      trusted-substituters = [
-        "http://192.168.1.180"
+      trusted-public-keys = [
+        "localcache:QZAatM2cceHYE3jHiZzb+gra4c/kHWmo4bj/8YpjoZxoezxohuyUMK552weOiYFoIJMxk83Rcy/cnpuRXqTZnQ=="
       ];
     };
   };
