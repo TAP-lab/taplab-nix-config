@@ -1,5 +1,13 @@
 set -e
 
+MY_PUBKEY="local-cache:hCuO1qKsO9DuwvGqG180WyTIXPq6Gv36GWUBeux0CrA="
+export NIX_CONF_DIR="/tmp/nix_conf"
+mkdir -p "$NIX_CONF_DIR"
+cat > "$NIX_CONF_DIR/nix.conf" <<EOF
+substituters = http://192.168.1.180:5000 https://cache.nixos.org
+trusted-public-keys = $MY_PUBKEY
+EOF
+
 BRANCH="main"
 DISK="/dev/sda"
 
