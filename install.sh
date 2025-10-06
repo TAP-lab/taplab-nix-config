@@ -1,10 +1,10 @@
 set -e
 
-MY_PUBKEY="local-cache:hCuO1qKsO9DuwvGqG180WyTIXPq6Gv36GWUBeux0CrA="
+MY_PUBKEY="local-cache:bTcHjFnTSNI0DZbDgx7sslss0784KUoQybZgUOTUbTc="
 export NIX_CONF_DIR="/tmp/nix_conf"
 mkdir -p "$NIX_CONF_DIR"
 cat > "$NIX_CONF_DIR/nix.conf" <<EOF
-substituters = http://192.168.1.180:5000
+substituters = http://192.168.1.15:5000
 trusted-public-keys = $MY_PUBKEY
 EOF
 
