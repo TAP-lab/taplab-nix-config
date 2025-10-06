@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 
+# Fetches the Home Manager module
 let
   home-manager = builtins.fetchTarball {
     url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
@@ -7,34 +8,36 @@ let
 in
 
 {
+  # Import the hardware configuration and Home Manager configuration files
   imports =
     [
       ./hardware-configuration.nix
       (import "${home-manager}/nixos")
+      ./imports/pkgs.nix
     ];
 
-  # Use GRUB as the boot loader.
+  # Enables GRUB as the boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
 
-  # Home Manager configuration
+  # Defines basic Home Manager configuration
   home-manager.useUserPackages = true;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
   home-manager.users.taplab = import ./home.nix;
 
-  # Use latest kernel.
+  # Defines the system version and tells it to use the latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
   system.stateVersion = "25.05";
 
-  # Enable networking
+  # Enables networking through NetworkManager.
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
+  # Sets the time zone to Auckland, New Zealand.
   time.timeZone = "Pacific/Auckland";
 
-  # Select internationalisation properties.
+  # Sets locale to New Zealand English
   i18n.defaultLocale = "en_NZ.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -49,24 +52,25 @@ in
     LC_TIME = "en_NZ.UTF-8";
   };
 
+  # Enables the X11 windowing system. Not sure if this is actually needed for KDE Plasma
   services.xserver.enable = true;
 
-  # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-  services.displayManager.autoLogin.enable = true;
-  services.displayManager.autoLogin.user = "taplab";
-
-  # Configure keymap in X11
+  # Configures the keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
   };
 
-  # Enable CUPS to print documents.
+  # Enables the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
+  services.displayManager.autoLogin.enable = true;
+  services.displayManager.autoLogin.user = "taplab";
+
+  # Enables CUPS to print documents. No idea how well this works
   services.printing.enable = true;
 
-  # Enable sound with pipewire.
+  # Enables sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -76,7 +80,7 @@ in
     pulse.enable = true;
   };
 
-  # Define user account
+  # Defines the taplab user account, contains a hashed password for sudo access
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
@@ -84,52 +88,16 @@ in
     hashedPassword = "$6$aGlmHH1OI2haTRMb$HdvQGthHpfDfWfsrD969TcSa/doH5yfL21yZOpH19TZ1sEwfxYbTfcOnB5vGAxcovGxom7VvCJI7xGUJqv808.";
   };
 
-  # Allow unfree packages
+  # Allows unfree packages, drivers etc.
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [
-    pkgs.git
-
-    # for the minecraft script
-    pkgs.zenity
-
-    # i use kitty on my pc and ssh tends to break if the host doesn't have it
-    pkgs.kitty
-
-    # taplab apps
-    pkgs.blockbench
-    pkgs.arduino-ide
-    pkgs.chromium
-    pkgs.vlc
-    pkgs.freecad
-    pkgs.krita
-    pkgs.orca-slicer
-    pkgs.nomacs
-    pkgs.inkscape
-    pkgs.p7zip
-    pkgs.blender
-    pkgs.vscode
-    pkgs.luanti
-  ];
-
-  # Enable Zsh as default shell
+  # Enables Zsh as default shell - could be changed back to bash for final build but I like zsh
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
-  # Enable Flatpak
+  # Enables Flatpak
   services.flatpak.enable = true;
 
-  # Enable OpenSSH server
+  # Enables OpenSSH server, for debug use but could still be useful
   services.openssh.enable = true;
-
-  nix = {
-    settings = {
-      substituters = [
-        "http://192.168.1.180"
-      ];
-      trusted-public-keys = [
-        "localcache:ntmgfrzUdxhbjERXfuYP5aEzpY6T/BhDOm81Eikd8Ms="
-      ];
-    };
-  };
 }
