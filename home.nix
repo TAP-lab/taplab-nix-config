@@ -8,7 +8,7 @@
   home.stateVersion = "25.05";
 
 
-  # Import all nix files for modular configuration
+  # Imports other nix files for modular configuration
   imports = [ 
     ./imports/zsh.nix
     ./imports/prism.nix

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-    # Disable automatic screen locking
+    # Disables automatic screen locking as this requires a password to unlock
     xdg.configFile."kscreenlockerrc".text = ''
         [Daemon]
         Autolock=false
@@ -9,7 +9,7 @@
         Timeout=0
     '';
 
-    # Disable the kde wallet system
+    # Disables the kde wallet system as it is not needed and just gets in the way of most users
     xdg.configFile."kwalletrc".text = ''
         [Wallet]
         Close When Idle=false

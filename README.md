@@ -187,7 +187,6 @@ if [ -d "$CONFIG_DIR/.git" ]; then                                              
     git pull --rebase origin "$BRANCH"                                                                                              # Pulls the latest changes from the target branch
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/   # Copies the configuration files to /etc/nixos
     sudo nixos-rebuild switch --upgrade                                                                                             # Rebuilds and updates the system with the latest configuration
-    sudo nix-collect-garbage -d                                                                                                     # Cleans up old NixOS generations
     echo
     echo
     echo "Update complete!"
@@ -198,7 +197,6 @@ else        # If the config directory is not present
     cd "$CONFIG_DIR"                                            # Changes to the config directory
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/       # Copies the configuration files to /etc/nixos
     sudo nixos-rebuild switch --upgrade         # Rebuilds and updates the system with the latest configuration
-    sudo nix-collect-garbage -d                 # Cleans up old NixOS generations
     echo
     echo
     echo "Update complete!"
@@ -353,32 +351,6 @@ in
   # Allows unfree packages, drivers etc.
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [
-    # Basic utils
-    pkgs.git
-
-    # For the minecraft script
-    pkgs.zenity
-
-    # For debug use, I use kitty on my pc and ssh tends to break if the host doesn't have it
-    pkgs.kitty
-
-    # Taplab apps
-    pkgs.blockbench
-    pkgs.arduino-ide
-    pkgs.chromium
-    pkgs.vlc
-    pkgs.freecad
-    pkgs.krita
-    pkgs.orca-slicer
-    pkgs.nomacs
-    pkgs.inkscape
-    pkgs.p7zip
-    pkgs.blender
-    pkgs.vscode
-    pkgs.luanti
-  ];
-
   # Enables Zsh as default shell - could be changed back to bash for final build but I like zsh
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
@@ -416,31 +388,6 @@ Here is a commented version of the home configuration file:
     ./imports/zsh.nix
     ./imports/prism.nix
   ];
-
-  # Disables automatic screen locking as this requires a password to unlock
-  xdg.configFile."kscreenlockerrc".text = ''
-    [Daemon]
-    Autolock=false
-    LockOnResume=false
-    Timeout=0
-  '';
-
-  # Disables the kde wallet system as it is not needed and just gets in the way of most users
-  xdg.configFile."kwalletrc".text = ''
-    [Wallet]
-    Close When Idle=false
-    Close on Screensaver=false
-    Enabled=false
-    Idle Timeout=10
-    Launch Manager=false
-    Leave Manager Open=false
-    Leave Open=true
-    Prompt on Open=false
-    Use One Wallet=true
-
-    [org.freedesktop.secrets]
-    apiEnabled=true
-  '';
 }
 
 ```
@@ -642,12 +589,12 @@ This is is simply the default minecraft icon, used for the desktop entry of the 
 
 
 
-## TODO
+## TODO / Current Progress
 Things I need to do before this is fully ready. In no particular order
 
 - Set up a proper user account with a secure password.
 - Set up Microsoft Edge with automatic login to the taplab account.
-- Set up a local binary cache for faster installs/updates.
+- ~~Set up a local binary cache for faster installs/updates.~~  Managed to set up a good local demo, working version is in the [`cache-stable`](https://github.com/clamlum2/taplab-nix-config/tree/cache-stable) branch. Not gonna bother to make a cache server config as most of it is best done manually. Also added a shell alias to easily copy all of the new packages to the server on an update, requires a bit of manual work due to needing the server credentials but is required for security.
 - Comprehensive testing across all laptops and apps to ensure everything works as expected.
 - Potentially host this on a local git server for easier access.
 - Set up wifi out of the box on the installed system.
