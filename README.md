@@ -29,7 +29,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 - Most things should be set up after the installation, wifi currently needs to be set up manually but this is easy to do in KDE Plasma.
 - In order to update the system, you can use the `updatenix` command in the terminal. This will update the system with the latest stable version of this configuration.
     - The `updatenix` command can be run with an argument to specify a branch, for example `updatenix testing` will switch the system to the `testing` branch. 
-    - `updatenix` always updates the system to the latest Nix version, and automatically cleans up old generations.
+    - `updatenix` always updates the system to the latest Nix version.
     - Rebooting after updating is recommended if a large update was performed.
 - In order to play Minecraft on the TAPLab server (for Friday sessions), simply run the `Minecraft` app from the KDE menu. Enter your username and when prism launcher prompts you to log in, just dismiss the window and the game will launch.
 - All other apps can be found in the KDE menu and should work as expected.
