@@ -30,7 +30,6 @@ if [ -d "$CONFIG_DIR/.git" ]; then
     git pull --rebase origin "$BRANCH"
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
     sudo nixos-rebuild switch --upgrade
-    sudo nix-collect-garbage -d
     echo
     echo
     echo "Update complete!"
@@ -41,7 +40,6 @@ else
     cd "$CONFIG_DIR"
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/
     sudo nixos-rebuild switch --upgrade
-    sudo nix-collect-garbage -d
     echo
     echo
     echo "Update complete!"
