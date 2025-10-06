@@ -668,5 +668,5 @@ Things I need to do before this is fully ready. In no particular order
 - Find the best solution for hiding/notifying about the prism launcher login prompt.
 - Set up auto-updates for the system.
 - Move shell alias to bash config and remove zsh
-- Set up more KDE settings and move to separate file.
-- Move packages to separate file for clearer configuration.nix
+- Set up more KDE settings ~~and move to separate file.~~
+- ~~Move packages to separate file for clearer configuration.nix~~
