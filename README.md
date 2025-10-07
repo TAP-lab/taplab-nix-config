@@ -239,7 +239,19 @@ sed -i "s/CHANGETHISNAME/$input_name/g" accounts.json
 pkill prismlauncher
 
 # Launches game and automatically connects to the TAPLab server
-prismlauncher -l taplab -a $input_name -s SurvivalLAB.exaroton.me
+prismlauncher -l taplab -a $input_name -s SurvivalLAB.exaroton.me &
+
+# Waits for the Prism window to appear and then closes it
+while true; do      # Loop indefinitely
+    win_id=$(kdotool getactivewindow)       # Gets the ID of the currently active window
+    win_name=$(kdotool getwindowname "$win_id")         # Gets the name of the window with that ID
+    if [[ "$win_name" == *Prism* ]]; then       # Checks if the window name contains "Prism"
+        # If true, it closes the window using a KDE global shortcut
+        qdbus org.kde.kglobalaccel /component/kwin org.kde.kglobalaccel.Component.invokeShortcut "Window Close"
+        break       # Exit the loop after closing the window
+    fi
+    sleep 0.1       # Loops the check ever 0.1 seconds (10x per second)
+done
 ```
 
 #### Notes about the offline script:
@@ -665,7 +677,7 @@ Things I need to do before this is fully ready. In no particular order
 - Comprehensive testing across all laptops and apps to ensure everything works as expected.
 - Potentially host this on a local git server for easier access.
 - Set up wifi out of the box on the installed system.
-- ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Figured out a way, kinda janky as it just closes whatever the focused window is 1 second after running prism launcher, could be unstable if the system is slow or the user changes focus too quickly, but overall seems to work well.
+- ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Managed to integrate it into the script, after running the prism launcher command it will check the active window, and if it contains "Prism" in the title it will automatically close it.
 - Set up auto-updates for the system.
 - Move shell alias to bash config and remove zsh
 - Set up more KDE settings ~~and move to separate file.~~
