@@ -19,6 +19,12 @@ pkill prismlauncher
 # Launches game and automatically connects to the TAPLab server
 prismlauncher -l taplab -a $input_name -s SurvivalLAB.exaroton.me &
 
-sleep 1
-
-qdbus org.kde.kglobalaccel /component/kwin org.kde.kglobalaccel.Component.invokeShortcut "Window Close"
+while true; do
+    win_id=$(kdotool getactivewindow)
+    win_name=$(kdotool getwindowname "$win_id")
+    if [[ "$win_name" == *Prism* ]]; then
+        qdbus org.kde.kglobalaccel /component/kwin org.kde.kglobalaccel.Component.invokeShortcut "Window Close"
+        break
+    fi
+    sleep 0.1
+done

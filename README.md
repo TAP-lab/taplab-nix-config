@@ -665,7 +665,7 @@ Things I need to do before this is fully ready. In no particular order
 - Comprehensive testing across all laptops and apps to ensure everything works as expected.
 - Potentially host this on a local git server for easier access.
 - Set up wifi out of the box on the installed system.
-- Find the best solution for hiding/notifying about the prism launcher login prompt.
+- ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Figured out a way, kinda janky as it just closes whatever the focused window is 1 second after running prism launcher, could be unstable if the system is slow or the user changes focus too quickly, but overall seems to work well.
 - Set up auto-updates for the system.
 - Move shell alias to bash config and remove zsh
 - Set up more KDE settings ~~and move to separate file.~~

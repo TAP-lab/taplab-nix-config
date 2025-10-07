@@ -6,6 +6,7 @@
 
         # for the minecraft script
         pkgs.zenity
+        pkgs.kdotool
 
         # i use kitty on my pc and ssh tends to break if the host doesn't have it
         pkgs.kitty
