@@ -3,9 +3,6 @@
 {
     environment.systemPackages = with pkgs; [
         pkgs.git
-        pkgs.libnotify
-        pkgs.sudo
-        pkgs.rsync
 
         # Dependencies for the minecraft script
         pkgs.zenity
