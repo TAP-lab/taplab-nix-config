@@ -31,7 +31,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
     - The `updatenix` command can be run with an argument to specify a branch, for example `updatenix testing` will switch the system to the `testing` branch. 
     - `updatenix` always updates the system to the latest Nix version.
     - Rebooting after updating is recommended if a large update was performed.
-- In order to play Minecraft on the TAPLab server (for Friday sessions), simply run the `Minecraft` app from the KDE menu. Enter your username and when prism launcher prompts you to log in, just dismiss the window and the game will launch.
+- In order to play Minecraft on the TAPLab server (for Friday sessions), simply run the `Minecraft` app from the KDE menu. Enter your username, and press enter. A prism launcher window will briefly open but should automatically close and the game will launch.
 - All other apps can be found in the KDE menu and should work as expected.
 - If any extra apps are required, they can be installed locally through the KDE Discover app using Flathub. Please note that apps installed this way will not be present on other laptops, and should not be expected to persist.
 - The system is set up to automatically log into the `taplab` user account without needing a password. The account still has a sudo password, for performing admin tasks (e.g updating the system). For the current testing version the password is `taplab` (this should be changed to a more secure password once this is fully rolled out).
@@ -43,7 +43,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 2. Create a bootable USB drive using the NixOS ISO. You can use tools like Rufus (Windows) or `dd` (Linux/Mac).
 3. Boot the laptop to the USB by pressing F9 during startup and select the USB drive.
 4. Once booted into the live environment, run `sudo -i` to change to the root user.
-5. Preferrably, plug the laptop into ethernet, if this is not possible set up wifi like so:
+5. Preferably, plug the laptop into ethernet, if this is not possible set up wifi like so:
     - Run `systemctl start wpa_supplicant` to start the wifi service.
     - Run `wpa_cli` to enter the wpa_cli interface.
     - Run `add_network` to create a new network(ID 0).
@@ -209,8 +209,8 @@ fi
 - The script assumes that the configuration repository will be in `~/nix-config`. If you want to use a different directory, you can change the `CONFIG_DIR` variable to your desired path.
 - The script accepts an optional argument to specify which branch to use. This is specified by providing the branch name after the `updatenix` command, for example `updatenix testing` will switch to the `testing` branch.
 - If no branch is specified and the config directory does not exist, it will default to using the `main` branch. If the config directory does exist, it will use the current branch of the repository.
-- The `testing` branch may be unstable, so do not use it if you want to ensure a working system. It is mainly there to make it easy for me to test changes before pushing them to `main`.
-- The script always updates the system to the latest stable NixOS version, which is released every 6 months.
+- The `main` branch (should) always be stable and `testing` is mainly there to make it easy for me to test changes. Any other branches are also not guaranteed to work.
+- The script always updates the system to the latest package versions when run.
 - Rebooting after updating is recommended if a large update was performed, minor updates should apply on the fly.
 
 
@@ -250,7 +250,7 @@ while true; do      # Loop indefinitely
         qdbus org.kde.kglobalaccel /component/kwin org.kde.kglobalaccel.Component.invokeShortcut "Window Close"
         break       # Exit the loop after closing the window
     fi
-    sleep 0.1       # Loops the check ever 0.1 seconds (10x per second)
+    sleep 0.1       # Loops the check every 0.1 seconds (10x per second)
 done
 ```
 
