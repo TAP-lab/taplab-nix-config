@@ -4,6 +4,7 @@
     environment.systemPackages = with pkgs; [
         pkgs.git
         pkgs.libnotify
+        pkgs.sudo
 
         # Dependencies for the minecraft script
         pkgs.zenity
