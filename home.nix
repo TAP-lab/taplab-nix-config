@@ -10,7 +10,7 @@
 
   # Imports other nix files for modular configuration
   imports = [ 
-    ./imports/zsh.nix
+    ./imports/bash.nix
     ./imports/prism.nix
     ./imports/kde.nix
   ];

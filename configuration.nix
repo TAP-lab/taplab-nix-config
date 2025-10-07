@@ -91,10 +91,6 @@ in
   # Allows unfree packages, drivers etc.
   nixpkgs.config.allowUnfree = true;
 
-  # Enables Zsh as default shell - could be changed back to bash for final build but I like zsh
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
-
   # Enables Flatpak
   services.flatpak.enable = true;
 
