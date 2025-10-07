@@ -13,7 +13,7 @@
     description = "NixOS update every 5 minutes (for testing)";
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnCalendar = "*-*-* *:0/5:00";
+      OnCalendar = "daily";
       Persistent = true;
     };
   };
