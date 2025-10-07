@@ -8,9 +8,6 @@
         pkgs.zenity
         pkgs.kdotool
 
-        # I use kitty on my pc and ssh tends to break if the host doesn't have it
-        pkgs.kitty
-
         # Taplab apps
         pkgs.blockbench
         pkgs.arduino-ide

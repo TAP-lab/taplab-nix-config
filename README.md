@@ -439,9 +439,6 @@ Any packages that are to be added permanently to the system should be added here
         pkgs.zenity
         pkgs.kdotool
 
-        # I use kitty on my pc and ssh tends to break if the host doesn't have it
-        pkgs.kitty
-
         # Taplab apps
         pkgs.blockbench
         pkgs.arduino-ide
