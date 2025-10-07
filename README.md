@@ -362,10 +362,6 @@ in
   # Allows unfree packages, drivers etc.
   nixpkgs.config.allowUnfree = true;
 
-  # Enables Zsh as default shell - could be changed back to bash for final build but I like zsh
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
-
   # Enables Flatpak
   services.flatpak.enable = true;
 
@@ -416,7 +412,7 @@ Any packages that are to be added permanently to the system should be added here
 ```
 
 ### `home.nix`
-This file contains the Home Manager configuration for the `taplab` user. It imports the config files for zsh and prism launcher.
+This file contains the Home Manager configuration for the `taplab` user. It imports the config files for bash and prism launcher.
 
 
 ```nix
@@ -432,7 +428,7 @@ This file contains the Home Manager configuration for the `taplab` user. It impo
 
   # Imports other nix files for modular configuration
   imports = [ 
-    ./imports/zsh.nix
+    ./imports/bash.nix
     ./imports/prism.nix
   ];
 }
