@@ -4,14 +4,14 @@
     environment.systemPackages = with pkgs; [
         pkgs.git
 
-        # for the minecraft script
+        # Dependencies for the minecraft script
         pkgs.zenity
         pkgs.kdotool
 
-        # i use kitty on my pc and ssh tends to break if the host doesn't have it
+        # I use kitty on my pc and ssh tends to break if the host doesn't have it
         pkgs.kitty
 
-        # taplab apps
+        # Taplab apps
         pkgs.blockbench
         pkgs.arduino-ide
         pkgs.chromium

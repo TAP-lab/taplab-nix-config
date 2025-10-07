@@ -390,7 +390,7 @@ Any packages that are to be added permanently to the system should be added here
     environment.systemPackages = with pkgs; [
         pkgs.git
 
-        # Provides the GUI for the minecraft script
+        # Dependencies for the minecraft script
         pkgs.zenity
         pkgs.kdotool
 
