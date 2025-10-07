@@ -1,21 +1,16 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
-let
-  updateScriptUrl = "https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh";
-  notify = "${pkgs.libnotify}/bin/notify-send";
-in
 {
   systemd.services.nixos-update = {
-    description = "Periodically updates the nix config";
+    description = "Periodic NixOS system update with notification";
     serviceConfig = {
       Type = "oneshot";
-      ExecStartPre = "${pkgs.sudo}/bin/sudo -u taplab DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus ${pkgs.libnotify}/bin/notify-send 'NixOS Update' 'Update process starting...'";
-      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.curl}/bin/curl -sSfL ${updateScriptUrl} | ${pkgs.bash}/bin/bash && ${pkgs.sudo}/bin/sudo -u taplab DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus ${pkgs.libnotify}/bin/notify-send \"NixOS Update\" \"Update completed successfully!\" || ${pkgs.sudo}/bin/sudo -u taplab DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus ${pkgs.libnotify}/bin/notify-send \"NixOS Update\" \"Update FAILED!\"'";
+      ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/imports/autoupdate.sh";
     };
   };
 
   systemd.timers.nixos-update = {
-    description = "Daily NixOS system update";
+    description = "NixOS update every 5 minutes (for testing)";
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "*-*-* *:0/5:00";
