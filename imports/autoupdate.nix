@@ -10,7 +10,7 @@ in
     serviceConfig = {
       Type = "oneshot";
       ExecStartPre = "${notify} 'NixOS Update' 'Update process started!'";
-      ExecStart = "${pkgs.bash}/bin/bash -c 'curl -sSfL ${updateScriptUrl} | ${pkgs.bash}/bin/bash' && ${notify} \"NixOS Update\" \"Update completed successfully!\" || ${notify} \"NixOS Update\" \"Update FAILED!\"'";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'curl -sSfL ${updateScriptUrl} | ${pkgs.bash}/bin/bash && ${notify} \"NixOS Update\" \"Update completed successfully!\" || ${notify} \"NixOS Update\" \"Update FAILED!\"'";
     };
   };
 
