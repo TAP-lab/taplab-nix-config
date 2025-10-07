@@ -28,5 +28,5 @@ while true; do      # Loop indefinitely
         qdbus org.kde.kglobalaccel /component/kwin org.kde.kglobalaccel.Component.invokeShortcut "Window Close"
         break       # Exit the loop after closing the window
     fi
-    sleep 0.1       # Loops the check ever 0.1 seconds (10x per second)
+    sleep 0.1       # Loops the check every 0.1 seconds (10x per second)
 done
