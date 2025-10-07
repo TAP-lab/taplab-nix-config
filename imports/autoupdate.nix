@@ -10,7 +10,7 @@
   };
 
   systemd.timers.nixos-update = {
-    description = "NixOS update every 5 minutes (for testing)";
+    description = "Update the system daily";
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "daily";
