@@ -441,71 +441,21 @@ This file contains the Home Manager configuration for the `taplab` user. It impo
 #### Notes about the home configuration file:
 - Any new application-level configuration should be added here, preferably via a new file imported by this one.
 
-### `imports/zsh.nix`
-This file contains the Home Manager configuration for zsh, including setting up oh-my-zsh and some basic plugins.
+### `imports/bash.nix`
+This file contains the Home Manager configuration for bash, setting up the update alias.
 
-Here is a commented version of the zsh configuration file:
 ```nix
-# personal shell config - not necessary for final build but nice to have
-# includes update function, would need to be implemented elsewhere if this is not used
-
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
-  # Enables zsh for Home Manager
-  programs.zsh = {
-    enable = true;
-
-
-    # Enables oh-my-zsh with some plugins and my custom theme
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" "colorize" ];
-      theme = "custom";
-    };
-
-    # Defines the update alias to easily run the update script
-    shellAliases = {
-      updatenix = "sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
-    };
-
-    # Sets the history size to a large value
-    history.size = 10000;
-
-    # Enables the zplug plugin manager with some useful plugins
-    zplug = {
-      enable = true;
-      plugins = [
-        { name = "zsh-users/zsh-autosuggestions"; }
-        { name = "zsh-users/zsh-syntax-highlighting"; }
-      ];
-    };
-
-
-    # Enables the custom theme
-    initContent = lib.mkOrder 550 ''
-      export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom" 
-    '';
-  };
-
-
-  # Defines the custom theme, I think I broke the git part
-  home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''
-    PROMPT="%F{cyan}%n@%f"
-    PROMPT+="%{$fg[blue]%}%M "
-    PROMPT+="%{$fg[cyan]%}%~%  "
-    PROMPT+="%(?:%{$fg[green]%}%1{➜%} :%{$fg[red]%}%1{➜%} )%{$reset_color%}"
-
-    ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[blue]%}git:(%{$fg[red]%}"
-    ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
-    ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}%1{✗%}"
-    ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
+  # Configuration for bash shell
+  home.file.".bashrc".text = ''
+    # Defines updatenix alias
+    alias updatenix='sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)';
   '';
 }
 ```
-#### Notes about the zsh configuration file:
-- This file mostly contains personal preferences, and could be modified or removed if zsh is not desired.
-- The usage of Home Manager for zsh *does* slow down shell startup time, but I dont mind it too much and most users won't be using it anyway.
+
 
 ### `imports/kde.nix`
 This file contains the Home Manager configuration for KDE Plasma, mostly disabling some problematic features.
@@ -680,6 +630,6 @@ Things I need to do before this is fully ready. In no particular order
 - Set up wifi out of the box on the installed system. (would do but can't really test at home through virtual machines)
 - ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Managed to integrate it into the script, after running the prism launcher command it will check the active window, and if it contains "Prism" in the title it will automatically close it.
 - Set up auto-updates for the system.
-- Move shell alias to bash config and remove zsh
+- ~~Move shell alias to bash config and remove zsh~~
 - Set up more KDE settings ~~and move to separate file.~~
 - ~~Move packages to separate file for clearer configuration.nix~~
