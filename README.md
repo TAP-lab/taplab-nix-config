@@ -280,7 +280,7 @@ let
 in
 
 {
-  # Import the hardware configuration and Home Manager configuration files
+  # Imports the hardware configuration and Home Manager configuration files
   imports =
     [
       ./hardware-configuration.nix
@@ -323,7 +323,7 @@ in
     LC_TIME = "en_NZ.UTF-8";
   };
 
-  # Enables the X11 windowing system. Not sure if this is actually needed for KDE Plasma
+  # Enables the X11 windowing system. Not sure if this is actually needed for KDE Plasma - might be for xwayland
   services.xserver.enable = true;
 
   # Configures the keymap in X11
