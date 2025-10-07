@@ -664,7 +664,7 @@ Things I need to do before this is fully ready. In no particular order
 - ~~Set up a local binary cache for faster installs/updates.~~  Managed to set up a good local demo, working version is in the [`cache-stable`](https://github.com/clamlum2/taplab-nix-config/tree/cache-stable) branch. Not gonna bother to make a cache server config as most of it is best done manually. Also added a shell alias to easily copy all of the new packages to the server on an update, requires a bit of manual work due to needing the server credentials but is required for security.
 - Comprehensive testing across all laptops and apps to ensure everything works as expected.
 - Potentially host this on a local git server for easier access.
-- Set up wifi out of the box on the installed system.
+- Set up wifi out of the box on the installed system. (would do but can't really test at home through virtual machines)
 - Find the best solution for hiding/notifying about the prism launcher login prompt.
 - Set up auto-updates for the system.
 - Move shell alias to bash config and remove zsh
