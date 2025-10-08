@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Ensures it is working in the correct directory
 cd ~/.local/share/PrismLauncher/
 

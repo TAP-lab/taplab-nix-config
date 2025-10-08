@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -e      # Sets the script to exit on error
 
 REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"        # Sets the repository URL

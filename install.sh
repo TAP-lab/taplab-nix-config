@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -e      # Sets the script to exit on error
 
 BRANCH="main"           # Sets the default branch to clone
