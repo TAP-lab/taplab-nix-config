@@ -26,8 +26,7 @@
     alias nrt="sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test && hyprshade on extravibrance";
     alias nrs="sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch && hyprshade on extravibrance";
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
-    alias syncstore="nix-copy-closure --to root@192.168.1.182 $(nix-store -qR /nix/store/*)";
-    alias signstore="ssh root@192.168.1.182 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'";
+    alias updatestore="nix-copy-closure --to root@192.168.1.182 $(nix-store -qR /nix/store/*) && ssh root@192.168.1.182 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'";
 
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
   '';
