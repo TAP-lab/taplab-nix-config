@@ -26,7 +26,7 @@
         apiEnabled=true
     '';
 
-    xdg.configFile."plasma-org.kde.plasma.desktop-appletsrc".text = ''
+    #xdg.configFile."plasma-org.kde.plasma.desktop-appletsrc".text = ''
         
-    '';
+    #'';
 }
