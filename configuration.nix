@@ -97,4 +97,8 @@ in
 
   # Enables OpenSSH server, for debug use but could still be useful
   services.openssh.enable = true;
+
+  # Sets Zsh as the default shell
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
 }
