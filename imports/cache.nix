@@ -1,7 +1,12 @@
 { config, ... }:
 
+let
+  cacheServer = "http://192.168.1.182:5000";
+  cachePublicKey = "local-cache:lF8a6CjzBqT9J38ERYQIUcaEn/Gb5TQ/nuwq9KjTLIA="; 
+in
+
 {
-  nix.settings.substituters = [ "http://192.168.1.15:5000" ];
-  nix.settings.trusted-substituters = [ "http://192.168.1.15:5000" ];
-  nix.settings.trusted-public-keys = [ "local-cache:5O2Wic2bmKaczr9t6eppTnoBJ+W/4FHXEyZ0PkQG4xk=" ];
+  nix.settings.substituters = [ cacheServer ];
+  nix.settings.trusted-substituters = [ cacheServer ];
+  nix.settings.trusted-public-keys = [ cachePublicKey ];
 }

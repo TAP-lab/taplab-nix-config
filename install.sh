@@ -3,11 +3,12 @@
 set -e      # Sets the script to exit on error
 set -e
 
-MY_PUBKEY="local-cache:5O2Wic2bmKaczr9t6eppTnoBJ+W/4FHXEyZ0PkQG4xk="
+CACHE_SERVER="http://192.168.1.182:5000"
+MY_PUBKEY="local-cache:lF8a6CjzBqT9J38ERYQIUcaEn/Gb5TQ/nuwq9KjTLIA="
 export NIX_CONF_DIR="/tmp/nix_conf"
 mkdir -p "$NIX_CONF_DIR"
 cat > "$NIX_CONF_DIR/nix.conf" <<EOF
-substituters = http://192.168.1.15:5000
+substituters = $CACHE_SERVER
 trusted-public-keys = $MY_PUBKEY
 EOF
 

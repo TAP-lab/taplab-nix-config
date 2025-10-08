@@ -1,9 +1,6 @@
 { pkgs, ... }:
 
-# Defines the path to the java binary
-let
-  javaPath = "${pkgs.jdk23}/bin/java";
-in {
+{
   # Installs prism launcher and the jdk23 package
   home.packages = [
     pkgs.prismlauncher
