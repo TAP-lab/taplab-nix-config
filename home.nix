@@ -13,5 +13,6 @@
     ./imports/bash.nix
     ./imports/prism.nix
     ./imports/kde.nix
+    ./imports/personal-shell.nix
   ];
 }
