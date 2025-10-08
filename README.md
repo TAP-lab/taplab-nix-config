@@ -29,9 +29,9 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 - Most things should be set up after the installation, wifi currently needs to be set up manually but this is easy to do in KDE Plasma.
 - In order to update the system, you can use the `updatenix` command in the terminal. This will update the system with the latest stable version of this configuration.
     - The `updatenix` command can be run with an argument to specify a branch, for example `updatenix testing` will switch the system to the `testing` branch. 
-    - `updatenix` always updates the system to the latest Nix version, and automatically cleans up old generations.
+    - `updatenix` always updates the system to the latest Nix version.
     - Rebooting after updating is recommended if a large update was performed.
-- In order to play Minecraft on the TAPLab server (for Friday sessions), simply run the `Minecraft` app from the KDE menu. Enter your username and when prism launcher prompts you to log in, just dismiss the window and the game will launch.
+- In order to play Minecraft on the TAPLab server (for Friday sessions), simply run the `Minecraft` app from the KDE menu. Enter your username, and press enter. A prism launcher window will briefly open but should automatically close and the game will launch.
 - All other apps can be found in the KDE menu and should work as expected.
 - If any extra apps are required, they can be installed locally through the KDE Discover app using Flathub. Please note that apps installed this way will not be present on other laptops, and should not be expected to persist.
 - The system is set up to automatically log into the `taplab` user account without needing a password. The account still has a sudo password, for performing admin tasks (e.g updating the system). For the current testing version the password is `taplab` (this should be changed to a more secure password once this is fully rolled out).
@@ -43,7 +43,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 2. Create a bootable USB drive using the NixOS ISO. You can use tools like Rufus (Windows) or `dd` (Linux/Mac).
 3. Boot the laptop to the USB by pressing F9 during startup and select the USB drive.
 4. Once booted into the live environment, run `sudo -i` to change to the root user.
-5. Preferrably, plug the laptop into ethernet, if this is not possible set up wifi like so:
+5. Preferably, plug the laptop into ethernet, if this is not possible set up wifi like so:
     - Run `systemctl start wpa_supplicant` to start the wifi service.
     - Run `wpa_cli` to enter the wpa_cli interface.
     - Run `add_network` to create a new network(ID 0).
@@ -78,6 +78,10 @@ This configuration is designed to be as automated and user-friendly as possible.
 
 
 ## Scripts
+- [Installation Script (`install.sh`)](#installation-script)
+- [Update Script (`update.sh`)](#update-script)
+- [Minecraft Offline Script (`resources/offline.sh`)](#minecraft-offline-script)
+- [Auto-update Script (`imports/autoupdate.sh`)](#auto-update-script)
 
 ### Installation Script
 ### `install.sh`
@@ -149,7 +153,7 @@ reboot      # Reboots the system
 - The script automatically allocates 8GB of swap space, which is the correct amount for the spec of the laptops. You may want to adjust this if you are using a different machine.
 - No root password is set during installation in order to avoid the user needing to enter it during installation. If a root password is required, it can be set after installation using sudo.
 
-
+---
 ### Update Script
 ### `update.sh`
 The update script is a bash script that automates updating the system to the latest version of this configuration.
@@ -187,7 +191,6 @@ if [ -d "$CONFIG_DIR/.git" ]; then                                              
     git pull --rebase origin "$BRANCH"                                                                                              # Pulls the latest changes from the target branch
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/   # Copies the configuration files to /etc/nixos
     sudo nixos-rebuild switch --upgrade                                                                                             # Rebuilds and updates the system with the latest configuration
-    sudo nix-collect-garbage -d                                                                                                     # Cleans up old NixOS generations
     echo
     echo
     echo "Update complete!"
@@ -198,7 +201,6 @@ else        # If the config directory is not present
     cd "$CONFIG_DIR"                                            # Changes to the config directory
     sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/       # Copies the configuration files to /etc/nixos
     sudo nixos-rebuild switch --upgrade         # Rebuilds and updates the system with the latest configuration
-    sudo nix-collect-garbage -d                 # Cleans up old NixOS generations
     echo
     echo
     echo "Update complete!"
@@ -211,12 +213,11 @@ fi
 - The script assumes that the configuration repository will be in `~/nix-config`. If you want to use a different directory, you can change the `CONFIG_DIR` variable to your desired path.
 - The script accepts an optional argument to specify which branch to use. This is specified by providing the branch name after the `updatenix` command, for example `updatenix testing` will switch to the `testing` branch.
 - If no branch is specified and the config directory does not exist, it will default to using the `main` branch. If the config directory does exist, it will use the current branch of the repository.
-- The `testing` branch may be unstable, so do not use it if you want to ensure a working system. It is mainly there to make it easy for me to test changes before pushing them to `main`.
-- The script always updates the system to the latest stable NixOS version, which is released every 6 months.
-- The script automatically cleans up old NixOS generations to free up disk space.
+- The `main` branch (should) always be stable and `testing` is mainly there to make it easy for me to test changes. Any other branches are also not guaranteed to work.
+- The script always updates the system to the latest package versions when run.
 - Rebooting after updating is recommended if a large update was performed, minor updates should apply on the fly.
 
-
+---
 ### Minecraft Offline Script
 ### `resources/offline.sh`
 This is a custom bash script that allows users to easily set their Minecraft username and launch the game in offline mode on the TAPLab server.
@@ -242,21 +243,74 @@ sed -i "s/CHANGETHISNAME/$input_name/g" accounts.json
 pkill prismlauncher
 
 # Launches game and automatically connects to the TAPLab server
-prismlauncher -l taplab -a $input_name -s SurvivalLAB.exaroton.me
+prismlauncher -l taplab -a $input_name -s SurvivalLAB.exaroton.me &
+
+# Waits for the Prism window to appear and then closes it
+while true; do                                          # Loop indefinitely
+    win_id=$(kdotool getactivewindow)                   # Gets the ID of the currently active window
+    win_name=$(kdotool getwindowname "$win_id")         # Gets the name of the window with that ID
+    if [[ "$win_name" == *Prism* ]]; then               # Checks if the window name contains "Prism"
+        # If true, it closes the window using a KDE global shortcut
+        qdbus org.kde.kglobalaccel /component/kwin org.kde.kglobalaccel.Component.invokeShortcut "Window Close"
+        break       # Exit the loop after closing the window
+    fi
+    sleep 0.1       # Loops the check every 0.1 seconds (10x per second)
+done
 ```
 
 #### Notes about the offline script:
 - After the users enters their username, Prism launcher will prompt them to log in. This can simply be dismissed and the game will launch in offline mode.
 - At some point I'll make a prompt that tells the user this, as I haven't found a way to automatically dismiss the login prompt.
 
+---
+### Auto-update Script
+### `imports/autoupdate.sh`
+This script is called by the auto update service and is a modified version of the [`update.sh`](#update-script) script. It is designed to run as a systemd service and update the system automatically.
+```bash
+source /etc/profile         # Imports the PATH
+REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"   # Sets the repository URL
+# Notifies the user that the update process is starting
+sudo -u taplab DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send 'NixOS Update' 'Update process starting...'
+if [ -d "/home/taplab/nix-config/.git" ]; then      # Checks if the config directory is already present
+    BRANCH=$(git rev-parse --abbrev-ref HEAD)       # Gets the current branch
+    git pull --rebase origin "$BRANCH"              # Pulls the latest changes from the target branch
+    # Copies the new configuration files
+    rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' /home/taplab/nix-config/ /etc/nixos/
+    nixos-rebuild switch --upgrade && SUCCESS=true || SUCCESS=false         # Rebuilds the system
+else
+    git clone --branch main "$REPO_URL" /home/taplab/nix-config         # Clones the configuration repository
+    # Copies the configuration files
+    rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' /home/taplab/nix-config/ /etc/nixos/
+    nixos-rebuild switch --upgrade && SUCCESS=true || SUCCESS=false         # Rebuilds the system
+fi
+if [ "$SUCCESS" = true ]; then      # Checks if the rebuild was successful
+    # Notifies the user that the update process was successful
+    sudo -u taplab DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send 'NixOS Update' 'Update completed successfully!'
+else
+    # Notifies the user that the update process failed
+    sudo -u taplab DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send 'NixOS Update' 'Update FAILED!'
+fi
+```
+
 
 ## Configuration files
+- [Hardware configuration (`hardware-configuration.nix`)](#hardware-configuration)
+- [Main configuration file (`configuration.nix`)](#main-configuration-file)
+- [Imports file (`imports/pkgs.nix`)](#imports-file)
+- [Home Manager configuration file (`home.nix`)](#home-manager-configuration-file)
+- [Bash configuration file (`imports/bash.nix`)](#bash-configuration-file)
+- [KDE Plasma configuration file (`imports/kde.nix`)](#kde-plasma-configuration-file)
+- [Prism Launcher configuration file (`imports/prism.nix`)](#prism-launcher-configuration-file)
+- [Auto update service configuration file (`imports/autoupdate.nix`)](#auto-update-service-configuration-file)
 
+### Hardware configuration
 ### `hardware-configuration.nix`
 This file is automatically generated by NixOS during installation using the `nixos-generate-config` command. It contains hardware-specific settings for the laptop, and should not be modified manually.
 
+---
+### Main configuration file
 ### `configuration.nix`
-This is the main configuration file for the NixOS system. It controls the system configuration, including installed packages, services, and system settings. It also enables and imports the Home Manager module to allow for application-level configuration.
+This is the main configuration file for the NixOS system. It controls the system configuration, including installed packages (imported from another file), services, and system settings. It also enables and imports the Home Manager module to allow for application-level configuration.
 
 Here is a commented version of the configuration file (the main file is commented but i'll put this here for reference and more comprehensive documentation):
 
@@ -271,11 +325,13 @@ let
 in
 
 {
-  # Import the hardware configuration and Home Manager configuration files
+  # Imports the hardware configuration and Home Manager configuration files
   imports =
     [
       ./hardware-configuration.nix
       (import "${home-manager}/nixos")
+      ./imports/pkgs.nix
+      ./imports/autoupdate.nix
     ];
 
   # Enables GRUB as the boot loader.
@@ -314,7 +370,7 @@ in
     LC_TIME = "en_NZ.UTF-8";
   };
 
-  # Enables the X11 windowing system. Not sure if this is actually needed for KDE Plasma
+  # Enables the X11 windowing system. Not sure if this is actually needed for KDE Plasma - might be for xwayland
   services.xserver.enable = true;
 
   # Configures the keymap in X11
@@ -353,36 +409,6 @@ in
   # Allows unfree packages, drivers etc.
   nixpkgs.config.allowUnfree = true;
 
-  environment.systemPackages = with pkgs; [
-    # Basic utils
-    pkgs.git
-
-    # For the minecraft script
-    pkgs.zenity
-
-    # For debug use, I use kitty on my pc and ssh tends to break if the host doesn't have it
-    pkgs.kitty
-
-    # Taplab apps
-    pkgs.blockbench
-    pkgs.arduino-ide
-    pkgs.chromium
-    pkgs.vlc
-    pkgs.freecad
-    pkgs.krita
-    pkgs.orca-slicer
-    pkgs.nomacs
-    pkgs.inkscape
-    pkgs.p7zip
-    pkgs.blender
-    pkgs.vscode
-    pkgs.luanti
-  ];
-
-  # Enables Zsh as default shell - could be changed back to bash for final build but I like zsh
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
-
   # Enables Flatpak
   services.flatpak.enable = true;
 
@@ -392,13 +418,50 @@ in
 ```
 
 #### Notes about the configuration file:
-- The configuration file should really only be modified to add/remove packages, which I plan to move to a separate file in the future. Any other changes should be done with caution as they may break the system.
+- Any changes should be done with caution as they may break the system.
 - Most of this file has been automatically generated by NixOS at some point, and I have only modified the necessary parts to get the desired configuration.
 
-### `home.nix`
-This file contains the Home Manager configuration for the `taplab` user. It defines some settings for KDE plasma, along with importing the config files for zsh and prism launcher.
+---
+### Imports file
+### `imports/pkgs.nix`
+This file contains the package configuration for the system. It defines the packages that should be installed globally.
 
-Here is a commented version of the home configuration file:
+Any packages that are to be added permanently to the system should be added here.
+
+```nix
+{ config, pkgs, ... }:
+
+{
+    environment.systemPackages = with pkgs; [
+        pkgs.git
+
+        # Dependencies for the minecraft script
+        pkgs.zenity
+        pkgs.kdotool
+
+        # Taplab apps
+        pkgs.blockbench
+        pkgs.arduino-ide
+        pkgs.chromium
+        pkgs.vlc
+        pkgs.freecad
+        pkgs.krita
+        pkgs.orca-slicer
+        pkgs.nomacs
+        pkgs.inkscape
+        pkgs.p7zip
+        pkgs.blender
+        pkgs.vscode
+        pkgs.luanti
+    ];
+}
+```
+
+---
+### Home Manager configuration file
+### `home.nix`
+This file contains the Home Manager configuration for the `taplab` user. It imports the config files for bash and prism launcher.
+
 
 ```nix
 { config, pkgs, lib, ... }:
@@ -413,107 +476,70 @@ Here is a commented version of the home configuration file:
 
   # Imports other nix files for modular configuration
   imports = [ 
-    ./imports/zsh.nix
+    ./imports/bash.nix
     ./imports/prism.nix
   ];
-
-  # Disables automatic screen locking as this requires a password to unlock
-  xdg.configFile."kscreenlockerrc".text = ''
-    [Daemon]
-    Autolock=false
-    LockOnResume=false
-    Timeout=0
-  '';
-
-  # Disables the kde wallet system as it is not needed and just gets in the way of most users
-  xdg.configFile."kwalletrc".text = ''
-    [Wallet]
-    Close When Idle=false
-    Close on Screensaver=false
-    Enabled=false
-    Idle Timeout=10
-    Launch Manager=false
-    Leave Manager Open=false
-    Leave Open=true
-    Prompt on Open=false
-    Use One Wallet=true
-
-    [org.freedesktop.secrets]
-    apiEnabled=true
-  '';
 }
 
 ```
 #### Notes about the home configuration file:
-- Any new application-level configuration should be added here, or in a new file imported by this one.
-- If any more KDE settings need to be changed in the future I will move them to a separate file.
+- Any new application-level configuration should be added here, preferably via a new file imported by this one.
 
-### `imports/zsh.nix`
-This file contains the Home Manager configuration for zsh, including setting up oh-my-zsh and some basic plugins.
+---
+### Bash configuration file
+### `imports/bash.nix`
+This file contains the Home Manager configuration for bash, setting up the update alias.
 
-Here is a commented version of the zsh configuration file:
 ```nix
-# personal shell config - not necessary for final build but nice to have
-# includes update function, would need to be implemented elsewhere if this is not used
-
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
 {
-  # Enables zsh for Home Manager
-  programs.zsh = {
-    enable = true;
-
-
-    # Enables oh-my-zsh with some plugins and my custom theme
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" "colorize" ];
-      theme = "custom";
-    };
-
-    # Defines the update alias to easily run the update script
-    shellAliases = {
-      updatenix = "sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
-    };
-
-    # Sets the history size to a large value
-    history.size = 10000;
-
-    # Enables the zplug plugin manager with some useful plugins
-    zplug = {
-      enable = true;
-      plugins = [
-        { name = "zsh-users/zsh-autosuggestions"; }
-        { name = "zsh-users/zsh-syntax-highlighting"; }
-      ];
-    };
-
-
-    # Enables the custom theme
-    initContent = lib.mkOrder 550 ''
-      export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom" 
-    '';
-  };
-
-
-  # Defines the custom theme, I think I broke the git part
-  home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''
-    PROMPT="%F{cyan}%n@%f"
-    PROMPT+="%{$fg[blue]%}%M "
-    PROMPT+="%{$fg[cyan]%}%~%  "
-    PROMPT+="%(?:%{$fg[green]%}%1{➜%} :%{$fg[red]%}%1{➜%} )%{$reset_color%}"
-
-    ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[blue]%}git:(%{$fg[red]%}"
-    ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
-    ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}%1{✗%}"
-    ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
+  # Configuration for bash shell
+  home.file.".bashrc".text = ''
+    # Defines updatenix alias
+    alias updatenix='sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)';
   '';
 }
 ```
-#### Notes about the zsh configuration file:
-- This file mostly contains personal preferences, and could be modified or removed if zsh is not desired.
-- The usage of Home Manager for zsh *does* slow down shell startup time, but I dont mind it too much and most users won't be using it anyway.
 
+---
+### KDE Plasma configuration file
+### `imports/kde.nix`
+This file contains the Home Manager configuration for KDE Plasma, mostly disabling some problematic features.
+
+```nix
+{ config, pkgs, ... }:
+
+{
+    # Disables automatic screen locking as this requires a password to unlock
+    xdg.configFile."kscreenlockerrc".text = ''
+        [Daemon]
+        Autolock=false
+        LockOnResume=false
+        Timeout=0
+    '';
+
+    # Disables the kde wallet system as it is not needed and just gets in the way of most users
+    xdg.configFile."kwalletrc".text = ''
+        [Wallet]
+        Close When Idle=false
+        Close on Screensaver=false
+        Enabled=false
+        Idle Timeout=10
+        Launch Manager=false
+        Leave Manager Open=false
+        Leave Open=true
+        Prompt on Open=false
+        Use One Wallet=true
+
+        [org.freedesktop.secrets]
+        apiEnabled=true
+    '';
+}
+```
+
+---
+### Prism Launcher configuration file
 ### `imports/prism.nix`
 
 This file contains the Home Manager configuration for prism launcher, including the custom script to play on the TAPLab server.
@@ -592,7 +618,40 @@ in {
 }
 ```
 
-### resources/accounts.json
+---
+### Auto update service configuration file
+### `imports/autoupdate.nix`
+This file defines the systemd service and timer configuration for automatically updating the system daily.
+```nix
+{ config, pkgs, ... }:
+
+{
+  # Sets up a systemd service and timer to run the autoupdate script daily
+  systemd.services.nixos-update = {
+    description = "Periodic NixOS system update with notification";
+    serviceConfig = {
+      Type = "oneshot";
+      # Executes the autoupdate script
+      ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/imports/autoupdate.sh";
+    };
+  };
+
+  systemd.timers.nixos-update = {
+    description = "Update the system daily";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "daily";         # Runs the update daily
+      Persistent = true;            # Runs the job as soon as possible if it was missed
+    };
+  };
+}
+```
+
+<br>
+
+## Resources
+
+### `resources/accounts.json`
 This is a template accounts file for prism launcher, with a placeholder username that is replaced by the offline script.
 
 It is simply a mostly empty prism launcher accounts file with an offline account called `CHANGETHISNAME`.
@@ -627,8 +686,6 @@ It is simply a mostly empty prism launcher accounts file with an offline account
 }
 ```
 
-## Resources
-
 ### `resources/taplab/` folder
 This folder contains various resources used by the configuration, such as the offline script, and the accounts file.
 
@@ -642,14 +699,20 @@ This is is simply the default minecraft icon, used for the desktop entry of the 
 
 
 
-## TODO
+## TODO / Current Progress
 Things I need to do before this is fully ready. In no particular order
 
 - Set up a proper user account with a secure password.
 - Set up Microsoft Edge with automatic login to the taplab account.
-- Set up a local binary cache for faster installs/updates.
+- ~~Set up a local binary cache for faster installs/updates.~~  Managed to set up a good local demo, working version is in the [`cache-stable`](https://github.com/clamlum2/taplab-nix-config/tree/cache-stable) branch. Not gonna bother to make a cache server config as most of it is best done manually. Also added a shell alias to easily copy all of the new packages to the server on an update, requires a bit of manual work due to needing the server credentials but is required for security.
 - Comprehensive testing across all laptops and apps to ensure everything works as expected.
 - Potentially host this on a local git server for easier access.
+- Set up wifi out of the box on the installed system. (would do but can't really test at home through virtual machines)
+- ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Managed to integrate it into the script, after running the prism launcher command it will check the active window, and if it contains "Prism" in the title it will automatically close it.
+- ~~Set up auto-updates for the system.~~ Set up a systemd service to automatically update the system as easrly as possible every day. Could probably be changed to less frequently but this is fine for now.
+- ~~Move shell alias to bash config and remove zsh~~
+- Set up more KDE settings ~~and move to separate file.~~
+- ~~Move packages to separate file for clearer configuration.nix~~
 - Set up wifi out of the box on the installed system.
 - Find the best solution for hiding/notifying about the prism launcher login prompt.
 - Set up auto-updates for the system.

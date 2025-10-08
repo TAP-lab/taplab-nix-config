@@ -1,57 +1,46 @@
-# personal shell config - not necessary for final build but nice to have
-# includes update function, would need to be implemented elsewhere if this is not used
+# added this back, managed to work out the issues with wezterm and zsh. 
+# could be left in the final config if we want a custom shell setup
+# going to keep it in the testing branch for the time being
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 
-{
-  programs.zsh = {
-    enable = true;
-
-
-    # Enable oh-my-zsh with some plugins and a custom theme
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "git" "colorize" ];
-      theme = "custom";
-    };
+{   
+  home.packages = with pkgs; [
+    zsh
+    oh-my-zsh
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+  ];
 
 
-    # Define useful shell aliases
-    shellAliases = {
-      updatenix = "sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
-      syncstore = "nix-copy-closure --to root@192.168.1.15 $(nix-store -qR /nix/store/*) && ssh root@192.168.1.15 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'";
-    };
+  home.file.".zshrc".text = ''
+    export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh"
 
-    history.size = 10000;
+    source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+    plugins=(git)
+    source $ZSH/oh-my-zsh.sh
 
-    # Enable zsh plugins manager zplug with some useful plugins
-    zplug = {
-      enable = true;
-      plugins = [
-        { name = "zsh-users/zsh-autosuggestions"; }
-        { name = "zsh-users/zsh-syntax-highlighting"; }
-      ];
-    };
+    alias nrt="sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test && hyprshade on extravibrance";
+    alias nrs="sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch && hyprshade on extravibrance";
+    alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
+    alias syncstore="nix-copy-closure --to root@192.168.1.15 $(nix-store -qR /nix/store/*) && ssh root@192.168.1.15 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'";
 
+    source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
+  '';
 
-    # Enable custom theme
-    initContent = lib.mkOrder 550 ''
-      export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom" 
-    '';
-  };
-
-
-  # Custom theme
   home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''
     PROMPT="%F{cyan}%n@%f"
     PROMPT+="%{$fg[blue]%}%M "
     PROMPT+="%{$fg[cyan]%}%~%  "
     PROMPT+="%(?:%{$fg[green]%}%1{➜%} :%{$fg[red]%}%1{➜%} )%{$reset_color%}"
 
-    ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[blue]%}git:(%{$fg[red]%}"
+    RPROMPT='$(git_prompt_info)'
+
+    ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[cyan]%}git:(%{$fg[blue]%}"
     ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
-    ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}%1{✗%}"
-    ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
+    ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[cyan]%}) %{$fg[yellow]%}%1{✗%}"
+    ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[cyan]%})"
   '';
 }

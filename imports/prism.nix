@@ -1,14 +1,16 @@
 { pkgs, ... }:
 
+# Defines the path to the java binary
 let
   javaPath = "${pkgs.jdk23}/bin/java";
 in {
+  # Installs prism launcher and the jdk23 package
   home.packages = [
     pkgs.prismlauncher
     pkgs.jdk23
   ];
 
-  # Ensure Prism Launcher is configured correctly
+  # Ensures Prism Launcher is configured correctly, otherwise it will show the setup window when opened
   home.file.".local/share/PrismLauncher/prismlauncher.cfg".text = ''
     [General]
     ApplicationTheme=Breeze
@@ -29,33 +31,33 @@ in {
     WideBarVisibility_instanceToolBar="@ByteArray(111111111,BpBQWIumr+0ABXFEarV0R5nU0iY=)"
   '';
 
-  # Copy the instance as new
+  # Copies the minecraft instance from the resources folder to the correct location
   home.activation.copyPrismInstance = ''
     mkdir -p ~/.local/share/PrismLauncher/instances
     cp -r --no-preserve=mode,ownership /etc/nixos/resources/taplab ~/.local/share/PrismLauncher/instances
   '';
   
-  # Copy the accounts file
+  # Copies the accounts file to the correct location, and makes a backup of it (used for for the offline script)
   home.activation.copyAccountFile = ''
     mkdir -p ~/.local/share/PrismLauncher
     cp --no-preserve=mode,ownership /etc/nixos/resources/accounts.json ~/.local/share/PrismLauncher/accounts.json
     cp --no-preserve=mode,ownership ~/.local/share/PrismLauncher/accounts.json ~/.local/share/PrismLauncher/accounts.json_ORIGINAL
   '';
 
-  # Copy the offline script
+  # Copies the offline script to the correct location and makes it executable
   home.activation.copyOfflineScript = ''
     mkdir -p ~/.local/share/PrismLauncher/
     cp /etc/nixos/resources/offline.sh ~/.local/share/PrismLauncher/offline.sh
     chmod +x ~/.local/share/PrismLauncher/offline.sh
   '';
 
-  # Copy the grass icon
+  # Copies the grass icon for the desktop entry
   home.activation.copyGrassIcon = ''
     mkdir -p ~/.local/share/icons
     cp /etc/nixos/resources/grass.png ~/.local/share/icons/grass.png
   '';
 
-  # Create a desktop entry for Minecraft
+  # Creates a desktop entry for the Minecraft script
   home.file.".local/share/applications/Minecraft.desktop".text = ''
     [Desktop Entry]
     Type=Application
