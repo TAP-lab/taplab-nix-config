@@ -12,8 +12,6 @@
         -- This will hold the configuration.
         local config = wezterm.config_builder()
 
-        config.window_background_opacity = 0.8
-
         config.font = wezterm.font("DejaVuSansMono")
         config.font_size = 11.0
 
@@ -26,14 +24,14 @@
         -- This is where you actually apply your config choices
 
         config.colors = {
-        background = "#0d1520",
+        background = "#000000",
         foreground = "#FFFFFF",
         cursor_border = "#FFFFFF",
         cursor_bg = "#FFFFFF",
             tab_bar = {
-                background = "#0d1520",
+                background = "#000000",
                 active_tab = {
-                    bg_color = "#0d1520",
+                    bg_color = "#000000",
                     fg_color = "#FFFFFF",
                     intensity = "Normal",
                     underline = "None",
@@ -41,7 +39,7 @@
                     strikethrough = false,
                 },
                 inactive_tab = {
-                    bg_color = "#0d1520",
+                    bg_color = "#000000",
                     fg_color = "#FFFFFF",
                     intensity = "Normal",
                     underline = "None",
@@ -49,7 +47,7 @@
                     strikethrough = false,
                 },
                 new_tab = {
-                    bg_color = "#0d1520",
+                    bg_color = "#000000",
                     fg_color = "#FFFFFF",
                 },
             },
