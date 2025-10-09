@@ -1,14 +1,16 @@
 { config, pkgs, ... }:
 
+let
+    nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { config = { allowUnfree = true; }; };
+in
 {
     home.packages = with pkgs; [
-        ghostty
+        nixpkgs-unstable.ghostty
     ];
 
     home.file.".config/ghostty/config".text = ''
-        custom-shader = cursor.glsl 
-        background = #0d1520
-        background-opacity = 0.8
+        custom-shader = cursor.glsl
+        background = #000000
         font-family = DejaVuSansMono
         font-size = 11
         theme = Builtin Tango Dark
