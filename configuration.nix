@@ -101,4 +101,7 @@ in
   # Sets Zsh as the default shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+
+  networking.firewall.allowedTCPPorts = [ 3389 ];
+  networking.firewall.allowedUDPPorts = [ 3389 ];
 }
