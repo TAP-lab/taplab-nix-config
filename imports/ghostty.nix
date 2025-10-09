@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+    home.packages = with pkgs; [
+        ghostty
+    ];
+
     home.file.".config/ghostty/config".text = ''
         custom-shader = cursor.glsl 
         background = #0d1520
