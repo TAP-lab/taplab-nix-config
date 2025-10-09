@@ -14,5 +14,6 @@
     ./imports/kde.nix
     ./imports/zsh.nix
     ./imports/wezterm.nix
+    ./imports/ghostty.nix
   ];
 }
