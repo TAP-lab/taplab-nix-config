@@ -57,8 +57,8 @@ echo "Cloning configuration repo using branch: $BRANCH"
 git clone --branch "$BRANCH" https://github.com/clamlum2/taplab-nix-config.git      # Clones the configuration repository
 cd taplab-nix-config                                                                # Changes to the cloned repository directory
 
-rm /mnt/etc/nixos/configuration.nix                                                                                     # Removes the existing configuration file
-rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' * /mnt/etc/nixos/         # Copies the configuration files to /mnt/etc/nixos
+rm /mnt/etc/nixos/configuration.nix 					# Removes the existing configuration file
+rsync -av --exclude='.git' * /mnt/etc/nixos/         	# Copies the configuration files to /mnt/etc/nixos
 
 nixos-install --no-root-passwd      # Installs NixOS without setting a root password to allow for unattended installation
 
