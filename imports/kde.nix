@@ -26,6 +26,7 @@
         apiEnabled=true
     '';
 
+    # Configures the taskbar
     xdg.configFile."plasma-org.kde.plasma.desktop-appletsrc".text = ''
         [ActionPlugins][0]
         MiddleButton;NoModifier=org.kde.paste

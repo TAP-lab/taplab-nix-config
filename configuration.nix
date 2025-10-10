@@ -33,10 +33,12 @@ in
   system.stateVersion = "25.05";
 
   # Enables networking through NetworkManager.
-  networking.hostName = "nixos";
-  networking.domain = "taplab.nz";
   networking.networkmanager.enable = true;
 
+  # Sets the hostname and domain
+  networking.hostName = "nixos";
+  networking.domain = "taplab.nz";
+ 
   # Sets the time zone to Auckland, New Zealand.
   time.timeZone = "Pacific/Auckland";
 
