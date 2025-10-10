@@ -34,6 +34,7 @@ in
 
   # Enables networking through NetworkManager.
   networking.hostName = "nixos";
+  networking.domain = "taplab.nz";
   networking.networkmanager.enable = true;
 
   # Sets the time zone to Auckland, New Zealand.
