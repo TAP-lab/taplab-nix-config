@@ -15,6 +15,7 @@ in
       (import "${home-manager}/nixos")
       ./imports/pkgs.nix
       ./imports/autoupdate.nix
+      ./imports/mounts.nix
     ];
 
   # Enables GRUB as the boot loader.
@@ -33,6 +34,7 @@ in
 
   # Enables networking through NetworkManager.
   networking.hostName = "nixos";
+  networking.domain = "taplab.nz";
   networking.networkmanager.enable = true;
 
   # Sets the time zone to Auckland, New Zealand.
@@ -101,4 +103,6 @@ in
   # Sets Zsh as the default shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+
+  services.avahi.enable = true;
 }
