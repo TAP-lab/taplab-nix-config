@@ -15,6 +15,7 @@ in
       (import "${home-manager}/nixos")
       ./imports/pkgs.nix
       ./imports/autoupdate.nix
+      ./imports/mounts.nix
     ];
 
   # Enables GRUB as the boot loader.
