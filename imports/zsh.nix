@@ -1,10 +1,7 @@
-# added this back, managed to work out the issues with wezterm and zsh. 
-# could be left in the final config if we want a custom shell setup
-# going to keep it in the testing branch for the time being
-
 { config, pkgs, ... }:
 
 {   
+  # Installs zsh and some useful plugins
   home.packages = with pkgs; [
     zsh
     oh-my-zsh
@@ -12,7 +9,7 @@
     zsh-syntax-highlighting
   ];
 
-
+  # Defines the zsh configuration file
   home.file.".zshrc".text = ''
     export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh"
     export CACHE_SERVER="http://192.168.1.182:5000"
@@ -35,6 +32,7 @@
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
   '';
 
+  # Defines a custom oh-my-zsh theme
   home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''
     PROMPT="%F{cyan}%n@%f"
     PROMPT+="%{$fg[blue]%}%M "

@@ -15,6 +15,7 @@ in
       (import "${home-manager}/nixos")
       ./imports/pkgs.nix
       ./imports/autoupdate.nix
+      ./imports/mounts.nix
       ./imports/cache.nix
     ];
 
@@ -33,9 +34,12 @@ in
   system.stateVersion = "25.05";
 
   # Enables networking through NetworkManager.
-  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
+  # Sets the hostname and domain
+  networking.hostName = "nixos";
+  networking.domain = "taplab.nz";
+ 
   # Sets the time zone to Auckland, New Zealand.
   time.timeZone = "Pacific/Auckland";
 
@@ -102,4 +106,6 @@ in
   # Sets Zsh as the default shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+
+  services.avahi.enable = true;
 }
