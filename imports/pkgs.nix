@@ -3,7 +3,6 @@
 {
     environment.systemPackages = with pkgs; [
         pkgs.git
-        pkgs.avahi
 
         # Dependencies for the minecraft script
         pkgs.zenity

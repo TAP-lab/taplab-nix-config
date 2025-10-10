@@ -102,4 +102,6 @@ in
   # Sets Zsh as the default shell
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+
+  services.avahi.enable = true;
 }
