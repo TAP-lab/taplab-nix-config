@@ -109,6 +109,7 @@ in
   services.avahi.enable = true;
 
   networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ 6000 8883 ];
+  networking.firewall.allowedTCPPorts = [ 1883 6000 8883 ];
+  networking.firewall.allowedUDPPorts = [ 2021 ];
 
 }
