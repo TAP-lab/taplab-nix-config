@@ -107,4 +107,6 @@ in
   users.defaultUserShell = pkgs.zsh;
 
   services.avahi.enable = true;
+
+  networking.firewall.enable = false;
 }
