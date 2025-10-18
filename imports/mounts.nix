@@ -2,18 +2,18 @@
 
 {
   # For mount.cifs, required unless domain name resolution is not needed.
-  # environment.systemPackages = [ pkgs.cifs-utils ];
-  # fileSystems."/mnt/nas/manuhiri" = {
-  #   device = "//nas/manuhiri";
-  #   fsType = "cifs";
-  #   options = [ "guest" ];
-  # };
+  environment.systemPackages = [ pkgs.cifs-utils ];
+  fileSystems."/mnt/nas/manuhiri" = {
+    device = "//nas/manuhiri";
+    fsType = "cifs";
+    options = [ "guest" "nofail" ];
+  };
 
-  # fileSystems."/mnt/nas/Hacklings" = {
-  #   device = "//nas/awheawhe/STEaM/Hacklings";
-  #   fsType = "cifs";
-  #   options = [ "guest" ];
-  # };
+  fileSystems."/mnt/nas/Hacklings" = {
+    device = "//nas/awheawhe/STEaM/Hacklings";
+    fsType = "cifs";
+    options = [ "guest" "nofail" ];
+  };
 
   # fileSystems."/mnt/nas/mema" = {
   #   device = "//nas/mema";
