@@ -6,13 +6,13 @@
   fileSystems."/mnt/nas/manuhiri" = {
     device = "//nas/manuhiri";
     fsType = "cifs";
-    options = [ "guest" "nofail" ];
+    options = [ "nofail" "noauto" "guest" ];
   };
 
   fileSystems."/mnt/nas/Hacklings" = {
     device = "//nas/awheawhe/STEaM/Hacklings";
     fsType = "cifs";
-    options = [ "guest" "nofail" ];
+    options = [ "nofail" "noauto" "guest" ];
   };
 
   # fileSystems."/mnt/nas/mema" = {
