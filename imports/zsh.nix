@@ -30,6 +30,7 @@ in
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
 
     function syncstore() {
+      ssh root@$CACHE_SERVER 'nix-collect-garbage -d' && \
       nix-copy-closure --to root@$CACHE_SERVER $(nix-store -qR /nix/store/*) && \
       ssh root@$CACHE_SERVER 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'
     }
