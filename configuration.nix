@@ -108,4 +108,9 @@ in
   users.defaultUserShell = pkgs.zsh;
 
   services.avahi.enable = true;
+
+  networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [ 80 322 990 1883 8080 8883 ];
+  networking.firewall.allowedUDPPorts = [ 1990 2021 ];
+
 }
