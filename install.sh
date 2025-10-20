@@ -3,8 +3,8 @@
 set -e      # Sets the script to exit on error
 set -e
 
-CACHE_SERVER="http://192.168.1.182:5000"
-MY_PUBKEY="local-cache:lF8a6CjzBqT9J38ERYQIUcaEn/Gb5TQ/nuwq9KjTLIA="
+CACHE_SERVER="http://192.168.1.220:5000"
+MY_PUBKEY="local-cache:WrEu920wGa4xt2v2DjM0x9wf+/KLHb4+qV7tQqQJxw0="
 export NIX_CONF_DIR="/tmp/nix_conf"
 mkdir -p "$NIX_CONF_DIR"
 cat > "$NIX_CONF_DIR/nix.conf" <<EOF
