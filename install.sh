@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e      # Sets the script to exit on error
-set -e
 
 CACHE_SERVER="http://192.168.1.220:5000"
 MY_PUBKEY="local-cache:WrEu920wGa4xt2v2DjM0x9wf+/KLHb4+qV7tQqQJxw0="
