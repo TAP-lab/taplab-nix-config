@@ -30,9 +30,9 @@ in
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
 
     function syncstore() {
+      sudo nix-collect-garbage -d
       read -s -p "SSH password: " SSHPASS
       echo
-      sudo nix-collect-garbage -d
       sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix-collect-garbage -d'
       sshpass -p "$SSHPASS" nix-copy-closure --to root@$CACHE_SERVER $(nix-store -qR /nix/store/*)
       sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix store sign --all --key-file /root/nix-serve-private --extra-experimental-features nix-command'
