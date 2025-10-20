@@ -8,4 +8,8 @@ in
 {
   nix.settings.substituters = [ "http://${cacheServer}:5000" ];
   nix.settings.trusted-public-keys = [ cachePublicKey ];
+
+  environment.systemPackages = with pkgs; [
+    pkgs.sshpass
+  ];
 }
