@@ -32,7 +32,7 @@ in
     function syncstore() {
       ssh root@$CACHE_SERVER 'nix-collect-garbage -d' && \
       nix-copy-closure --to root@$CACHE_SERVER $(nix-store -qR /nix/store/*) && \
-      ssh root@$CACHE_SERVER 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'
+      ssh root@$CACHE_SERVER 'nix store sign --all --key-file /root/nix-serve-private --extra-experimental-features nix-command'
     }
 
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
