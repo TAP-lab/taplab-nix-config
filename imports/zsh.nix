@@ -17,7 +17,7 @@ in
   # Defines the zsh configuration file
   home.file.".zshrc".text = ''
     export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh"
-    export CACHE_SERVER="http://192.168.1.182:5000"
+    export CACHE_SERVER="${cacheServer}"
 
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -30,8 +30,8 @@ in
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
 
     function syncstore() {
-      nix-copy-closure --to root@${cacheServer} $(nix-store -qR /nix/store/*) && \
-      ssh root@${cacheServer} 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'
+      nix-copy-closure --to root@CACHE_SERVER $(nix-store -qR /nix/store/*) && \
+      ssh root@CACHE_SERVER 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'
     }
 
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
