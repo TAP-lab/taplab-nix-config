@@ -32,8 +32,9 @@ in
     function syncstore() {
       read -s -p "SSH password: " SSHPASS
       echo
-      sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix-collect-garbage -d' && \
-      sshpass -p "$SSHPASS" nix-copy-closure --to root@$CACHE_SERVER $(nix-store -qR /nix/store/*) && \
+      sudo nix-collect-garbage -d
+      sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix-collect-garbage -d'
+      sshpass -p "$SSHPASS" nix-copy-closure --to root@$CACHE_SERVER $(nix-store -qR /nix/store/*)
       sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix store sign --all --key-file /root/nix-serve-private --extra-experimental-features nix-command'
     }
 
