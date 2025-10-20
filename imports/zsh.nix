@@ -1,5 +1,10 @@
 { config, pkgs, ... }:
 
+let
+  cacheServer = "http://192.168.1.220:5000";
+  cachePublicKey = "local-cache:WrEu920wGa4xt2v2DjM0x9wf+/KLHb4+qV7tQqQJxw0="; 
+in
+
 {   
   # Installs zsh and some useful plugins
   home.packages = with pkgs; [
@@ -25,8 +30,8 @@
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
 
     function syncstore() {
-      nix-copy-closure --to root@192.168.1.182 $(nix-store -qR /nix/store/*) && \
-      ssh root@192.168.1.182 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'
+      nix-copy-closure --to root@${cacheServer} $(nix-store -qR /nix/store/*) && \
+      ssh root@${cacheServer} 'nix store sign --all --key-file /nix-serve-private --extra-experimental-features nix-command'
     }
 
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
