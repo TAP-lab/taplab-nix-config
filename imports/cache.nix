@@ -1,4 +1,4 @@
-{ config, pkgs,... }:
+{ config, pkgs, ... }:
 
 let
   cacheServer = "192.168.1.220";
