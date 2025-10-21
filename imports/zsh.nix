@@ -2,7 +2,7 @@
 
 let
   cacheServer = "192.168.1.220";
-  cachePublicKey = "local-cache:WrEu920wGa4xt2v2DjM0x9wf+/KLHb4+qV7tQqQJxw0="; 
+  cachePublicKey = "local-cache:cjQnJ60NunD/sRVXLSrLSAhmxCQa1Iuo2HHI7rpFfPc="; 
 in
 
 {   
