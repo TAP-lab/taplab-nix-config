@@ -19,7 +19,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 5. Ensure the laptop is plugged into ethernet (wifi is harder to set up and will be covered in the [Full Instructions](#full-instructions)). Try `ping google.com` to check for internet connectivity.
 6. To use the install script, simply run the following command:
     ```bash
-    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nixos-config/main/install.sh)
+    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/install.sh)
     ```
 7. The script should automatically install NixOS and the configuration. It will automatically reboot when finished.
 8. In case of any issues, you can refer to the [Full Instructions](#full-instructions) and the [Technical Explanation](#technical-explanation) sections below.
