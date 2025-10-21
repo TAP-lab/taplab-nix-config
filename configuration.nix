@@ -16,7 +16,6 @@ in
       ./imports/pkgs.nix
       ./imports/autoupdate.nix
       ./imports/mounts.nix
-      ./imports/wifi.nix
     ];
 
   # Enables GRUB as the boot loader.
