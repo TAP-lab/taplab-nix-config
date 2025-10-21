@@ -21,6 +21,7 @@ in
   # Enables GRUB as the boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.timeout = 1;
 
   # Defines basic Home Manager configuration
   home-manager.useUserPackages = true;
@@ -116,10 +117,6 @@ in
 
   boot.plymouth.enable = true;
   boot.plymouth.theme = "spinner";
-  boot.plymouth.extraConfig = ''
-    [Daemon]
-    ShowDelay=5
-  '';
 
   boot.kernelParams = [
     "quiet"
