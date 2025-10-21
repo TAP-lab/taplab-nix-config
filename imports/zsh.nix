@@ -34,7 +34,6 @@ in
       read -s SSHPASS
       echo
       sudo nix-collect-garbage -d
-      sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix-collect-garbage -d'
       sshpass -p "$SSHPASS" nix-copy-closure --to root@$CACHE_SERVER $(nix-store -qR /nix/store/*)
       sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix store sign --all --key-file /root/keys/nix-serve-private --extra-experimental-features nix-command'
     }
