@@ -16,6 +16,7 @@ in
       ./imports/pkgs.nix
       ./imports/autoupdate.nix
       ./imports/mounts.nix
+      ./imports/wifi.nix
     ];
 
   # Enables GRUB as the boot loader.
@@ -31,9 +32,6 @@ in
   # Defines the system version and tells it to use the latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
   system.stateVersion = "25.05";
-
-  # Enables networking through NetworkManager.
-  networking.networkmanager.enable = true;
 
   # Sets the hostname and domain
   networking.hostName = "nixos";
