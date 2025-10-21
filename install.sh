@@ -4,11 +4,14 @@ set -e      # Sets the script to exit on error
 
 CACHE_SERVER="http://192.168.1.220:5000"
 MY_PUBKEY="local-cache:cjQnJ60NunD/sRVXLSrLSAhmxCQa1Iuo2HHI7rpFfPc="
+OFFICIAL_CACHE="https://cache.nixos.org"
+OFFICIAL_PUBKEY="cache.nixos.org-1:U0hFQ0tLZXk5QzVEMzAwRDk3RTcwNEI3QkQ3OTdBODI3NEM0MkZFMg=="
+
 export NIX_CONF_DIR="/tmp/nix_conf"
 mkdir -p "$NIX_CONF_DIR"
 cat > "$NIX_CONF_DIR/nix.conf" <<EOF
-substituters = $CACHE_SERVER
-trusted-public-keys = $MY_PUBKEY
+substituters = $CACHE_SERVER $OFFICIAL_CACHE
+trusted-public-keys = $MY_PUBKEY $OFFICIAL_PUBKEY
 EOF
 
 BRANCH="main"           # Sets the default branch to clone
