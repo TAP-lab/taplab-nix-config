@@ -1,3 +1,5 @@
+{ config, ... }:
+
 let
   ssid = builtins.readFile "/etc/nixos/fetch/wifi-ssid.txt";
   psk = builtins.readFile "/etc/nixos/fetch/wifi-psk.txt";
