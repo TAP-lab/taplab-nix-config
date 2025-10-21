@@ -6,14 +6,14 @@
   fileSystems."/mnt/nas/manuhiri" = {
     device = "//nas/manuhiri";
     fsType = "cifs";
-    options = [ "nofail" "noauto" "guest" ];
+    options = [ "nofail" "guest" ];
   };
 
   # Mounts the Hacklings share
   fileSystems."/mnt/nas/Hacklings" = {
     device = "//nas/awheawhe/STEaM/Hacklings";
     fsType = "cifs";
-    options = [ "nofail" "noauto" "guest" ];
+    options = [ "nofail" "guest" ];
   };
 
   # Mounts the mema share with automount options (disabled for now until credentials system is in place)
