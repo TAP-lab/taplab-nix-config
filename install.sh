@@ -5,7 +5,7 @@ set -e      # Sets the script to exit on error
 CACHE_SERVER="http://192.168.1.220:5000"
 MY_PUBKEY="local-cache:cjQnJ60NunD/sRVXLSrLSAhmxCQa1Iuo2HHI7rpFfPc="
 OFFICIAL_CACHE="https://cache.nixos.org"
-OFFICIAL_PUBKEY="cache.nixos.org-1:U0hFQ0tLZXk5QzVEMzAwRDk3RTcwNEI3QkQ3OTdBODI3NEM0MkZFMg=="
+OFFICIAL_PUBKEY="cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
 
 export NIX_CONF_DIR="/tmp/nix_conf"
 mkdir -p "$NIX_CONF_DIR"
