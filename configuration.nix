@@ -113,4 +113,8 @@ in
   networking.firewall.allowedUDPPorts = [ 1990 2021 ];
 
   hardware.enableRedistributableFirmware = true;    #for testing with my server
+
+  boot.plymouth.enable = true;
+  boot.plymouth.theme = "spinner";
+  boot.kernelParams = [ "quiet" "splash" ];  
 }
