@@ -12,4 +12,5 @@ in
       };
     } else {};
   networking.networkmanager.enable = true;
+  networking.networkmanager.unmanaged = [ "enp0s25" ];
 }
