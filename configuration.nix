@@ -117,7 +117,7 @@ in
   boot.plymouth.enable = true;
   boot.plymouth.theme = "spinner";
   boot.plymouth.extraConfig = ''
-    ShowDelay=5
+    ShowDelay=10
   '';
 
   boot.kernelParams = [
