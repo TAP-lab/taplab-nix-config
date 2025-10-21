@@ -32,6 +32,9 @@ in
   boot.kernelPackages = pkgs.linuxPackages_latest;
   system.stateVersion = "25.05";
 
+  # Enables networking through NetworkManager.
+  networking.networkmanager.enable = true;
+
   # Sets the hostname and domain
   networking.hostName = "nixos";
   networking.domain = "taplab.nz";
