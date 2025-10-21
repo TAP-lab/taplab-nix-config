@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  # For mount.cifs, required unless domain name resolution is not needed.
+  # Mounts the nas drive
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/nas/manuhiri" = {
     device = "//nas/manuhiri";
@@ -9,12 +9,14 @@
     options = [ "nofail" "noauto" "guest" ];
   };
 
+  # Mounts the Hacklings share
   fileSystems."/mnt/nas/Hacklings" = {
     device = "//nas/awheawhe/STEaM/Hacklings";
     fsType = "cifs";
     options = [ "nofail" "noauto" "guest" ];
   };
 
+  # Mounts the mema share with automount options (disabled for now until credentials system is in place)
   # fileSystems."/mnt/nas/mema" = {
   #   device = "//nas/mema";
   #   fsType = "cifs";

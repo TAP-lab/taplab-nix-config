@@ -89,6 +89,8 @@ The installation script is a bash script that automates the installation of NixO
 This is a commented version of the installation script:
 
 ```bash
+#!/usr/bin/env bash
+
 set -e      # Sets the script to exit on error
 
 BRANCH="main"           # Sets the default branch to clone
@@ -136,8 +138,8 @@ echo "Cloning configuration repo using branch: $BRANCH"
 git clone --branch "$BRANCH" https://github.com/clamlum2/taplab-nix-config.git      # Clones the configuration repository
 cd taplab-nix-config                                                                # Changes to the cloned repository directory
 
-rm /mnt/etc/nixos/configuration.nix                                                                                     # Removes the existing configuration file
-rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' * /mnt/etc/nixos/         # Copies the configuration files to /mnt/etc/nixos
+rm /mnt/etc/nixos/configuration.nix 					        # Removes the existing configuration file
+rsync -av --exclude='.git' * /mnt/etc/nixos/         	# Copies the configuration files to /mnt/etc/nixos
 
 nixos-install --no-root-passwd      # Installs NixOS without setting a root password to allow for unattended installation
 
@@ -159,6 +161,8 @@ reboot      # Reboots the system
 The update script is a bash script that automates updating the system to the latest version of this configuration.
 This is a commented version of the update script:
 ```bash
+#!/usr/bin/env bash
+
 set -e      # Sets the script to exit on error
 
 REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"        # Sets the repository URL
@@ -188,10 +192,9 @@ if [ -d "$CONFIG_DIR/.git" ]; then                                              
         echo "Current branch ($CURRENT_BRANCH) is different from target branch ($BRANCH)."
         git checkout "$BRANCH"                                                              # Switches to the target branch
     fi
-    git pull --rebase origin "$BRANCH"                                                                                              # Pulls the latest changes from the target branch
-    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/   # Copies the configuration files to /etc/nixos
-    sudo nixos-rebuild switch --upgrade                                                                                             # Rebuilds and updates the system with the latest configuration
-    echo
+    git pull --rebase origin "$BRANCH"                              # Pulls the latest changes from the target branch
+    sudo rsync -av --exclude='.git' "$CONFIG_DIR/" /etc/nixos/      # Copies the configuration files to /etc/nixos
+    sudo nixos-rebuild switch --upgrade                             # Rebuilds and updates the system with the latest configuration
     echo
     echo "Update complete!"
     echo "Please reboot if drivers/kernel were updated."
@@ -199,7 +202,7 @@ else        # If the config directory is not present
     echo "Repo not found, cloning to $CONFIG_DIR..."
     git clone --branch "$BRANCH" "$REPO_URL" "$CONFIG_DIR"      # Clones the configuration repository
     cd "$CONFIG_DIR"                                            # Changes to the config directory
-    sudo rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' "$CONFIG_DIR/" /etc/nixos/       # Copies the configuration files to /etc/nixos
+    sudo rsync -av --exclude='.git' "$CONFIG_DIR/" /etc/nixos/  # Copies the configuration files to /etc/nixos
     sudo nixos-rebuild switch --upgrade         # Rebuilds and updates the system with the latest configuration
     echo
     echo
@@ -224,6 +227,8 @@ This is a custom bash script that allows users to easily set their Minecraft use
 
 Here is a commented version of the offline script:
 ```bash
+#!/usr/bin/env bash
+
 # Ensures it is working in the correct directory
 cd ~/.local/share/PrismLauncher/
 
@@ -281,12 +286,11 @@ if [ -d "/home/taplab/nix-config/.git" ]; then      # Checks if the config direc
     BRANCH=$(git rev-parse --abbrev-ref HEAD)       # Gets the current branch
     git pull --rebase origin "$BRANCH"              # Pulls the latest changes from the target branch
     # Copies the new configuration files
-    rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' /home/taplab/nix-config/ /etc/nixos/
+    rsync -av --exclude='.git' /home/taplab/nix-config/ /etc/nixos/
     nixos-rebuild switch --upgrade && SUCCESS=true || SUCCESS=false         # Rebuilds the system
 else
-    git clone --branch main "$REPO_URL" /home/taplab/nix-config         # Clones the configuration repository
-    # Copies the configuration files
-    rsync -av --exclude='.git' --exclude='README.md' --exclude='install.sh' --exclude='update.sh' /home/taplab/nix-config/ /etc/nixos/
+    git clone --branch main "$REPO_URL" /home/taplab/nix-config             # Clones the configuration repository
+    rsync -av --exclude='.git' /home/taplab/nix-config/ /etc/nixos/         # Copies the configuration files
     nixos-rebuild switch --upgrade && SUCCESS=true || SUCCESS=false         # Rebuilds the system
 fi
 if [ "$SUCCESS" = true ]; then      # Checks if the rebuild was successful
@@ -338,6 +342,7 @@ in
       (import "${home-manager}/nixos")
       ./imports/pkgs.nix
       ./imports/autoupdate.nix
+      ./imports/mounts.nix
     ];
 
   # Enables GRUB as the boot loader.
@@ -360,7 +365,7 @@ in
   # Sets the hostname and domain
   networking.hostName = "nixos";
   networking.domain = "taplab.nz";
-
+ 
   # Sets the time zone to Auckland, New Zealand.
   time.timeZone = "Pacific/Auckland";
 
@@ -429,6 +434,10 @@ in
   users.defaultUserShell = pkgs.zsh;
 
   services.avahi.enable = true;
+
+  networking.firewall.enable = true;
+  networking.firewall.allowedTCPPorts = [ 80 322 990 1883 8080 8883 ];
+  networking.firewall.allowedUDPPorts = [ 1990 2021 ];
 }
 ```
 
@@ -437,7 +446,7 @@ in
 - Most of this file has been automatically generated by NixOS at some point, and I have only modified the necessary parts to get the desired configuration.
 
 ---
-### Imports file
+### Packages file
 ### `imports/pkgs.nix`
 This file contains the package configuration for the system. It defines the packages that should be installed globally.
 
@@ -496,7 +505,7 @@ This file contains the Home Manager configuration for the `taplab` user. It impo
     ./imports/zsh.nix
     ./imports/ghostty.nix
   ];
-} 
+}
 ```
 #### Notes about the home configuration file:
 - Any new application-level configuration should be added here, preferably via a new file imported by this one.
@@ -528,8 +537,8 @@ This file contains the Home Manager configuration for zsh, setting up the useful
     plugins=(git)
     source $ZSH/oh-my-zsh.sh
 
-    alias nrt="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test && hyprshade on extravibrance";
-    alias nrs="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch && hyprshade on extravibrance";
+    alias nrt="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test";
+    alias nrs="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch";
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
 
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
@@ -828,24 +837,204 @@ This file defines the systemd service and timer configuration for automatically 
 { config, pkgs, ... }:
 
 {
-  # Sets up a systemd service and timer to run the autoupdate script daily
-  systemd.services.nixos-update = {
-    description = "Periodic NixOS system update with notification";
-    serviceConfig = {
-      Type = "oneshot";
-      # Executes the autoupdate script
-      ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/imports/autoupdate.sh";
+    environment.systemPackages = with pkgs; [
+        pkgs.libnotify      # For notify-send command
+    ];
+
+    # Sets up a systemd service and timer to run the autoupdate script daily
+    systemd.services.nixos-update = {
+        description = "Periodic NixOS system update with notification";
+        serviceConfig = {
+        Type = "oneshot";
+        # Executes the autoupdate script
+        ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/imports/autoupdate.sh";
+        };
     };
+
+    systemd.timers.nixos-update = {
+        description = "Update the system daily";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+        OnCalendar = "daily";         # Runs the update daily
+        Persistent = true;            # Runs the job as soon as possible if it was missed
+        };
+    };
+}
+```
+
+### Netowrks mounts configuration file
+### `imports/mounts.nix`
+This file mounts the TAPLab network drives automatically
+````nix
+{ config, pkgs, ... }:
+
+{
+  # Mounts the nas drive
+  environment.systemPackages = [ pkgs.cifs-utils ];
+  fileSystems."/mnt/nas/manuhiri" = {
+    device = "//nas/manuhiri";
+    fsType = "cifs";
+    options = [ "nofail" "noauto" "guest" ];
   };
 
-  systemd.timers.nixos-update = {
-    description = "Update the system daily";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";         # Runs the update daily
-      Persistent = true;            # Runs the job as soon as possible if it was missed
-    };
+  # Mounts the Hacklings share
+  fileSystems."/mnt/nas/Hacklings" = {
+    device = "//nas/awheawhe/STEaM/Hacklings";
+    fsType = "cifs";
+    options = [ "nofail" "noauto" "guest" ];
   };
+
+  # Mounts the mema share with automount options (disabled for now until credentials system is in place)
+  # fileSystems."/mnt/nas/mema" = {
+  #   device = "//nas/mema";
+  #   fsType = "cifs";
+  #   options = let
+  #       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+  #   in [ "${automount_opts},credentials=/etc/nixos/resources/smb-secrets" ];
+  # };
+}
+````
+
+### Ghostty configuration file
+### `imports/ghostty.nix`
+This file contains the configuration for my ghostty setup, mostly there for me to use while making this setup
+```nix
+{ config, pkgs, ... }:
+
+# Imports the nixpkgs unstable branch to get the correct ghostty version
+let
+    nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { config = { allowUnfree = true; }; };
+in
+{
+    home.packages = with pkgs; [
+        nixpkgs-unstable.ghostty
+    ];
+
+    # Configures ghostty settings
+    home.file.".config/ghostty/config".text = ''
+        custom-shader = cursor.glsl
+        background = #000000
+        font-family = DejaVuSansMono
+        font-size = 11
+        theme = Builtin Tango Dark
+    '';
+
+    # Creates a custom cursor shader for a trailing effect
+    home.file.".config/ghostty/cursor.glsl".text = ''
+        float getSdfRectangle(in vec2 p, in vec2 xy, in vec2 b)
+        {
+            vec2 d = abs(p - xy) - b;
+            return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+        }
+
+        // Based on Inigo Quilez's 2D distance functions article: https://iquilezles.org/articles/distfunctions2d/
+        // Potencially optimized by eliminating conditionals and loops to enhance performance and reduce branching
+
+        float seg(in vec2 p, in vec2 a, in vec2 b, inout float s, float d) {
+            vec2 e = b - a;
+            vec2 w = p - a;
+            vec2 proj = a + e * clamp(dot(w, e) / dot(e, e), 0.0, 1.0);
+            float segd = dot(p - proj, p - proj);
+            d = min(d, segd);
+
+            float c0 = step(0.0, p.y - a.y);
+            float c1 = 1.0 - step(0.0, p.y - b.y);
+            float c2 = 1.0 - step(0.0, e.x * w.y - e.y * w.x);
+            float allCond = c0 * c1 * c2;
+            float noneCond = (1.0 - c0) * (1.0 - c1) * (1.0 - c2);
+            float flip = mix(1.0, -1.0, step(0.5, allCond + noneCond));
+            s *= flip;
+            return d;
+        }
+
+        float getSdfParallelogram(in vec2 p, in vec2 v0, in vec2 v1, in vec2 v2, in vec2 v3) {
+            float s = 1.0;
+            float d = dot(p - v0, p - v0);
+
+            d = seg(p, v0, v3, s, d);
+            d = seg(p, v1, v0, s, d);
+            d = seg(p, v2, v1, s, d);
+            d = seg(p, v3, v2, s, d);
+
+            return s * sqrt(d);
+        }
+
+        vec2 norm(vec2 value, float isPosition) {
+            return (value * 2.0 - (iResolution.xy * isPosition)) / iResolution.y;
+        }
+
+        float antialising(float distance) {
+            return 1. - smoothstep(0., norm(vec2(2., 2.), 0.).x, distance);
+        }
+
+        float determineStartVertexFactor(vec2 a, vec2 b) {
+            // Conditions using step
+            float condition1 = step(b.x, a.x) * step(a.y, b.y); // a.x < b.x && a.y > b.y
+            float condition2 = step(a.x, b.x) * step(b.y, a.y); // a.x > b.x && a.y < b.y
+
+            // If neither condition is met, return 1 (else case)
+            return 1.0 - max(condition1, condition2);
+        }
+
+        vec2 getRectangleCenter(vec4 rectangle) {
+            return vec2(rectangle.x + (rectangle.z / 2.), rectangle.y - (rectangle.w / 2.));
+        }
+        float ease(float x) {
+            return pow(1.0 - x, 3.0);
+        }
+
+        const vec4 TRAIL_COLOR = vec4(1., 1., 1., 1.0);
+        const float DURATION = 0.25; //IN SECONDS
+
+        void mainImage(out vec4 fragColor, in vec2 fragCoord)
+        {
+            fragColor = texture(iChannel0, fragCoord.xy / iResolution.xy);
+            // Normalization for fragCoord to a space of -1 to 1;
+            vec2 vu = norm(fragCoord, 1.);
+            vec2 offsetFactor = vec2(-.5, 0.5);
+
+            // Normalization for cursor position and size;
+            // cursor xy has the postion in a space of -1 to 1;
+            // zw has the width and height
+            vec4 currentCursor = vec4(norm(iCurrentCursor.xy, 1.), norm(iCurrentCursor.zw, 0.));
+            vec4 previousCursor = vec4(norm(iPreviousCursor.xy, 1.), norm(iPreviousCursor.zw, 0.));
+
+            // When drawing a parellelogram between cursors for the trail i need to determine where to start at the top-left or top-right vertex of the cursor
+            float vertexFactor = determineStartVertexFactor(currentCursor.xy, previousCursor.xy);
+            float invertedVertexFactor = 1.0 - vertexFactor;
+
+            // Set every vertex of my parellogram
+            vec2 v0 = vec2(currentCursor.x + currentCursor.z * vertexFactor, currentCursor.y - currentCursor.w);
+            vec2 v1 = vec2(currentCursor.x + currentCursor.z * invertedVertexFactor, currentCursor.y);
+            vec2 v2 = vec2(previousCursor.x + currentCursor.z * invertedVertexFactor, previousCursor.y);
+            vec2 v3 = vec2(previousCursor.x + currentCursor.z * vertexFactor, previousCursor.y - previousCursor.w);
+
+            float sdfCurrentCursor = getSdfRectangle(vu, currentCursor.xy - (currentCursor.zw * offsetFactor), currentCursor.zw * 0.5);
+            float sdfTrail = getSdfParallelogram(vu, v0, v1, v2, v3);
+
+            float progress = clamp((iTime - iTimeCursorChange) / DURATION, 0.0, 1.0);
+            float easedProgress = ease(progress);
+            // Distance between cursors determine the total length of the parallelogram;
+            vec2 centerCC = getRectangleCenter(currentCursor);
+            vec2 centerCP = getRectangleCenter(previousCursor);
+            float lineLength = distance(centerCC, centerCP);
+
+            vec4 newColor = vec4(fragColor);
+            // Compute fade factor based on distance along the trail
+            float fadeFactor = 1.0 - smoothstep(lineLength, sdfCurrentCursor, easedProgress * lineLength);
+
+            // Apply fading effect to trail color
+            vec4 fadedTrailColor = TRAIL_COLOR * fadeFactor;
+
+            // Blend trail with fade effect
+            newColor = mix(newColor, fadedTrailColor, antialising(sdfTrail));
+            // Draw current cursor
+            newColor = mix(newColor, TRAIL_COLOR, antialising(sdfCurrentCursor));
+            newColor = mix(newColor, fragColor, step(sdfCurrentCursor, 0.));
+            fragColor = mix(fragColor, newColor, step(sdfCurrentCursor, easedProgress * lineLength));
+        }
+
+    '';
 }
 ```
 
@@ -905,9 +1094,9 @@ This is is simply the default minecraft icon, used for the desktop entry of the 
 Things I need to do before this is fully ready. In no particular order
 
 - Set up a proper user account with a secure password.
-- Set up Microsoft Edge with automatic login to the taplab account.
+- ~~Set up Microsoft Edge with automatic login to the taplab account.~~ On hold for now
 - ~~Set up a local binary cache for faster installs/updates.~~  Managed to set up a good local demo, working version is in the [`cache-stable`](https://github.com/clamlum2/taplab-nix-config/tree/cache-stable) branch. Not gonna bother to make a cache server config as most of it is best done manually. Also added a shell alias to easily copy all of the new packages to the server on an update, requires a bit of manual work due to needing the server credentials but is required for security.
-- Comprehensive testing across all laptops and apps to ensure everything works as expected.
+- Comprehensive testing across all laptops and apps to ensure everything works as expected. - In progress
 - Potentially host this on a local git server for easier access.
 - Set up wifi out of the box on the installed system. (would do but can't really test at home through virtual machines)
 - ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Managed to integrate it into the script, after running the prism launcher command it will check the active window, and if it contains "Prism" in the title it will automatically close it.
