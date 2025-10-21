@@ -116,5 +116,13 @@ in
 
   boot.plymouth.enable = true;
   boot.plymouth.theme = "spinner";
-  boot.kernelParams = [ "quiet" "splash" ];  
+  boot.plymouth.wait = true;
+  
+  boot.kernelParams = [
+    "quiet"
+    "splash"
+    "loglevel=3"
+    "rd.systemd.show_status=false"
+    "vt.global_cursor_default=0"
+  ];
 }
