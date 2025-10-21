@@ -54,7 +54,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 6. Check for internet connectivity by running `ping google.com`. If there is no connectivity, double check the previous steps.
 7. To use the install script, simply run the following command:
     ```bash
-    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nixos-config/main/install.sh)
+    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/install.sh)
     ```
     - The script has 2 possible flags, `--disk` and `--branch`.
     - `--disk` can be used to specify which disk to install to, for example `--disk /dev/sda`. If not specified, the script will install to /dev/sda by default.
