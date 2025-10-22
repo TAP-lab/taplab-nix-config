@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+    home.packages = [ pkgs.ghostty ];
+
     home.file.".config/ghostty/config".text = ''
         font-family = DejaVuSansMono
         font-size = 11
