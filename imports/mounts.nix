@@ -17,7 +17,7 @@
   };
 
   fileSystems."/mnt/nas/mema" = {
-    device = "//192.168.1.220/media";
+    device = "//192.168.1.220/mema";
     fsType = "cifs";
      options = [ "credentials=/etc/nixos/secrets/mema" "nofail" ];
   };
