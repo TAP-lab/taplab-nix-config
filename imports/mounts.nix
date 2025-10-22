@@ -19,6 +19,14 @@
   fileSystems."/mnt/nas/mema" = {
     device = "//192.168.1.220/mema";
     fsType = "cifs";
-    options = [ "credentials=/etc/nixos/secrets/mema" "nofail" "noauto" ];
+    options = [
+      "credentials=/etc/nixos/secrets/mema"
+      "nofail"
+      "x-systemd.automount"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+    ];
   };
 }
