@@ -29,5 +29,5 @@
     device = "//192.168.1.209/media";
     fsType = "cifs";
     options = [ "nofail" "noauto" "guest" ];
-  }
+  };
 }
