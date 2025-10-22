@@ -21,7 +21,7 @@ in
   # Enables GRUB as the boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.timeout = 1;
+  boot.loader.timeout = 1;
 
   # Defines basic Home Manager configuration
   home-manager.useUserPackages = true;
