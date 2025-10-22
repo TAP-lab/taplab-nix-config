@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# not implemented at taplab yet - for my testing
 
 URL="http://192.168.1.220:8080/wifi"
 

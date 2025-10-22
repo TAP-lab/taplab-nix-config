@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# not implemented at taplab yet - for my testing
 
 set -e
 
