@@ -11,10 +11,14 @@
       "nofail"
       "x-systemd.automount"
       "x-systemd.mount-timeout=1"
+      "soft"
+      "timeo=10"
+      "retry=0"
       "uid=1000" 
       "gid=100"  
       "file_mode=0644"
       "dir_mode=0755"
+      
     ];
   };
 
@@ -27,6 +31,9 @@
       "nofail"
       "x-systemd.automount"
       "x-systemd.mount-timeout=1"
+      "soft"
+      "timeo=10"
+      "retry=0"
       "uid=1000" 
       "gid=100"  
       "file_mode=0644"
@@ -42,6 +49,9 @@
       "nofail"
       "x-systemd.automount"
       "x-systemd.mount-timeout=1"
+      "soft"
+      "timeo=10"
+      "retry=0"
       "uid=1000" 
       "gid=100"  
       "file_mode=0644"
