@@ -1,25 +1,56 @@
 { config, pkgs, ... }:
 
 {
-  # For mount.cifs, required unless domain name resolution is not needed.
+  # Mounts the manuhiri share
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/nas/manuhiri" = {
     device = "//nas/manuhiri";
     fsType = "cifs";
-    options = [ "nofail" "noauto" "guest" ];
+    options = [
+      "guest"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=5"
+      "soft"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+      
+    ];
   };
 
+  # Mounts the Hacklings share
   fileSystems."/mnt/nas/Hacklings" = {
     device = "//nas/awheawhe/STEaM/Hacklings";
     fsType = "cifs";
-    options = [ "nofail" "noauto" "guest" ];
+    options = [
+      "guest"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=5"
+      "soft"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+    ];
   };
 
-  # fileSystems."/mnt/nas/mema" = {
-  #   device = "//nas/mema";
-  #   fsType = "cifs";
-  #   options = let
-  #       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-  #   in [ "${automount_opts},credentials=/etc/nixos/resources/smb-secrets" ];
-  # };
+  # Mounts the mema share with credentials
+  fileSystems."/mnt/nas/mema" = {
+    device = "//nas/mema";
+    fsType = "cifs";
+    options = [
+      "credentials=/etc/nixos/secrets/mema"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=5"
+      "soft"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+    ];
+  };
 }

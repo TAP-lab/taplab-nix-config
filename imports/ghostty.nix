@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 
+# Imports the nixpkgs unstable branch to get the correct ghostty version
 let
     nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { config = { allowUnfree = true; }; };
 in
@@ -8,6 +9,7 @@ in
         nixpkgs-unstable.ghostty
     ];
 
+    # Configures ghostty settings
     home.file.".config/ghostty/config".text = ''
         custom-shader = cursor.glsl
         background = #000000
@@ -16,6 +18,7 @@ in
         theme = Builtin Tango Dark
     '';
 
+    # Creates a custom cursor shader for a trailing effect
     home.file.".config/ghostty/cursor.glsl".text = ''
         float getSdfRectangle(in vec2 p, in vec2 xy, in vec2 b)
         {

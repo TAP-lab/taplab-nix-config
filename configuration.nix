@@ -22,6 +22,7 @@ in
   # Enables GRUB as the boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
+  boot.loader.timeout = 1;
 
   # Defines basic Home Manager configuration
   home-manager.useUserPackages = true;
@@ -113,4 +114,16 @@ in
   networking.firewall.allowedTCPPorts = [ 80 322 990 1883 8080 8883 ];
   networking.firewall.allowedUDPPorts = [ 1990 2021 ];
 
+  hardware.enableRedistributableFirmware = true;    #for testing with my server
+
+  boot.plymouth.enable = true;
+  boot.plymouth.theme = "spinner";
+
+  boot.kernelParams = [
+    "quiet"
+    "splash"
+    "loglevel=3"
+    "rd.systemd.show_status=false"
+    "vt.global_cursor_default=0"
+  ];
 }
