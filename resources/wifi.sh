@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-URL="http://192.168.1.220:8080/wifi.txt"
+URL="http://192.168.1.220:8080/wifi"
 
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
