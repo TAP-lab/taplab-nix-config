@@ -1,8 +1,15 @@
 { config, pkgs, ... }:
 
+# Imports the nixpkgs unstable branch to get the correct ghostty version
+let
+    nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { config = { allowUnfree = true; }; };
+in
 {
-    home.packages = [ pkgs.ghostty ];
+    home.packages = with pkgs; [
+        nixpkgs-unstable.ghostty
+    ];
 
+    # Configures ghostty settings
     home.file.".config/ghostty/config".text = ''
         font-family = DejaVuSansMono
         font-size = 11
@@ -26,9 +33,9 @@
         keybind = ctrl+alt+arrow_up=new_split:up
         keybind = ctrl+alt+arrow_left=new_split:left
         keybind = ctrl+alt+arrow_right=new_split:right
-        
     '';
 
+    # Creates a custom cursor shader for a trailing effect
     home.file.".config/ghostty/cursor.glsl".text = ''
         float getSdfRectangle(in vec2 p, in vec2 xy, in vec2 b)
         {
@@ -142,5 +149,6 @@
             newColor = mix(newColor, fragColor, step(sdfCurrentCursor, 0.));
             fragColor = mix(fragColor, newColor, step(sdfCurrentCursor, easedProgress * lineLength));
         }
+
     '';
 }
