@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  # Mounts the nas drive
+  # Mounts the manuhiri share
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/nas/manuhiri" = {
     device = "//nas/manuhiri";
@@ -37,6 +37,7 @@
     ];
   };
 
+  # Mounts the mema share with credentials
   fileSystems."/mnt/nas/mema" = {
     device = "//nas/mema";
     fsType = "cifs";

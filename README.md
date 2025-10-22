@@ -869,29 +869,58 @@ This file mounts the TAPLab network drives automatically
 { config, pkgs, ... }:
 
 {
-  # Mounts the nas drive
+  # Mounts the manuhiri share
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/nas/manuhiri" = {
     device = "//nas/manuhiri";
     fsType = "cifs";
-    options = [ "nofail" "noauto" "guest" ];
+    options = [
+      "guest"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=5"
+      "soft"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+      
+    ];
   };
 
   # Mounts the Hacklings share
   fileSystems."/mnt/nas/Hacklings" = {
     device = "//nas/awheawhe/STEaM/Hacklings";
     fsType = "cifs";
-    options = [ "nofail" "noauto" "guest" ];
+    options = [
+      "guest"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=5"
+      "soft"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+    ];
   };
 
-  # Mounts the mema share with automount options (disabled for now until credentials system is in place)
-  # fileSystems."/mnt/nas/mema" = {
-  #   device = "//nas/mema";
-  #   fsType = "cifs";
-  #   options = let
-  #       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-  #   in [ "${automount_opts},credentials=/etc/nixos/resources/smb-secrets" ];
-  # };
+  # Mounts the mema share with credentials
+  fileSystems."/mnt/nas/mema" = {
+    device = "//nas/mema";
+    fsType = "cifs";
+    options = [
+      "credentials=/etc/nixos/secrets/mema"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=5"
+      "soft"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+    ];
+  };
 }
 ````
 
@@ -1103,3 +1132,4 @@ Things I need to do before this is fully ready. In no particular order
 - ~~Set up auto-updates for the system.~~ Set up a systemd service to automatically update the system as easrly as possible every day. Could probably be changed to less frequently but this is fine for now.
 - ~~Set up more KDE settings and move to separate file.~~
 - ~~Move packages to separate file for clearer configuration.nix~~
+- ~~Get network mounts working~~ Got the guest ones set up and mema is ready for once we set up a credentials server.
