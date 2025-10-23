@@ -2,7 +2,7 @@
 
 set -e
 
-pkill msedge
+pkill msedge || true
 
 cd ~/.config/microsoft-edge
 
@@ -14,4 +14,4 @@ tar -xf Default.tar.xz
 
 rm Default.tar.xz
 
-echo "Microsoft Edge profile updated."
+microsoft-edge & exit
