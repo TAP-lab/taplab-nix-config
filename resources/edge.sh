@@ -13,3 +13,5 @@ rm -rf Default
 tar -xf Default.tar.xz 
 
 rm Default.tar.xz
+
+echo "Microsoft Edge profile updated."
