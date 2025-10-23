@@ -8,6 +8,7 @@
     fsType = "cifs";
     options = [
       "guest"
+      "rw"
       "nofail"
       "x-systemd.automount"
       "x-systemd.mount-timeout=5"
@@ -26,6 +27,7 @@
     fsType = "cifs";
     options = [
       "guest"
+      "rw"
       "nofail"
       "x-systemd.automount"
       "x-systemd.mount-timeout=5"
