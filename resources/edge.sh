@@ -14,4 +14,4 @@ tar -xf Default.tar.xz
 
 rm Default.tar.xz
 
-microsoft-edge &
+microsoft-edge & exit
