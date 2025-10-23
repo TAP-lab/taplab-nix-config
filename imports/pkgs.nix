@@ -11,7 +11,7 @@
         # Taplab apps
         pkgs.blockbench
         pkgs.arduino-ide
-        pkgs.chromium
+        pkgs.microsoft-edge
         pkgs.vlc
         pkgs.freecad
         pkgs.krita
