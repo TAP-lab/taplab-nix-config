@@ -2,11 +2,11 @@
 
 {   
   # Installs zsh and some useful plugins
-  home.packages = with pkgs; [
-    zsh
-    oh-my-zsh
-    zsh-autosuggestions
-    zsh-syntax-highlighting
+  home.packages = [
+    pkgs.zsh
+    pkgs.oh-my-zsh
+    pkgs.zsh-autosuggestions
+    pkgs.zsh-syntax-highlighting
   ];
 
   # Defines the zsh configuration file

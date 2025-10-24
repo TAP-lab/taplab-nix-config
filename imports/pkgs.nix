@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
         pkgs.git
 
         # Dependencies for the minecraft script

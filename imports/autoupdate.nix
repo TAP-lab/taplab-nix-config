@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
         pkgs.libnotify      # For notify-send command
     ];
 
