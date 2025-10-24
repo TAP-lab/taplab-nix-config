@@ -22,8 +22,8 @@
     alias nrt="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test";
     alias nrs="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch";
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
-    # alias wifi="bash /etc/nixos/resources/wifi.sh";
-    # alias mema="bash /etc/nixos/resources/mema.sh";
+    alias wifi="bash /etc/nixos/resources/wifi.sh";
+    alias mema="bash /etc/nixos/resources/mema.sh";
     alias edge="bash /etc/nixos/resources/edge.sh";
 
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
