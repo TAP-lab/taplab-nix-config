@@ -43,7 +43,6 @@
     options = [
       "credentials=/etc/nixos/secrets/mema"
       "nofail"
-      "user"
       "x-systemd.automount"
       "x-systemd.mount-timeout=5"
       "soft"
