@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # not implemented at taplab yet - for my testing
 
-URL="http://192.168.1.220:8080/wifi"
+URL="http://10.0.0.152:8080/wifi"
 
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT

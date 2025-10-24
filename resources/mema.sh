@@ -5,7 +5,7 @@ set -e
 
 sudo mkdir -p /etc/nixos/secrets
 
-URL="http://192.168.1.220:8080/mema"
+URL="http://10.0.0.152:8080/mema"
 
 echo "Downloading credentials from $URL..."
 if sudo curl -fsSL "$URL" -o /etc/nixos/secrets/mema; then
