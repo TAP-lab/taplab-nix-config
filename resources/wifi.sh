@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # not implemented at taplab yet - for my testing
 
-URL="http://10.0.0.152:8080/wifi"
+SERVER="http://192.168.1.220:8080"
 
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 
-curl -fsSL "$URL" -o "$TMPFILE"
+curl -fsSL "$SERVER/wifi" -o "$TMPFILE"
 
 SSID=$(sed -n '1p' "$TMPFILE")
 PSK=$(sed -n '2p' "$TMPFILE")
