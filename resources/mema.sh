@@ -5,7 +5,7 @@ set -e
 
 sudo mkdir -p /etc/nixos/secrets
 
-URL="http://192.168.1.220:8080/mema"
+URL="http://10.0.0.152:8080/mema"
 
 echo "Downloading credentials from $URL..."
 if sudo curl -fsSL "$URL" -o /etc/nixos/secrets/mema; then
@@ -16,7 +16,7 @@ else
 fi
 
 echo "Mounting CIFS share..."
-if sudo mount -t cifs //192.168.1.220/mema /mnt/nas/mema -o credentials=/etc/nixos/secrets/mema,uid=1000,gid=100,file_mode=0644,dir_mode=0755; then
+if sudo mount -t cifs //nas/mema /mnt/nas/mema -o credentials=/etc/nixos/secrets/mema,uid=1000,gid=100,file_mode=0644,dir_mode=0755; then
     echo "CIFS share mounted successfully."
 else
     echo "Failed to mount CIFS share." >&2

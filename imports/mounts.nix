@@ -4,7 +4,7 @@
   # Mounts the manuhiri share
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/nas/manuhiri" = {
-    device = "//192.168.1.220/manuhiri";
+    device = "//nas/manuhiri";
     fsType = "cifs";
     options = [
       "guest"
@@ -21,7 +21,7 @@
 
   # Mounts the Hacklings share
   fileSystems."/mnt/nas/Hacklings" = {
-    device = "//192.168.1.220/awheawhe/STEaM/Hacklings";
+    device = "//nas/awheawhe/STEaM/Hacklings";
     fsType = "cifs";
     options = [
       "guest"
@@ -38,7 +38,7 @@
 
   # Mounts the mema share with credentials
   fileSystems."/mnt/nas/mema" = {
-    device = "//192.168.1.220/mema";
+    device = "//nas/mema";
     fsType = "cifs";
     options = [
       "credentials=/etc/nixos/secrets/mema"

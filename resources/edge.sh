@@ -6,7 +6,7 @@ pkill msedge || true
 
 cd ~/.config/microsoft-edge
 
-curl -fsSL http://192.168.1.220:8080/edge -o Default.tar.xz
+curl -fsSL http://10.0.0.152:8080/edge -o Default.tar.xz
 
 rm -rf Default
 
