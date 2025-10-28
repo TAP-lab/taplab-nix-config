@@ -2,7 +2,7 @@
 
 set -e
 
-SERVER="http://192.168.1.220:8080"
+SERVER="http://10.0.0.241:8080"
 
 # Kills edge if it's running
 pkill msedge || true
