@@ -11,21 +11,31 @@
 
   # Defines the zsh configuration file
   home.file.".zshrc".text = ''
+
+    # Enable oh-my-zsh for themes and plugins
     export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh"
 
+    # Enables some zsh plugins
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+    # More oh-my-zsh settings
     plugins=(git)
     source $ZSH/oh-my-zsh.sh
 
+    # Aliases to update the nix config (testing purposes)
     alias nrt="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test";
     alias nrs="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch";
-    alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
-    alias wifi="bash /etc/nixos/resources/wifi.sh";
-    alias mema="bash /etc/nixos/resources/mema.sh";
-    alias edge="bash /etc/nixos/resources/edge.sh";
 
+    # Alias to pull the lastest configuration from github and update
+    alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
+
+    # Custom aliases to pull credentials over LAN
+    alias wifi="bash /etc/nixos/scripts/wifi.sh";
+    alias mema="bash /etc/nixos/scripts/mema.sh";
+    alias edge="bash /etc/nixos/scripts/edge.sh";
+
+    # Use a custom oh-my-zsh theme
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
   '';
 

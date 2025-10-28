@@ -45,7 +45,6 @@ in
 
   # Sets locale to New Zealand English
   i18n.defaultLocale = "en_NZ.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_NZ.UTF-8";
     LC_IDENTIFICATION = "en_NZ.UTF-8";
@@ -107,17 +106,21 @@ in
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
+  # Enables Avahi for network device discovery
   services.avahi.enable = true;
 
+  # Opens the ports nessecary for the 3D printers
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 80 322 990 1883 8080 8883 ];
   networking.firewall.allowedUDPPorts = [ 1990 2021 ];
 
   hardware.enableRedistributableFirmware = true;    #for testing with my server
 
+  # Enables plymouth to hide some of the boot logging
   boot.plymouth.enable = true;
   boot.plymouth.theme = "spinner";
 
+  # Configures the plymouth boot screen
   boot.kernelParams = [
     "quiet"
     "splash"
