@@ -82,6 +82,9 @@ This configuration is designed to be as automated and user-friendly as possible.
 - [Update Script (`update.sh`)](#update-script)
 - [Minecraft Offline Script (`resources/offline.sh`)](#minecraft-offline-script)
 - [Auto-update Script (`imports/autoupdate.sh`)](#auto-update-script)
+- [Edge login script (`resources/edge.sh`)](#edge-login-script)
+- [Mema credetials script (`resources/mema.sh`)](#mema-credetials-pull-script)
+- [Wifi credetials script (`resources/wifi.sh`)](#wifi-credetials-script)
 
 ### Installation Script
 ### `install.sh`
@@ -336,7 +339,7 @@ echo "Microsoft Edge profile updated."
 ```
 
 ---
-### Mema credetials pull script
+### Mema credetials script
 ### `scripts/mema.sh`
 This script attempts to pull the login for the mema nas share from a local server, as these credentials are not stored within the nix config itself (for obvious security reasons).
 ```bash
@@ -413,12 +416,15 @@ rm -f "$TMPFILE"
 ## Configuration files
 - [Hardware configuration (`hardware-configuration.nix`)](#hardware-configuration)
 - [Main configuration file (`configuration.nix`)](#main-configuration-file)
-- [Imports file (`imports/pkgs.nix`)](#imports-file)
+- [Packages file (`imports/pkgs.nix`)](#packages-file)
 - [Home Manager configuration file (`home.nix`)](#home-manager-configuration-file)
-- [Bash configuration file (`imports/bash.nix`)](#bash-configuration-file)
+- [Zsh configuration file (`imports/zsh.nix`)](#zsh-configuration-file)
 - [KDE Plasma configuration file (`imports/kde.nix`)](#kde-plasma-configuration-file)
 - [Prism Launcher configuration file (`imports/prism.nix`)](#prism-launcher-configuration-file)
 - [Auto update service configuration file (`imports/autoupdate.nix`)](#auto-update-service-configuration-file)
+- [Mounts configuration file (`imports/mounts.nix`)](#mounts-configuration-file)
+- [Ghostty configuration file (`imports/ghostty.nix`)](#ghostty-configuration-file)
+
 
 ### Hardware configuration
 ### `hardware-configuration.nix`
@@ -771,7 +777,7 @@ This file contains the Home Manager configuration for KDE Plasma, disabling some
 
     # Configures the taskbar
     xdg.configFile."plasma-org.kde.plasma.desktop-appletsrc".text = ''
-        (This config file is large and mostly unreadable, so I wont include it here. The relevant part of this file defines the taskbar layout)
+      (This file is very long and mostly irrelevant, main thing it does it define the taskbar layout)
     '';
 }
 ```
@@ -784,9 +790,73 @@ This file contains the Home Manager configuration for prism launcher, including 
 
 Here is a commented version of the prism configuration file:
 ```nix
-        [Containments][2][Applets][5][Configuration][General]
-        launchers=applications:com.mitchellh.ghostty.desktop,preferred://filemanager,preferred://browser,applications:systemsettings.desktop,file:///home/taplab/.local/share/applications/Minecraft.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/org.inkscape.Inkscape.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/code.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/OrcaSlicer.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/arduino-ide.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/org.kde.krita.desktop
+{ pkgs, ... }:
 
+{
+  # Installs prism launcher and the jdk23 package
+  home.packages = [
+    pkgs.prismlauncher
+    pkgs.jdk23
+  ];
+
+  # Ensures Prism Launcher is configured correctly, otherwise it will show the setup window when opened
+  home.file.".local/share/PrismLauncher/prismlauncher.cfg".text = ''
+    [General]
+    ApplicationTheme=Breeze
+    AutomaticJavaDownload=false
+    AutomaticJavaSwitch=true
+    ConfigVersion=1.2
+    IconTheme=pe_colored
+    JavaPath=java
+    Language=en_NZ
+    LastHostname=nixos
+    MainWindowGeometry=@ByteArray(AdnQywADAAAAAAAAAAAAAAAAAx8AAAJXAAAAAAAAAAAAAAMfAAACVwAAAAAAAAAABVYAAAAAAAAAAAAAAx8AAAJX)
+    MainWindowState="@ByteArray(AAAA/wAAAAD9AAAAAAAAAo4AAAHpAAAABAAAAAQAAAAIAAAACPwAAAADAAAAAQAAAAEAAAAeAGkAbgBzAHQAYQBuAGMAZQBUAG8AbwBsAEIAYQByAwAAAAD/////AAAAAAAAAAAAAAACAAAAAQAAABYAbQBhAGkAbgBUAG8AbwBsAEIAYQByAQAAAAD/////AAAAAAAAAAAAAAADAAAAAQAAABYAbgBlAHcAcwBUAG8AbwBsAEIAYQByAQAAAAD/////AAAAAAAAAAA=)"
+    MaxMemAlloc=8192
+    MinMemAlloc=4096
+    StatusBarVisible=true
+    ToolbarsLocked=false
+    UserAskedAboutAutomaticJavaDownload=true
+    WideBarVisibility_instanceToolBar="@ByteArray(111111111,BpBQWIumr+0ABXFEarV0R5nU0iY=)"
+  '';
+
+  # Copies the minecraft instance from the resources folder to the correct location
+  home.activation.copyPrismInstance = ''
+    mkdir -p ~/.local/share/PrismLauncher/instances
+    cp -r --no-preserve=mode,ownership /etc/nixos/resources/taplab ~/.local/share/PrismLauncher/instances
+  '';
+  
+  # Copies the accounts file to the correct location, and makes a backup of it (used for for the offline script)
+  home.activation.copyAccountFile = ''
+    mkdir -p ~/.local/share/PrismLauncher
+    cp --no-preserve=mode,ownership /etc/nixos/resources/accounts.json ~/.local/share/PrismLauncher/accounts.json
+    cp --no-preserve=mode,ownership ~/.local/share/PrismLauncher/accounts.json ~/.local/share/PrismLauncher/accounts.json_ORIGINAL
+  '';
+
+  # Copies the offline script to the correct location and makes it executable
+  home.activation.copyOfflineScript = ''
+    mkdir -p ~/.local/share/PrismLauncher/
+    cp /etc/nixos/scripts/offline.sh ~/.local/share/PrismLauncher/offline.sh
+    chmod +x ~/.local/share/PrismLauncher/offline.sh
+  '';
+
+  # Copies the grass icon for the desktop entry
+  home.activation.copyGrassIcon = ''
+    mkdir -p ~/.local/share/icons
+    cp /etc/nixos/resources/grass.png ~/.local/share/icons/grass.png
+  '';
+
+  # Creates a desktop entry for the Minecraft script
+  home.file.".local/share/applications/Minecraft.desktop".text = ''
+    [Desktop Entry]
+    Type=Application
+    Name=Minecraft
+    Exec=$HOME/.local/share/PrismLauncher/offline.sh
+    Icon=grass
+    Categories=Game;
+    Comment=Use this to play Minecraft on the TAP-Lab server.
+  '';
+}
 ```
 
 ---
