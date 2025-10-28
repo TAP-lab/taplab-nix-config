@@ -26,7 +26,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 
 # Usage Guide
 
-- Most things should be set up after the installation, wifi currently needs to be set up manually but this is easy to do in KDE Plasma.
+- Most things should be set up after the installation, wifi can be set up by running `wifi` in terminal to pull the credentials from the local server, or by setting it up manually in KDE network settings.
 - In order to update the system, you can use the `updatenix` command in the terminal. This will update the system with the latest stable version of this configuration.
     - The `updatenix` command can be run with an argument to specify a branch, for example `updatenix testing` will switch the system to the `testing` branch. 
     - `updatenix` always updates the system to the latest Nix version.
@@ -35,13 +35,15 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 - All other apps can be found in the KDE menu and should work as expected.
 - If any extra apps are required, they can be installed locally through the KDE Discover app using Flathub. Please note that apps installed this way will not be present on other laptops, and should not be expected to persist.
 - The system is set up to automatically log into the `taplab` user account without needing a password. The account still has a sudo password, for performing admin tasks (e.g updating the system). For the current testing version the password is `taplab` (this should be changed to a more secure password once this is fully rolled out).
+- The system has 3 network shares automatically mounted, manuhiri, Hacklings , and mema. The first 2 should mount automatically provided the laptop is on the TAPLab network. The mema share requires credentials to access, which can be pulled from the local server by running the `mema` command in terminal.
+- There is a script to automatically set up Microsoft Edge to log in to the TAPLab account. This can be run by executing the `edge` command in terminal. This also requires the laptop to be on the TAPLab network.
 
 
 # Full Instructions
 
 1. Download the NixOS Minimal ISO from [NixOS Downloads](https://nixos.org/download.html).
 2. Create a bootable USB drive using the NixOS ISO. You can use tools like Rufus (Windows) or `dd` (Linux/Mac).
-3. Boot the laptop to the USB by pressing F9 during startup and select the USB drive.
+3. Plug the USB into the laptop and boot from it by pressing F9 during startup and select the USB drive.
 4. Once booted into the live environment, run `sudo -i` to change to the root user.
 5. Preferably, plug the laptop into ethernet, if this is not possible set up wifi like so:
     - Run `systemctl start wpa_supplicant` to start the wifi service.
