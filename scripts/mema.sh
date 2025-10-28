@@ -5,7 +5,7 @@ set -e
 # Ensure the secrets directory exists
 sudo mkdir -p /etc/nixos/secrets
 
-SERVER="http://<server ip/name>:8080"
+SERVER="http://<192.168.1.220:8080"
 
 # Downloads the mema credentials
 echo "Downloading credentials from $SERVER..."

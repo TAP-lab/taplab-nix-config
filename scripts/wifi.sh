@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SERVER="http://<server ip/name>:8080"
+SERVER="http://192.168.1.220:8080"
 
 # Creates a temporary file to store the downloaded wifi credentials
 TMPFILE=$(mktemp)
