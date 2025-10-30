@@ -76,7 +76,7 @@ mkdir -p ~/.config/microsoft-edge
 cd ~/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile
-if curl -fsSL $SELECTED_IP/edge -o Default.tar.xz; then
+if curl -fsSL "$SELECTED_IP:8080/edge" -o Default.tar.xz; then
     echo "Edge profile downloaded successfully."
 else
     echo "Failed to download edge profile." >&2

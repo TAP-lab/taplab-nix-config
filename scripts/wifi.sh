@@ -73,7 +73,7 @@ TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 
 # Downloads the wifi credentials
-if curl -fsSL "$SERVER/wifi" -o "$TMPFILE"; then
+if curl -fsSL "$SERVER:8080/wifi" -o "$TMPFILE"; then
     echo "WiFi credentials downloaded successfully."
 else
     echo "Failed to download WiFi credentials." >&2

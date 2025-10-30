@@ -71,7 +71,7 @@ echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 sudo mkdir -p /etc/nixos/secrets
 
 # Downloads the mema credentials
-if sudo curl -fsSL "$SELECTED_IP/mema" -o /etc/nixos/secrets/mema; then
+if sudo curl -fsSL "$SELECTED_IP:8080/mema" -o /etc/nixos/secrets/mema; then
     echo "Credentials downloaded successfully."
 else
     echo "Failed to download credentials." >&2
