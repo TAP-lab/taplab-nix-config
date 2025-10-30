@@ -16,6 +16,10 @@ while [[ "$#" -gt 0 ]]; do
             IP="$2"
             shift 2
             ;;
+        --file)
+            LOOKUP_FILE="$2"
+            shift 2
+            ;;
         *)
             echo "Unknown parameter passed: $1"
             exit 1
@@ -26,10 +30,11 @@ done
 # Only allow one to be used
 if [[ -n "$SERVER" && -n "$IP" ]]; then
     echo "Error: --server and --ip cannot be used together."
-    echo "Usage: $0 [--server <name> | --ip <address>]"
+    echo "Usage: edge [--server <name> | --ip <address>]"
     exit 1
 fi
 
+# Determines which IP to use
 if [[ -n "$IP" ]]; then
     SELECTED_IP="$IP"
 elif [[ -n "$SERVER" ]]; then
