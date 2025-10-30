@@ -66,7 +66,7 @@ mkdir -p ~/.config/microsoft-edge
 cd ~/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile
-curl -fsSL $SELECTED_IP/edge -o Default.tar.xz
+curl -fsSL $SELECTED_IP:8080/edge -o Default.tar.xz
 
 # Removes the old profile
 rm -rf Default
