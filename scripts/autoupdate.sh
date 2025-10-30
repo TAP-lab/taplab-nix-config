@@ -1,5 +1,5 @@
 source /etc/profile         # Imports the PATH
-REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"   # Sets the repository URL
+REPO_URL="https://github.com/TAP-lab/taplab-nix-config.git"   # Sets the repository URL
 # Notifies the user that the update process is starting
 sudo -u taplab DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send 'NixOS Update' 'Update process starting...'
 if [ -d "/home/taplab/nix-config/.git" ]; then      # Checks if the config directory is already present

@@ -5,7 +5,7 @@ set -e
 # Ensure the secrets directory exists
 sudo mkdir -p /etc/nixos/secrets
 
-SERVER="http://10.0.0.241:8080"
+SERVER="http://credentials.nix-config.taplab.nz:8080"
 
 # Downloads the mema credentials
 echo "Downloading credentials from $SERVER..."
