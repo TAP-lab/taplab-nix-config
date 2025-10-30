@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Default server lookup file
 LOOKUP_FILE="/etc/nixos/resources/servers.txt"
 
 SERVER=""
@@ -27,14 +28,14 @@ while [[ "$#" -gt 0 ]]; do
     esac
 done
 
-# Only allow one to be used
+# Only allow either --server or --ip, not both
 if [[ -n "$SERVER" && -n "$IP" ]]; then
     echo "Error: --server and --ip cannot be used together."
     echo "Usage: edge [--server <name> | --ip <address>]"
     exit 1
 fi
 
-# Determines which IP to use
+# Determines which IP/Server to use
 if [[ -n "$IP" ]]; then
     SELECTED_IP="$IP"
     SERVER="$SELECTED_IP"
