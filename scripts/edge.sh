@@ -51,6 +51,7 @@ else
             if ping -c 1 -W 1 "$addr" >/dev/null 2>&1; then
                 echo "Selected $name ($addr)"
                 SELECTED_IP="$addr"
+                SERVER="$name"
                 break
             fi
         fi
@@ -61,7 +62,7 @@ else
     fi
 fi
 
-echo "Pulling from: $SELECTED_IP"
+echo "Pulling from server: $SERVER at $SELECTED_IP"
 
 # Kills edge if it's running
 pkill msedge || true
