@@ -3,7 +3,7 @@
 set -e
 
 # Default server lookup file
-LOOKUP_FILE="/etc/nixos/resources/servers.txt"
+LOOKUP_FILE="/etc/nixos/resources/servers.ini"
 
 SERVER=""
 IP=""
@@ -50,6 +50,8 @@ elif [[ -n "$SERVER" ]]; then
 else
     # If no server or IP is specified, ping each server in the servers.txt file (in order)
     while IFS='=' read -r name addr; do
+        # Skips empty lines and comments
+        [[ -z "$name" || "$name" =~ ^# ]] && continue
         if [[ -n "$name" && -n "$addr" ]]; then
             echo "Pinging $name ($addr)..."
             if ping -c 1 -W 1 "$addr" >/dev/null 2>&1; then
