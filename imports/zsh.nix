@@ -28,7 +28,7 @@
     alias nrs="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch";
 
     # Alias to pull the lastest configuration from github and update
-    alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
+    alias updatenix="sh <(curl https://raw.githubusercontent.com/TAP-lab/taplab-nix-config/main/update.sh)";
 
     # Custom aliases to pull credentials over LAN
     alias wifi="bash /etc/nixos/scripts/wifi.sh";

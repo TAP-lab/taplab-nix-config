@@ -2,7 +2,7 @@
 
 set -e
 
-SERVER="http://nas:8080"
+SERVER="http://credentials.nix-config.taplab.nz:8080"
 
 # Kills edge if it's running
 pkill msedge || true

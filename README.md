@@ -19,7 +19,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 5. Ensure the laptop is plugged into ethernet (wifi is harder to set up and will be covered in the [Full Instructions](#full-instructions)). Try `ping google.com` to check for internet connectivity.
 6. To use the install script, simply run the following command:
     ```bash
-    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/install.sh)
+    sh <(curl https://raw.githubusercontent.com/TAP-lab/taplab-nix-config/main/install.sh)
     ```
 7. The script should automatically install NixOS and the configuration. It will automatically reboot when finished.
 8. In case of any issues, you can refer to the [Full Instructions](#full-instructions) and the [Technical Explanation](#technical-explanation) sections below.
@@ -56,7 +56,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 6. Check for internet connectivity by running `ping google.com`. If there is no connectivity, double check the previous steps.
 7. To use the install script, simply run the following command:
     ```bash
-    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/install.sh)
+    sh <(curl https://raw.githubusercontent.com/TAP-lab/taplab-nix-config/main/install.sh)
     ```
     - The script has 2 possible flags, `--disk` and `--branch`.
     - `--disk` can be used to specify which disk to install to, for example `--disk /dev/sda`. If not specified, the script will install to /dev/sda by default.
@@ -1039,21 +1039,3 @@ The instance gets copied to the correct location during the activation phase of 
 
 ### `resources/grass.png`
 This is is simply the default minecraft icon, used for the desktop entry of the minecraft script.
-
-
-
-
-## TODO / Current Progress
-Things I need to do before this is fully ready. In no particular order
-
-- Set up a proper user account with a secure password.
-- ~~Set up Microsoft Edge with automatic login to the taplab account.~~ On hold for now
-- ~~Set up a local binary cache for faster installs/updates.~~  Managed to set up a good local demo, working version is in the [`cache-stable`](https://github.com/clamlum2/taplab-nix-config/tree/cache-stable) branch. Not gonna bother to make a cache server config as most of it is best done manually. Also added a shell alias to easily copy all of the new packages to the server on an update, requires a bit of manual work due to needing the server credentials but is required for security.
-- Comprehensive testing across all laptops and apps to ensure everything works as expected. - In progress
-- Potentially host this on a local git server for easier access.
-- ~~Set up wifi out of the box on the installed system.~~ seems unfeasible and would likely cause more issues than would be worth for saving 10s of typing the password in.
-- ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Managed to integrate it into the script, after running the prism launcher command it will check the active window, and if it contains "Prism" in the title it will automatically close it.
-- ~~Set up auto-updates for the system.~~ Set up a systemd service to automatically update the system as easrly as possible every day. Could probably be changed to less frequently but this is fine for now.
-- ~~Set up more KDE settings and move to separate file.~~
-- ~~Move packages to separate file for clearer configuration.nix~~
-- ~~Get network mounts working~~ Got the guest ones set up and mema is ready for once we set up a credentials server.

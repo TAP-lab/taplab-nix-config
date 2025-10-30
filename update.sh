@@ -2,7 +2,7 @@
 
 set -e      # Sets the script to exit on error
 
-REPO_URL="https://github.com/clamlum2/taplab-nix-config.git"        # Sets the repository URL
+REPO_URL="https://github.com/TAP-lab/taplab-nix-config.git"        # Sets the repository URL
 CONFIG_DIR="$HOME/nix-config"                                       # Sets the directory to clone the configuration to
 
 sudo echo       # Ensures that the script has sudo access
