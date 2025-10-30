@@ -5,6 +5,7 @@ let
     nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { config = { allowUnfree = true; }; };
 in
 {
+    # Enables and configures ghostty terminal emulator
     programs.ghostty = {
         enable = true;
         package = nixpkgs-unstable.ghostty;
