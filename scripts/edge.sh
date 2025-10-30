@@ -37,6 +37,7 @@ fi
 # Determines which IP to use
 if [[ -n "$IP" ]]; then
     SELECTED_IP="$IP"
+    SERVER="$SELECTED_IP"
 elif [[ -n "$SERVER" ]]; then
     SELECTED_IP=$(grep -m1 "^${SERVER}=" "$LOOKUP_FILE" | cut -d'=' -f2-)
     if [[ -z "$SELECTED_IP" ]]; then
