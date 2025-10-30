@@ -1,8 +1,62 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -e
+LOOKUP_FILE="/etc/nixos/resources/servers.txt"
 
-SERVER="http://credentials.nix-config.taplab.nz:8080"
+SERVER=""
+IP=""
+
+# Parses arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --server)
+            SERVER="$2"
+            shift 2
+            ;;
+        --ip)
+            IP="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown parameter passed: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Only allow one to be used
+if [[ -n "$SERVER" && -n "$IP" ]]; then
+    echo "Error: --server and --ip cannot be used together."
+    echo "Usage: $0 [--server <name> | --ip <address>]"
+    exit 1
+fi
+
+if [[ -n "$IP" ]]; then
+    SELECTED_IP="$IP"
+elif [[ -n "$SERVER" ]]; then
+    SELECTED_IP=$(grep -m1 "^${SERVER}=" "$LOOKUP_FILE" | cut -d'=' -f2-)
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "Server '$SERVER' not found in $LOOKUP_FILE"
+        exit 1
+    fi
+else
+    # If no server or IP is specified, ping each server in the servers.txt file (in order)
+    while IFS='=' read -r name addr; do
+        if [[ -n "$name" && -n "$addr" ]]; then
+            echo "Pinging $name ($addr)..."
+            if ping -c 1 -W 1 "$addr" >/dev/null 2>&1; then
+                echo "Selected $name ($addr)"
+                SELECTED_IP="$addr"
+                break
+            fi
+        fi
+    done < "$LOOKUP_FILE"
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "No reachable servers found in $LOOKUP_FILE"
+        exit 1
+    fi
+fi
+
+echo "Pulling from: $SELECTED_IP"
 
 # Kills edge if it's running
 pkill msedge || true
@@ -12,7 +66,7 @@ mkdir -p ~/.config/microsoft-edge
 cd ~/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile
-curl -fsSL $SERVER/edge -o Default.tar.xz
+curl -fsSL $SELECTED_IP/edge -o Default.tar.xz
 
 # Removes the old profile
 rm -rf Default
@@ -24,3 +78,4 @@ tar -xf Default.tar.xz
 rm Default.tar.xz
 
 echo "Microsoft Edge profile updated."
+
