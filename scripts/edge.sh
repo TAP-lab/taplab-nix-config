@@ -62,7 +62,7 @@ else
     fi
 fi
 
-echo "Pulling from server: $SERVER at $SELECTED_IP"
+echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
 # Kills edge if it's running
 pkill msedge || true
