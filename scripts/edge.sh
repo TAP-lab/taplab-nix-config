@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Default server lookup file
 LOOKUP_FILE="/etc/nixos/resources/servers.txt"
 
@@ -74,7 +76,12 @@ mkdir -p ~/.config/microsoft-edge
 cd ~/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile
-curl -fsSL $SELECTED_IP:8080/edge -o Default.tar.xz
+if curl -fsSL $SELECTED_IP/edge -o Default.tar.xz; then
+    echo "Edge profile downloaded successfully."
+else
+    echo "Failed to download edge profile." >&2
+    exit 1
+fi
 
 # Removes the old profile
 rm -rf Default
