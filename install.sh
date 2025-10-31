@@ -3,7 +3,7 @@
 set -e      # Sets the script to exit on error
 
 CACHE_SERVER="http://192.168.1.220:5000"
-MY_PUBKEY="local-cache:cjQnJ60NunD/sRVXLSrLSAhmxCQa1Iuo2HHI7rpFfPc="
+MY_PUBKEY="local-cache:mjTsCmS3sNXbMswfLsAcc1x7O68Qkov+XsrAtBTIWQY="
 OFFICIAL_CACHE="https://cache.nixos.org"
 OFFICIAL_PUBKEY="cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
 
