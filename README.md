@@ -1,6 +1,6 @@
 # Taplab NixOS Config
 
-This NixOS configuration is made to be used with the TAPLab laptops, with all of the necessary apps and settings pre-configured.
+This NixOS configuration is made to be used with the TAP-lab laptops, with all of the necessary apps and settings pre-configured.
 
 # Table of Contents
 
@@ -31,12 +31,12 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
     - The `updatenix` command can be run with an argument to specify a branch, for example `updatenix testing` will switch the system to the `testing` branch. 
     - `updatenix` always updates the system to the latest Nix version.
     - Rebooting after updating is recommended if a large update was performed.
-- In order to play Minecraft on the TAPLab server (for Friday sessions), simply run the `Minecraft` app from the KDE menu. Enter your username, and press enter. A prism launcher window will briefly open but should automatically close and the game will launch.
+- In order to play Minecraft on the TAP-lab server (for Friday sessions), simply run the `Minecraft` app from the KDE menu. Enter your username, and press enter. A prism launcher window will briefly open but should automatically close and the game will launch.
 - All other apps can be found in the KDE menu and should work as expected.
 - If any extra apps are required, they can be installed locally through the KDE Discover app using Flathub. Please note that apps installed this way will not be present on other laptops, and should not be expected to persist.
 - The system is set up to automatically log into the `taplab` user account without needing a password. The account still has a sudo password, for performing admin tasks (e.g updating the system). For the current testing version the password is `taplab` (this should be changed to a more secure password once this is fully rolled out).
-- The system has 3 network shares automatically mounted, manuhiri, Hacklings , and mema. The first 2 should mount automatically provided the laptop is on the TAPLab network. The mema share requires credentials to access, which can be pulled from the local server by running the `mema` command in terminal.
-- There is a script to automatically set up Microsoft Edge to log in to the TAPLab account. This can be run by executing the `edge` command in terminal. This also requires the laptop to be on the TAPLab network.
+- The system has 3 network shares automatically mounted, manuhiri, Hacklings , and mema. The first 2 should mount automatically provided the laptop is on the TAP-lab network. The mema share requires credentials to access, which can be pulled from the local server by running the `mema` command in terminal.
+- There is a script to automatically set up Microsoft Edge to log in to the TAP-lab account. This can be run by executing the `edge` command in terminal. This also requires the laptop to be on the TAP-lab network.
 
 
 # Full Instructions
@@ -90,7 +90,7 @@ This configuration is designed to be as automated and user-friendly as possible.
 
 ### Installation Script
 ### `install.sh`
-The installation script is a bash script that automates the installation of NixOS and the TAPLab configuration.
+The installation script is a bash script that automates the installation of NixOS and the TAP-lab configuration.
 This is a commented version of the installation script:
 
 ```bash
@@ -154,7 +154,7 @@ reboot      # Reboots the system
 #### Notes about the installation script:
 
 - Do not use any branch other than `main` if you want to ensure a working system. I use `testing` to push my changes to in order to test them so it very well may be broken.
-- The script assumes that the target disk is `/dev/sda` by default. As far as I have seen this is always the case on the TAPLab laptops, however i have added the `--disk` flag if this is not the case.
+- The script assumes that the target disk is `/dev/sda` by default. As far as I have seen this is always the case on the TAP-lab laptops, however i have added the `--disk` flag if this is not the case.
 - Pretty much as soon as the script is run it will wipe the target disk, so ensure there isn't anything you want to keep on it.
 - The script uses a BIOS boot setup, as despite the laptops supposedly supporting UEFI, I have had absolutely no success getting it to work.
 - The script automatically allocates 8GB of swap space, which is the correct amount for the spec of the laptops. You may want to adjust this if you are using a different machine.
@@ -228,7 +228,7 @@ fi
 ---
 ### Minecraft Offline Script
 ### `scripts/offline.sh`
-This is a custom bash script that allows users to easily set their Minecraft username and launch the game in offline mode on the TAPLab server.
+This is a custom bash script that allows users to easily set their Minecraft username and launch the game in offline mode on the TAP-lab server.
 
 Here is a commented version of the offline script:
 ```bash
@@ -258,7 +258,7 @@ sed -i "s/CHANGETHISNAME/$input_name/g" accounts.json
 # Kills any running instance of prism launcher otherwise the game does not launch
 pkill prismlauncher
 
-# Launches game and automatically connects to the TAPLab server
+# Launches game and automatically connects to the TAP-lab server
 prismlauncher -l taplab -a $input_name -s SurvivalLAB.exaroton.me &
 
 # Waits for the Prism window to appear and then closes it
@@ -308,15 +308,94 @@ fi
 ```
 
 ---
+
+### Local pull scripts
+The following scripts are credentials and other sensitive data from a local server. They have support for manually selecting a server to pull from using name or IP, and also automatically using the first reachable one.
+
+The possible script names are: `edge`, `mema`, `wifi`.
+
+Each have 3 possible arguments:
+- `--server <name>`: Specifies a server name to pull from. The server is looked up in the `servers.ini` file.
+- `--ip <address>`: Specifies an IP address to pull from.
+- `--file <lookup file path>`: Specifies a custom lookup file instead of the default.
+
+<br>
+
 ### Edge login script
 ### `scripts/edge.sh`
-This script copies a pre-configured Microsoft Edge profile to the laptop to automatically log in to the TAPLab Microsoft account.
+This script copies a pre-configured Microsoft Edge profile to the laptop to automatically log in to the TAP-lab Microsoft account.
 ```bash
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -e
 
-SERVER="http://<server ip/name>:8080"
+# Default server lookup file
+LOOKUP_FILE="/etc/nixos/resources/servers.ini"
+
+SERVER=""
+IP=""
+
+# Parses arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --server)
+            SERVER="$2"
+            shift 2
+            ;;
+        --ip)
+            IP="$2"
+            shift 2
+            ;;
+        --file)
+            LOOKUP_FILE="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown parameter passed: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Only allow either --server or --ip, not both
+if [[ -n "$SERVER" && -n "$IP" ]]; then
+    echo "Error: --server and --ip cannot be used together."
+    echo "Usage: edge [--server <name> | --ip <address>]"
+    exit 1
+fi
+
+# Determines which IP/Server to use
+if [[ -n "$IP" ]]; then
+    SELECTED_IP="$IP"
+    SERVER="$SELECTED_IP"
+elif [[ -n "$SERVER" ]]; then
+    SELECTED_IP=$(grep -m1 "^${SERVER}=" "$LOOKUP_FILE" | cut -d'=' -f2-)
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "Server '$SERVER' not found in $LOOKUP_FILE"
+        exit 1
+    fi
+else
+    # If no server or IP is specified, ping each server in the servers.txt file (in order)
+    while IFS='=' read -r name addr; do
+        # Skips empty lines and comments
+        [[ -z "$name" || "$name" =~ ^# ]] && continue
+        if [[ -n "$name" && -n "$addr" ]]; then
+            echo "Pinging $name ($addr)..."
+            if ping -c 1 -W 1 "$addr" >/dev/null 2>&1; then
+                echo "Selected $name ($addr)"
+                SELECTED_IP="$addr"
+                SERVER="$name"
+                break
+            fi
+        fi
+    done < "$LOOKUP_FILE"
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "No reachable servers found in $LOOKUP_FILE"
+        exit 1
+    fi
+fi
+
+echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
 # Kills edge if it's running
 pkill msedge || true
@@ -326,7 +405,12 @@ mkdir -p ~/.config/microsoft-edge
 cd ~/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile
-curl -fsSL $SERVER/edge -o Default.tar.xz
+if curl -fsSL "$SELECTED_IP:8080/edge" -o Default.tar.xz; then
+    echo "Edge profile downloaded successfully."
+else
+    echo "Failed to download edge profile." >&2
+    exit 1
+fi
 
 # Removes the old profile
 rm -rf Default
@@ -345,18 +429,82 @@ echo "Microsoft Edge profile updated."
 ### `scripts/mema.sh`
 This script attempts to pull the login for the mema nas share from a local server, as these credentials are not stored within the nix config itself (for obvious security reasons).
 ```bash
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -e
 
+# Default server lookup file
+LOOKUP_FILE="/etc/nixos/resources/servers.ini"
+
+SERVER=""
+IP=""
+
+# Parses arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --server)
+            SERVER="$2"
+            shift 2
+            ;;
+        --ip)
+            IP="$2"
+            shift 2
+            ;;
+        --file)
+            LOOKUP_FILE="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown parameter passed: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Only allow either --server or --ip, not both
+if [[ -n "$SERVER" && -n "$IP" ]]; then
+    echo "Error: --server and --ip cannot be used together."
+    echo "Usage: edge [--server <name> | --ip <address>]"
+    exit 1
+fi
+
+# Determines which IP/Server to use
+if [[ -n "$IP" ]]; then
+    SELECTED_IP="$IP"
+    SERVER="$SELECTED_IP"
+elif [[ -n "$SERVER" ]]; then
+    SELECTED_IP=$(grep -m1 "^${SERVER}=" "$LOOKUP_FILE" | cut -d'=' -f2-)
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "Server '$SERVER' not found in $LOOKUP_FILE"
+        exit 1
+    fi
+else
+    # If no server or IP is specified, ping each server in the servers.txt file (in order)
+    while IFS='=' read -r name addr; do
+        # Skips empty lines and comments
+        [[ -z "$name" || "$name" =~ ^# ]] && continue
+        if [[ -n "$name" && -n "$addr" ]]; then
+            echo "Pinging $name ($addr)..."
+            if ping -c 1 -W 1 "$addr" >/dev/null 2>&1; then
+                echo "Selected $name ($addr)"
+                SELECTED_IP="$addr"
+                SERVER="$name"
+                break
+            fi
+        fi
+    done < "$LOOKUP_FILE"
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "No reachable servers found in $LOOKUP_FILE"
+        exit 1
+    fi
+fi
+
+echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 # Ensure the secrets directory exists
 sudo mkdir -p /etc/nixos/secrets
 
-SERVER="http://<server ip/name>:8080"
-
 # Downloads the mema credentials
-echo "Downloading credentials from $SERVER..."
-if sudo curl -fsSL "$SERVER/mema" -o /etc/nixos/secrets/mema; then
+if sudo curl -fsSL "$SELECTED_IP:8080/mema" -o /etc/nixos/secrets/mema; then
     echo "Credentials downloaded successfully."
 else
     echo "Failed to download credentials." >&2
@@ -372,16 +520,89 @@ sudo chmod 600 /etc/nixos/secrets/mema
 ### `scripts/wifi.sh`
 This script pulls the wifi credentials from a local server(assuming the laptops is being set up using ethernet) and sets up the wifi connection using networkmanager.
 ```bash
-#!/usr/bin/env bash
+#!/bin/bash
 
-SERVER="http://<server ip/name>:8080"
+set -e
+
+# Default server lookup file
+LOOKUP_FILE="/etc/nixos/resources/servers.ini"
+
+SERVER=""
+IP=""
+
+# Parses arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --server)
+            SERVER="$2"
+            shift 2
+            ;;
+        --ip)
+            IP="$2"
+            shift 2
+            ;;
+        --file)
+            LOOKUP_FILE="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown parameter passed: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Only allow either --server or --ip, not both
+if [[ -n "$SERVER" && -n "$IP" ]]; then
+    echo "Error: --server and --ip cannot be used together."
+    echo "Usage: edge [--server <name> | --ip <address>]"
+    exit 1
+fi
+
+# Determines which IP/Server to use
+if [[ -n "$IP" ]]; then
+    SELECTED_IP="$IP"
+    SERVER="$SELECTED_IP"
+elif [[ -n "$SERVER" ]]; then
+    SELECTED_IP=$(grep -m1 "^${SERVER}=" "$LOOKUP_FILE" | cut -d'=' -f2-)
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "Server '$SERVER' not found in $LOOKUP_FILE"
+        exit 1
+    fi
+else
+    # If no server or IP is specified, ping each server in the servers.txt file (in order)
+    while IFS='=' read -r name addr; do
+        # Skips empty lines and comments
+        [[ -z "$name" || "$name" =~ ^# ]] && continue
+        if [[ -n "$name" && -n "$addr" ]]; then
+            echo "Pinging $name ($addr)..."
+            if ping -c 1 -W 1 "$addr" >/dev/null 2>&1; then
+                echo "Selected $name ($addr)"
+                SELECTED_IP="$addr"
+                SERVER="$name"
+                break
+            fi
+        fi
+    done < "$LOOKUP_FILE"
+    if [[ -z "$SELECTED_IP" ]]; then
+        echo "No reachable servers found in $LOOKUP_FILE"
+        exit 1
+    fi
+fi
+
+echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
 # Creates a temporary file to store the downloaded wifi credentials
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 
 # Downloads the wifi credentials
-curl -fsSL "$SERVER/wifi" -o "$TMPFILE"
+if curl -fsSL "$SELECTED_IP:8080/wifi" -o "$TMPFILE"; then
+    echo "WiFi credentials downloaded successfully."
+else
+    echo "Failed to download WiFi credentials." >&2
+    exit 1
+fi
 
 # Parses the SSID and PSK from the downloaded file
 SSID=$(sed -n '1p' "$TMPFILE")
@@ -777,7 +998,7 @@ This file contains the Home Manager configuration for KDE Plasma, disabling some
 ### Prism Launcher configuration file
 ### `imports/prism.nix`
 
-This file contains the Home Manager configuration for prism launcher, including the custom script to play on the TAPLab server.
+This file contains the Home Manager configuration for prism launcher, including the custom script to play on the TAP-lab server.
 
 Here is a commented version of the prism configuration file:
 ```nix
@@ -885,7 +1106,7 @@ This file defines the systemd service and timer configuration for automatically 
 ---
 ### Network mounts configuration file
 ### `imports/mounts.nix`
-This file mounts the TAPLab network drives automatically
+This file mounts the TAP-lab network drives automatically
 ````nix
 { config, pkgs, ... }:
 
@@ -960,31 +1181,39 @@ in
         nixpkgs-unstable.ghostty
     ];
 
-    # Configures ghostty settings
-    home.file.".config/ghostty/config".text = ''
-        font-family = DejaVuSansMono
-        font-size = 11
-        theme = Kitty Default
-        custom-shader-animation = always
-        custom-shader = cursor.glsl 
-        selection-foreground = cell-background
-        selection-background = cell-foreground
-        selection-clear-on-typing = true
-        cursor-color = #ffffff
-        foreground = #ffffff
-        cursor-click-to-move = true
-        focus-follows-mouse = false
+    # Enables and configures ghostty terminal emulator
+    programs.ghostty = {
+        enable = true;
+        package = nixpkgs-unstable.ghostty;
+        settings = {
+            background = "#0d1520";
+            background-opacity = 0.8;
+            font-family = "DejaVuSansMono";
+            font-size = 11;
+            theme = "Kitty Default";
+            custom-shader-animation = "always";
+            custom-shader = "cursor.glsl";
+            selection-foreground = "cell-background";
+            selection-background = "cell-foreground";
+            selection-clear-on-typing = true;
+            cursor-color = "#ffffff";
+            foreground = "#ffffff";
+            cursor-click-to-move = true;
+            focus-follows-mouse = true;
 
-        keybind = alt+arrow_down=goto_split:down
-        keybind = alt+arrow_up=goto_split:up
-        keybind = alt+arrow_left=goto_split:left
-        keybind = alt+arrow_right=goto_split:right
+            keybind = [
+                "alt+arrow_down=goto_split:down"
+                "alt+arrow_up=goto_split:up"
+                "alt+arrow_left=goto_split:left"
+                "alt+arrow_right=goto_split:right"
 
-        keybind = ctrl+alt+arrow_down=new_split:down
-        keybind = ctrl+alt+arrow_up=new_split:up
-        keybind = ctrl+alt+arrow_left=new_split:left
-        keybind = ctrl+alt+arrow_right=new_split:right
-    '';
+                "ctrl+alt+arrow_down=new_split:down"
+                "ctrl+alt+arrow_up=new_split:up"
+                "ctrl+alt+arrow_left=new_split:left"
+                "ctrl+alt+arrow_right=new_split:right"
+            ];
+        };
+    };
 
     # Creates a custom cursor shader for a trailing effect
     home.file.".config/ghostty/cursor.glsl".text = ''
@@ -1030,6 +1259,22 @@ It is simply a mostly empty prism launcher accounts file with an offline account
 }
 ```
 
+### Servers File
+### `resources/servers.ini`
+This file contains the list of local servers that the credential pull scripts can use to download the necessary files. It serves to provide a convenient way to choose the server to use without having to remember IP addresses.
+
+It uses a simple `.ini` format with `name=address` pairs.
+```ini
+default=credentials.nix-config.taplab.nz
+
+callum=192.168.1.220
+
+# Alternate server names - cant be bothered adding support for multiple names per entry
+taplab=credentials.nix-config.taplab.nz
+
+```
+
+---
 ### `resources/taplab/` folder
 This folder contains various resources used by the configuration, such as the offline script, and the accounts file.
 

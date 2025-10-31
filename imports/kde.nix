@@ -36,9 +36,7 @@
         RightButton;NoModifier=org.kde.contextmenu
 
         [Containments][1]
-        ItemGeometries-1280x800=
-        ItemGeometriesHorizontal=
-        activityId=0a6e9ea7-f9b0-4652-910e-dea41a8155be
+        activityId=c3af8419-2c72-43dc-b99b-4d8402abf1b5
         formfactor=0
         immutability=1
         lastScreen=0
@@ -91,7 +89,7 @@
         plugin=org.kde.plasma.icontasks
 
         [Containments][2][Applets][5][Configuration][General]
-        launchers=applications:com.mitchellh.ghostty.desktop,preferred://filemanager,preferred://browser,applications:systemsettings.desktop,file:///home/taplab/.local/share/applications/Minecraft.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/org.inkscape.Inkscape.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/code.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/OrcaSlicer.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/arduino-ide.desktop,file:///nix/store/6ypq9j7gr6k46kin6hxv0hqhadph617l-system-path/share/applications/org.kde.krita.desktop
+        launchers=applications:com.mitchellh.ghostty.desktop,preferred://filemanager,preferred://browser,file:///home/taplab/.local/share/applications/Minecraft.desktop,file:///nix/store/gn9ggxiqkis67jnsadvqmj6n1f3qzvd0-user-environment/share/applications/org.prismlauncher.PrismLauncher.desktop,file:///nix/store/pnjfsc7rc9vaqcwxjb6ncgvlnznh6j53-system-path/share/applications/OrcaSlicer.desktop,file:///nix/store/pnjfsc7rc9vaqcwxjb6ncgvlnznh6j53-system-path/share/applications/org.inkscape.Inkscape.desktop,file:///nix/store/pnjfsc7rc9vaqcwxjb6ncgvlnznh6j53-system-path/share/applications/arduino-ide.desktop,file:///nix/store/pnjfsc7rc9vaqcwxjb6ncgvlnznh6j53-system-path/share/applications/code.desktop
 
         [Containments][2][Applets][6]
         immutability=1
@@ -111,7 +109,7 @@
         activityId=
         formfactor=2
         immutability=1
-        lastScreen=0
+        lastScreen=-1
         location=4
         plugin=org.kde.plasma.private.systemtray
         popupHeight=432
@@ -120,11 +118,11 @@
 
         [Containments][8][Applets][10]
         immutability=1
-        plugin=org.kde.plasma.notifications
+        plugin=org.kde.plasma.cameraindicator
 
         [Containments][8][Applets][11]
         immutability=1
-        plugin=org.kde.plasma.cameraindicator
+        plugin=org.kde.plasma.clipboard
 
         [Containments][8][Applets][12]
         immutability=1
@@ -136,7 +134,7 @@
 
         [Containments][8][Applets][14]
         immutability=1
-        plugin=org.kde.plasma.keyboardindicator
+        plugin=org.kde.plasma.printmanager
 
         [Containments][8][Applets][15]
         immutability=1
@@ -147,11 +145,11 @@
 
         [Containments][8][Applets][16]
         immutability=1
-        plugin=org.kde.plasma.printmanager
+        plugin=org.kde.kscreen
 
         [Containments][8][Applets][17]
         immutability=1
-        plugin=org.kde.kscreen
+        plugin=org.kde.plasma.keyboardindicator
 
         [Containments][8][Applets][18]
         immutability=1
@@ -159,11 +157,11 @@
 
         [Containments][8][Applets][21]
         immutability=1
-        plugin=org.kde.plasma.brightness
+        plugin=org.kde.plasma.battery
 
         [Containments][8][Applets][22]
         immutability=1
-        plugin=org.kde.plasma.battery
+        plugin=org.kde.plasma.brightness
 
         [Containments][8][Applets][23]
         immutability=1
@@ -171,11 +169,11 @@
 
         [Containments][8][Applets][9]
         immutability=1
-        plugin=org.kde.plasma.clipboard
+        plugin=org.kde.plasma.notifications
 
         [Containments][8][General]
-        extraItems=org.kde.plasma.clipboard,org.kde.plasma.notifications,org.kde.plasma.cameraindicator,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.mediacontroller,org.kde.plasma.battery,org.kde.plasma.brightness,org.kde.plasma.keyboardindicator,org.kde.plasma.volume,org.kde.plasma.printmanager,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.keyboardlayout
-        knownItems=org.kde.plasma.clipboard,org.kde.plasma.notifications,org.kde.plasma.cameraindicator,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.mediacontroller,org.kde.plasma.battery,org.kde.plasma.brightness,org.kde.plasma.keyboardindicator,org.kde.plasma.volume,org.kde.plasma.printmanager,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.keyboardlayout
+        extraItems=org.kde.plasma.notifications,org.kde.plasma.mediacontroller,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.battery,org.kde.plasma.printmanager,org.kde.plasma.volume,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.brightness,org.kde.plasma.keyboardindicator,org.kde.plasma.keyboardlayout
+        knownItems=org.kde.plasma.notifications,org.kde.plasma.mediacontroller,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.battery,org.kde.plasma.printmanager,org.kde.plasma.volume,org.kde.kscreen,org.kde.plasma.networkmanagement,org.kde.plasma.brightness,org.kde.plasma.keyboardindicator,org.kde.plasma.keyboardlayout
 
         [ScreenMapping]
         itemsOnDisabledScreens=
