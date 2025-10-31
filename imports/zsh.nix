@@ -44,7 +44,7 @@
     PROMPT="%F{#116735}%n@%f"
     PROMPT+="%F{#991A36}%M%f "
     PROMPT+="%F{#116735}%~%f  "
-    PROMPT+="%(?:%F{yellow}%1{➜%} :%F{red}%1{➜%} )%f"
+    PROMPT+="%(?:%F{#116735}%1{➜%} :%F{#991A36}%1{➜%} )%f"
 
     RPROMPT='$(git_prompt_info)'
 
