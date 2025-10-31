@@ -5,17 +5,34 @@ let
     nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { config = { allowUnfree = true; }; };
 in
 {
-    home.packages = with pkgs; [
+    home.packages = [
         nixpkgs-unstable.ghostty
     ];
 
     # Configures ghostty settings
     home.file.".config/ghostty/config".text = ''
-        custom-shader = cursor.glsl
-        background = #000000
         font-family = DejaVuSansMono
         font-size = 11
-        theme = Builtin Tango Dark
+        theme = Kitty Default
+        custom-shader-animation = always
+        custom-shader = cursor.glsl 
+        selection-foreground = cell-background
+        selection-background = cell-foreground
+        selection-clear-on-typing = true
+        cursor-color = #ffffff
+        foreground = #ffffff
+        cursor-click-to-move = true
+        focus-follows-mouse = false
+
+        keybind = alt+arrow_down=goto_split:down
+        keybind = alt+arrow_up=goto_split:up
+        keybind = alt+arrow_left=goto_split:left
+        keybind = alt+arrow_right=goto_split:right
+
+        keybind = ctrl+alt+arrow_down=new_split:down
+        keybind = ctrl+alt+arrow_up=new_split:up
+        keybind = ctrl+alt+arrow_left=new_split:left
+        keybind = ctrl+alt+arrow_right=new_split:right
     '';
 
     # Creates a custom cursor shader for a trailing effect

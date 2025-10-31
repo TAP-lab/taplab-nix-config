@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
         pkgs.libnotify      # For notify-send command
     ];
 
@@ -11,7 +11,7 @@
         serviceConfig = {
         Type = "oneshot";
         # Executes the autoupdate script
-        ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/imports/autoupdate.sh";
+        ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/scripts/autoupdate.sh";
         };
     };
 
@@ -19,7 +19,7 @@
         description = "Update the system daily";
         wantedBy = [ "timers.target" ];
         timerConfig = {
-        OnCalendar = "daily";         # Runs the update daily
+        OnCalendar = "daily";         # Runs the update daily (12:00 AM)
         Persistent = true;            # Runs the job as soon as possible if it was missed
         };
     };

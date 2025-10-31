@@ -7,30 +7,41 @@ in
 
 {   
   # Installs zsh and some useful plugins
-  home.packages = with pkgs; [
-    zsh
-    oh-my-zsh
-    zsh-autosuggestions
-    zsh-syntax-highlighting
+  home.packages = [
+    pkgs.zsh
+    pkgs.oh-my-zsh
+    pkgs.zsh-autosuggestions
+    pkgs.zsh-syntax-highlighting
   ];
 
   # Defines the zsh configuration file
   home.file.".zshrc".text = ''
+
+    # Enable oh-my-zsh for themes and plugins
     export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh"
     export CACHE_SERVER="${cacheServer}"
 
+    # Enables some zsh plugins
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+    # More oh-my-zsh settings
     plugins=(git)
     source $ZSH/oh-my-zsh.sh
 
+    # Aliases to update the nix config (testing purposes)
     alias nrt="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test";
     alias nrs="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch";
-    alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
-    # alias wifi="bash /etc/nixos/resources/wifi.sh";
-    # alias mema="bash /etc/nixos/resources/mema.sh";
 
+    # Alias to pull the lastest configuration from github and update
+    alias updatenix="sh <(curl https://raw.githubusercontent.com/TAP-lab/taplab-nix-config/main/update.sh)";
+
+    # Custom aliases to pull credentials over LAN
+    alias wifi="bash /etc/nixos/scripts/wifi.sh";
+    alias mema="bash /etc/nixos/scripts/mema.sh";
+    alias edge="bash /etc/nixos/scripts/edge.sh";
+
+    # Function to sync the nix store to the local cache server
     function syncstore() {
       echo -n "SSH password: "
       read -s SSHPASS
@@ -39,6 +50,7 @@ in
       sshpass -p "$SSHPASS" ssh root@$CACHE_SERVER 'nix store sign --all --key-file /root/keys/nix-serve-private --extra-experimental-features nix-command'
     }
 
+    # Use a custom oh-my-zsh theme
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
   '';
 

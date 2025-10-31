@@ -56,7 +56,7 @@ nixos-generate-config --root /mnt       # Generates the NixOS configuration file
 
 cd /tmp                                                                             # Changes to the /tmp directory
 echo "Cloning configuration repo using branch: $BRANCH"
-git clone --branch "$BRANCH" https://github.com/clamlum2/taplab-nix-config.git      # Clones the configuration repository
+git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git      # Clones the configuration repository
 cd taplab-nix-config                                                                # Changes to the cloned repository directory
 
 rm /mnt/etc/nixos/configuration.nix 					# Removes the existing configuration file

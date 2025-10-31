@@ -19,14 +19,14 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 5. Ensure the laptop is plugged into ethernet (wifi is harder to set up and will be covered in the [Full Instructions](#full-instructions)). Try `ping google.com` to check for internet connectivity.
 6. To use the install script, simply run the following command:
     ```bash
-    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/install.sh)
+    sh <(curl https://raw.githubusercontent.com/TAP-lab/taplab-nix-config/main/install.sh)
     ```
 7. The script should automatically install NixOS and the configuration. It will automatically reboot when finished.
 8. In case of any issues, you can refer to the [Full Instructions](#full-instructions) and the [Technical Explanation](#technical-explanation) sections below.
 
 # Usage Guide
 
-- Most things should be set up after the installation, wifi currently needs to be set up manually but this is easy to do in KDE Plasma.
+- Most things should be set up after the installation, wifi can be set up by running `wifi` in terminal to pull the credentials from the local server, or by setting it up manually in KDE network settings.
 - In order to update the system, you can use the `updatenix` command in the terminal. This will update the system with the latest stable version of this configuration.
     - The `updatenix` command can be run with an argument to specify a branch, for example `updatenix testing` will switch the system to the `testing` branch. 
     - `updatenix` always updates the system to the latest Nix version.
@@ -35,13 +35,15 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 - All other apps can be found in the KDE menu and should work as expected.
 - If any extra apps are required, they can be installed locally through the KDE Discover app using Flathub. Please note that apps installed this way will not be present on other laptops, and should not be expected to persist.
 - The system is set up to automatically log into the `taplab` user account without needing a password. The account still has a sudo password, for performing admin tasks (e.g updating the system). For the current testing version the password is `taplab` (this should be changed to a more secure password once this is fully rolled out).
+- The system has 3 network shares automatically mounted, manuhiri, Hacklings , and mema. The first 2 should mount automatically provided the laptop is on the TAPLab network. The mema share requires credentials to access, which can be pulled from the local server by running the `mema` command in terminal.
+- There is a script to automatically set up Microsoft Edge to log in to the TAPLab account. This can be run by executing the `edge` command in terminal. This also requires the laptop to be on the TAPLab network.
 
 
 # Full Instructions
 
 1. Download the NixOS Minimal ISO from [NixOS Downloads](https://nixos.org/download.html).
 2. Create a bootable USB drive using the NixOS ISO. You can use tools like Rufus (Windows) or `dd` (Linux/Mac).
-3. Boot the laptop to the USB by pressing F9 during startup and select the USB drive.
+3. Plug the USB into the laptop and boot from it by pressing F9 during startup and select the USB drive.
 4. Once booted into the live environment, run `sudo -i` to change to the root user.
 5. Preferably, plug the laptop into ethernet, if this is not possible set up wifi like so:
     - Run `systemctl start wpa_supplicant` to start the wifi service.
@@ -54,7 +56,7 @@ This NixOS configuration is made to be used with the TAPLab laptops, with all of
 6. Check for internet connectivity by running `ping google.com`. If there is no connectivity, double check the previous steps.
 7. To use the install script, simply run the following command:
     ```bash
-    sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/install.sh)
+    sh <(curl https://raw.githubusercontent.com/TAP-lab/taplab-nix-config/main/install.sh)
     ```
     - The script has 2 possible flags, `--disk` and `--branch`.
     - `--disk` can be used to specify which disk to install to, for example `--disk /dev/sda`. If not specified, the script will install to /dev/sda by default.
@@ -82,6 +84,9 @@ This configuration is designed to be as automated and user-friendly as possible.
 - [Update Script (`update.sh`)](#update-script)
 - [Minecraft Offline Script (`resources/offline.sh`)](#minecraft-offline-script)
 - [Auto-update Script (`imports/autoupdate.sh`)](#auto-update-script)
+- [Edge login script (`resources/edge.sh`)](#edge-login-script)
+- [Mema credetials script (`resources/mema.sh`)](#mema-credetials-pull-script)
+- [Wifi credetials script (`resources/wifi.sh`)](#wifi-credetials-script)
 
 ### Installation Script
 ### `install.sh`
@@ -222,7 +227,7 @@ fi
 
 ---
 ### Minecraft Offline Script
-### `resources/offline.sh`
+### `scripts/offline.sh`
 This is a custom bash script that allows users to easily set their Minecraft username and launch the game in offline mode on the TAPLab server.
 
 Here is a commented version of the offline script:
@@ -275,7 +280,7 @@ done
 
 ---
 ### Auto-update Script
-### `imports/autoupdate.sh`
+### `acripts/autoupdate.sh`
 This script is called by the auto update service and is a modified version of the [`update.sh`](#update-script) script. It is designed to run as a systemd service and update the system automatically.
 ```bash
 source /etc/profile         # Imports the PATH
@@ -302,16 +307,115 @@ else
 fi
 ```
 
+---
+### Edge login script
+### `scripts/edge.sh`
+This script copies a pre-configured Microsoft Edge profile to the laptop to automatically log in to the TAPLab Microsoft account.
+```bash
+#!/usr/bin/env bash
+
+set -e
+
+SERVER="http://<server ip/name>:8080"
+
+# Kills edge if it's running
+pkill msedge || true
+
+# Ensures the config directory exists
+mkdir -p ~/.config/microsoft-edge
+cd ~/.config/microsoft-edge
+
+# Downloads the pre-configured edge profile
+curl -fsSL $SERVER/edge -o Default.tar.xz
+
+# Removes the old profile
+rm -rf Default
+
+# Extracts the new profile
+tar -xf Default.tar.xz 
+
+# Cleans up the downloaded file
+rm Default.tar.xz
+
+echo "Microsoft Edge profile updated."
+```
+
+---
+### Mema credetials script
+### `scripts/mema.sh`
+This script attempts to pull the login for the mema nas share from a local server, as these credentials are not stored within the nix config itself (for obvious security reasons).
+```bash
+#!/usr/bin/env bash
+
+set -e
+
+# Ensure the secrets directory exists
+sudo mkdir -p /etc/nixos/secrets
+
+SERVER="http://<server ip/name>:8080"
+
+# Downloads the mema credentials
+echo "Downloading credentials from $SERVER..."
+if sudo curl -fsSL "$SERVER/mema" -o /etc/nixos/secrets/mema; then
+    echo "Credentials downloaded successfully."
+else
+    echo "Failed to download credentials." >&2
+    exit 1
+fi
+
+# Makes the credentials file readable only by root
+sudo chmod 600 /etc/nixos/secrets/mema
+```
+
+---
+### Wifi credetials script
+### `scripts/wifi.sh`
+This script pulls the wifi credentials from a local server(assuming the laptops is being set up using ethernet) and sets up the wifi connection using networkmanager.
+```bash
+#!/usr/bin/env bash
+
+SERVER="http://<server ip/name>:8080"
+
+# Creates a temporary file to store the downloaded wifi credentials
+TMPFILE=$(mktemp)
+trap 'rm -f "$TMPFILE"' EXIT
+
+# Downloads the wifi credentials
+curl -fsSL "$SERVER/wifi" -o "$TMPFILE"
+
+# Parses the SSID and PSK from the downloaded file
+SSID=$(sed -n '1p' "$TMPFILE")
+PSK=$(sed -n '2p' "$TMPFILE")
+
+if [ -z "$SSID" ] || [ -z "$PSK" ]; then
+  echo "Error: Could not parse SSID or PSK from file."
+  exit 2
+fi
+
+echo "Connecting to SSID: $SSID"
+
+# Sets up the wifi connection using nmcli
+nmcli device wifi connect "$SSID" password "$PSK"
+
+echo "Connected to $SSID."
+
+# Cleans up the temporary file
+rm -f "$TMPFILE"
+```
+
 
 ## Configuration files
 - [Hardware configuration (`hardware-configuration.nix`)](#hardware-configuration)
 - [Main configuration file (`configuration.nix`)](#main-configuration-file)
-- [Imports file (`imports/pkgs.nix`)](#imports-file)
+- [Packages file (`imports/pkgs.nix`)](#packages-file)
 - [Home Manager configuration file (`home.nix`)](#home-manager-configuration-file)
-- [Bash configuration file (`imports/bash.nix`)](#bash-configuration-file)
+- [Zsh configuration file (`imports/zsh.nix`)](#zsh-configuration-file)
 - [KDE Plasma configuration file (`imports/kde.nix`)](#kde-plasma-configuration-file)
 - [Prism Launcher configuration file (`imports/prism.nix`)](#prism-launcher-configuration-file)
 - [Auto update service configuration file (`imports/autoupdate.nix`)](#auto-update-service-configuration-file)
+- [Mounts configuration file (`imports/mounts.nix`)](#mounts-configuration-file)
+- [Ghostty configuration file (`imports/ghostty.nix`)](#ghostty-configuration-file)
+
 
 ### Hardware configuration
 ### `hardware-configuration.nix`
@@ -348,6 +452,7 @@ in
   # Enables GRUB as the boot loader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
+  boot.loader.timeout = 1;
 
   # Defines basic Home Manager configuration
   home-manager.useUserPackages = true;
@@ -371,7 +476,6 @@ in
 
   # Sets locale to New Zealand English
   i18n.defaultLocale = "en_NZ.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_NZ.UTF-8";
     LC_IDENTIFICATION = "en_NZ.UTF-8";
@@ -433,11 +537,28 @@ in
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
+  # Enables Avahi for network device discovery
   services.avahi.enable = true;
 
+  # Opens the ports nessecary for the 3D printers
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 80 322 990 1883 8080 8883 ];
   networking.firewall.allowedUDPPorts = [ 1990 2021 ];
+
+  hardware.enableRedistributableFirmware = true;    #for testing with my server
+
+  # Enables plymouth to hide some of the boot logging
+  boot.plymouth.enable = true;
+  boot.plymouth.theme = "spinner";
+
+  # Configures the plymouth boot screen
+  boot.kernelParams = [
+    "quiet"
+    "splash"
+    "loglevel=3"
+    "rd.systemd.show_status=false"
+    "vt.global_cursor_default=0"
+  ];
 }
 ```
 
@@ -456,7 +577,7 @@ Any packages that are to be added permanently to the system should be added here
 { config, pkgs, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
         pkgs.git
 
         # Dependencies for the minecraft script
@@ -466,7 +587,7 @@ Any packages that are to be added permanently to the system should be added here
         # Taplab apps
         pkgs.blockbench
         pkgs.arduino-ide
-        pkgs.chromium
+        pkgs.microsoft-edge
         pkgs.vlc
         pkgs.freecad
         pkgs.krita
@@ -477,7 +598,44 @@ Any packages that are to be added permanently to the system should be added here
         pkgs.blender
         pkgs.vscode
         pkgs.luanti
+
+        # For debugging
+        pkgs.libsForQt5.kdbusaddons
     ];
+}
+```
+
+---
+### Auto update service configuration file
+### `imports/autoupdate.nix`
+
+This file defines the systemd service that automatically updates the laptops' configuration daily
+```nix
+{ config, pkgs, ... }:
+
+{
+    environment.systemPackages = [
+        pkgs.libnotify      # For notify-send command
+    ];
+
+    # Sets up a systemd service and timer to run the autoupdate script daily
+    systemd.services.nixos-update = {
+        description = "Periodic NixOS system update with notification";
+        serviceConfig = {
+        Type = "oneshot";
+        # Executes the autoupdate script
+        ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/scripts/autoupdate.sh";
+        };
+    };
+
+    systemd.timers.nixos-update = {
+        description = "Update the system daily";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+        OnCalendar = "daily";         # Runs the update daily (12:00 AM)
+        Persistent = true;            # Runs the job as soon as possible if it was missed
+        };
+    };
 }
 ```
 
@@ -520,27 +678,40 @@ This file contains the Home Manager configuration for zsh, setting up the useful
 
 {   
   # Installs zsh and some useful plugins
-  home.packages = with pkgs; [
-    zsh
-    oh-my-zsh
-    zsh-autosuggestions
-    zsh-syntax-highlighting
+  home.packages = [
+    pkgs.zsh
+    pkgs.oh-my-zsh
+    pkgs.zsh-autosuggestions
+    pkgs.zsh-syntax-highlighting
   ];
 
   # Defines the zsh configuration file
   home.file.".zshrc".text = ''
+
+    # Enable oh-my-zsh for themes and plugins
     export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh"
 
+    # Enables some zsh plugins
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+    # More oh-my-zsh settings
     plugins=(git)
     source $ZSH/oh-my-zsh.sh
 
+    # Aliases to update the nix config (testing purposes)
     alias nrt="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild test";
     alias nrs="sudo rsync -av --exclude='.git' ~/nix-config/ /etc/nixos/ && sudo nixos-rebuild switch";
+
+    # Alias to pull the lastest configuration from github and update
     alias updatenix="sh <(curl https://raw.githubusercontent.com/clamlum2/taplab-nix-config/main/update.sh)";
 
+    # Custom aliases to pull credentials over LAN
+    alias wifi="bash /etc/nixos/resources/wifi.sh";
+    alias mema="bash /etc/nixos/resources/mema.sh";
+    alias edge="bash /etc/nixos/resources/edge.sh";
+
+    # Use a custom oh-my-zsh theme
     source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
   '';
 
@@ -564,7 +735,7 @@ This file contains the Home Manager configuration for zsh, setting up the useful
 ---
 ### KDE Plasma configuration file
 ### `imports/kde.nix`
-This file contains the Home Manager configuration for KDE Plasma, mostly disabling some problematic features.
+This file contains the Home Manager configuration for KDE Plasma, disabling some unnecessary services and defining the taskbar.
 
 ```nix
 { config, pkgs, ... }:
@@ -597,154 +768,7 @@ This file contains the Home Manager configuration for KDE Plasma, mostly disabli
 
     # Configures the taskbar
     xdg.configFile."plasma-org.kde.plasma.desktop-appletsrc".text = ''
-        [ActionPlugins][0]
-        MiddleButton;NoModifier=org.kde.paste
-        RightButton;NoModifier=org.kde.contextmenu
-
-        [ActionPlugins][1]
-        RightButton;NoModifier=org.kde.contextmenu
-
-        [Containments][1]
-        activityId=470088cc-880d-4e36-b9ab-05d14e1db5c1
-        formfactor=0
-        immutability=1
-        lastScreen=0
-        location=0
-        plugin=org.kde.plasma.folder
-        wallpaperplugin=org.kde.image
-
-        [Containments][1][General]
-        positions={"1280x800":[]}
-
-        [Containments][2]
-        activityId=
-        formfactor=2
-        immutability=1
-        lastScreen=0
-        location=4
-        plugin=org.kde.panel
-        wallpaperplugin=org.kde.image
-
-        [Containments][2][Applets][19]
-        immutability=1
-        plugin=org.kde.plasma.digitalclock
-
-        [Containments][2][Applets][19][Configuration]
-        popupHeight=400
-        popupWidth=560
-
-        [Containments][2][Applets][20]
-        immutability=1
-        plugin=org.kde.plasma.showdesktop
-
-        [Containments][2][Applets][3]
-        immutability=1
-        plugin=org.kde.plasma.kickoff
-
-        [Containments][2][Applets][3][Configuration]
-        PreloadWeight=100
-        popupHeight=508
-        popupWidth=647
-
-        [Containments][2][Applets][3][Configuration][General]
-        favoritesPortedToKAstats=true
-
-        [Containments][2][Applets][4]
-        immutability=1
-        plugin=org.kde.plasma.pager
-
-        [Containments][2][Applets][5]
-        immutability=1
-        plugin=org.kde.plasma.icontasks
-
-        [Containments][2][Applets][5][Configuration][General]
-        launchers=file:///nix/store/kw7i186s5q8c3vflwws5zr5r07synhk2-user-environment/share/applications/com.mitchellh.ghostty.desktop,preferred://filemanager,preferred://browser,applications:systemsettings.desktop,file:///nix/store/5gqf746i9ga4n8xvjbcw6fp6kwycfslg-system-path/share/applications/org.kde.discover.desktop,file:///home/taplab/.local/share/applications/Minecraft.desktop,file:///nix/store/5gqf746i9ga4n8xvjbcw6fp6kwycfslg-system-path/share/applications/org.inkscape.Inkscape.desktop,file:///nix/store/5gqf746i9ga4n8xvjbcw6fp6kwycfslg-system-path/share/applications/code.desktop,file:///nix/store/5gqf746i9ga4n8xvjbcw6fp6kwycfslg-system-path/share/applications/OrcaSlicer.desktop,file:///nix/store/5gqf746i9ga4n8xvjbcw6fp6kwycfslg-system-path/share/applications/arduino-ide.desktop
-        [Containments][2][Applets][6]
-        immutability=1
-        plugin=org.kde.plasma.marginsseparator
-
-        [Containments][2][Applets][7]
-        immutability=1
-        plugin=org.kde.plasma.systemtray
-
-        [Containments][2][Applets][7][Configuration]
-        SystrayContainmentId=8
-
-        [Containments][2][General]
-        AppletOrder=3;4;5;6;7;19;20
-
-        [Containments][8]
-        activityId=
-        formfactor=2
-        immutability=1
-        lastScreen=-1
-        location=4
-        plugin=org.kde.plasma.private.systemtray
-        popupHeight=432
-        popupWidth=432
-        wallpaperplugin=org.kde.image
-
-        [Containments][8][Applets][10]
-        immutability=1
-        plugin=org.kde.plasma.notifications
-
-        [Containments][8][Applets][11]
-        immutability=1
-        plugin=org.kde.plasma.devicenotifier
-
-        [Containments][8][Applets][12]
-        immutability=1
-        plugin=org.kde.plasma.manage-inputmethod
-
-        [Containments][8][Applets][13]
-        immutability=1
-        plugin=org.kde.plasma.clipboard
-
-        [Containments][8][Applets][14]
-        immutability=1
-        plugin=org.kde.kscreen
-
-        [Containments][8][Applets][15]
-        immutability=1
-        plugin=org.kde.plasma.keyboardindicator
-
-        [Containments][8][Applets][16]
-        immutability=1
-        plugin=org.kde.plasma.keyboardlayout
-
-        [Containments][8][Applets][17]
-        immutability=1
-        plugin=org.kde.plasma.printmanager
-
-        [Containments][8][Applets][18]
-        immutability=1
-        plugin=org.kde.plasma.volume
-
-        [Containments][8][Applets][18][Configuration][General]
-        migrated=true
-
-        [Containments][8][Applets][21]
-        immutability=1
-        plugin=org.kde.plasma.battery
-
-        [Containments][8][Applets][22]
-        immutability=1
-        plugin=org.kde.plasma.brightness
-
-        [Containments][8][Applets][23]
-        immutability=1
-        plugin=org.kde.plasma.networkmanagement
-
-        [Containments][8][Applets][9]
-        immutability=1
-        plugin=org.kde.plasma.cameraindicator
-
-        [Containments][8][General]
-        extraItems=org.kde.plasma.mediacontroller,org.kde.plasma.cameraindicator,org.kde.plasma.notifications,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.clipboard,org.kde.kscreen,org.kde.plasma.battery,org.kde.plasma.keyboardindicator,org.kde.plasma.brightness,org.kde.plasma.keyboardlayout,org.kde.plasma.networkmanagement,org.kde.plasma.printmanager,org.kde.plasma.volume
-        knownItems=org.kde.plasma.mediacontroller,org.kde.plasma.cameraindicator,org.kde.plasma.notifications,org.kde.plasma.devicenotifier,org.kde.plasma.manage-inputmethod,org.kde.plasma.clipboard,org.kde.kscreen,org.kde.plasma.battery,org.kde.plasma.keyboardindicator,org.kde.plasma.brightness,org.kde.plasma.keyboardlayout,org.kde.plasma.networkmanagement,org.kde.plasma.printmanager,org.kde.plasma.volume
-
-        [ScreenMapping]
-        itemsOnDisabledScreens=
+      (This file is very long and mostly irrelevant, main thing it does it define the taskbar layout)
     '';
 }
 ```
@@ -759,10 +783,7 @@ Here is a commented version of the prism configuration file:
 ```nix
 { pkgs, ... }:
 
-# Defines the path to the java binary
-let
-  javaPath = "${pkgs.jdk23}/bin/java";
-in {
+{
   # Installs prism launcher and the jdk23 package
   home.packages = [
     pkgs.prismlauncher
@@ -806,7 +827,7 @@ in {
   # Copies the offline script to the correct location and makes it executable
   home.activation.copyOfflineScript = ''
     mkdir -p ~/.local/share/PrismLauncher/
-    cp /etc/nixos/resources/offline.sh ~/.local/share/PrismLauncher/offline.sh
+    cp /etc/nixos/scripts/offline.sh ~/.local/share/PrismLauncher/offline.sh
     chmod +x ~/.local/share/PrismLauncher/offline.sh
   '';
 
@@ -861,8 +882,8 @@ This file defines the systemd service and timer configuration for automatically 
     };
 }
 ```
-
-### Netowrks mounts configuration file
+---
+### Network mounts configuration file
 ### `imports/mounts.nix`
 This file mounts the TAPLab network drives automatically
 ````nix
@@ -884,7 +905,6 @@ This file mounts the TAPLab network drives automatically
       "gid=100"  
       "file_mode=0644"
       "dir_mode=0755"
-      
     ];
   };
 
@@ -924,6 +944,7 @@ This file mounts the TAPLab network drives automatically
 }
 ````
 
+---
 ### Ghostty configuration file
 ### `imports/ghostty.nix`
 This file contains the configuration for my ghostty setup, mostly there for me to use while making this setup
@@ -935,139 +956,42 @@ let
     nixpkgs-unstable = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { config = { allowUnfree = true; }; };
 in
 {
-    home.packages = with pkgs; [
+    home.packages = [
         nixpkgs-unstable.ghostty
     ];
 
     # Configures ghostty settings
     home.file.".config/ghostty/config".text = ''
-        custom-shader = cursor.glsl
-        background = #000000
         font-family = DejaVuSansMono
         font-size = 11
-        theme = Builtin Tango Dark
+        theme = Kitty Default
+        custom-shader-animation = always
+        custom-shader = cursor.glsl 
+        selection-foreground = cell-background
+        selection-background = cell-foreground
+        selection-clear-on-typing = true
+        cursor-color = #ffffff
+        foreground = #ffffff
+        cursor-click-to-move = true
+        focus-follows-mouse = false
+
+        keybind = alt+arrow_down=goto_split:down
+        keybind = alt+arrow_up=goto_split:up
+        keybind = alt+arrow_left=goto_split:left
+        keybind = alt+arrow_right=goto_split:right
+
+        keybind = ctrl+alt+arrow_down=new_split:down
+        keybind = ctrl+alt+arrow_up=new_split:up
+        keybind = ctrl+alt+arrow_left=new_split:left
+        keybind = ctrl+alt+arrow_right=new_split:right
     '';
 
     # Creates a custom cursor shader for a trailing effect
     home.file.".config/ghostty/cursor.glsl".text = ''
-        float getSdfRectangle(in vec2 p, in vec2 xy, in vec2 b)
-        {
-            vec2 d = abs(p - xy) - b;
-            return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
-        }
-
-        // Based on Inigo Quilez's 2D distance functions article: https://iquilezles.org/articles/distfunctions2d/
-        // Potencially optimized by eliminating conditionals and loops to enhance performance and reduce branching
-
-        float seg(in vec2 p, in vec2 a, in vec2 b, inout float s, float d) {
-            vec2 e = b - a;
-            vec2 w = p - a;
-            vec2 proj = a + e * clamp(dot(w, e) / dot(e, e), 0.0, 1.0);
-            float segd = dot(p - proj, p - proj);
-            d = min(d, segd);
-
-            float c0 = step(0.0, p.y - a.y);
-            float c1 = 1.0 - step(0.0, p.y - b.y);
-            float c2 = 1.0 - step(0.0, e.x * w.y - e.y * w.x);
-            float allCond = c0 * c1 * c2;
-            float noneCond = (1.0 - c0) * (1.0 - c1) * (1.0 - c2);
-            float flip = mix(1.0, -1.0, step(0.5, allCond + noneCond));
-            s *= flip;
-            return d;
-        }
-
-        float getSdfParallelogram(in vec2 p, in vec2 v0, in vec2 v1, in vec2 v2, in vec2 v3) {
-            float s = 1.0;
-            float d = dot(p - v0, p - v0);
-
-            d = seg(p, v0, v3, s, d);
-            d = seg(p, v1, v0, s, d);
-            d = seg(p, v2, v1, s, d);
-            d = seg(p, v3, v2, s, d);
-
-            return s * sqrt(d);
-        }
-
-        vec2 norm(vec2 value, float isPosition) {
-            return (value * 2.0 - (iResolution.xy * isPosition)) / iResolution.y;
-        }
-
-        float antialising(float distance) {
-            return 1. - smoothstep(0., norm(vec2(2., 2.), 0.).x, distance);
-        }
-
-        float determineStartVertexFactor(vec2 a, vec2 b) {
-            // Conditions using step
-            float condition1 = step(b.x, a.x) * step(a.y, b.y); // a.x < b.x && a.y > b.y
-            float condition2 = step(a.x, b.x) * step(b.y, a.y); // a.x > b.x && a.y < b.y
-
-            // If neither condition is met, return 1 (else case)
-            return 1.0 - max(condition1, condition2);
-        }
-
-        vec2 getRectangleCenter(vec4 rectangle) {
-            return vec2(rectangle.x + (rectangle.z / 2.), rectangle.y - (rectangle.w / 2.));
-        }
-        float ease(float x) {
-            return pow(1.0 - x, 3.0);
-        }
-
-        const vec4 TRAIL_COLOR = vec4(1., 1., 1., 1.0);
-        const float DURATION = 0.25; //IN SECONDS
-
-        void mainImage(out vec4 fragColor, in vec2 fragCoord)
-        {
-            fragColor = texture(iChannel0, fragCoord.xy / iResolution.xy);
-            // Normalization for fragCoord to a space of -1 to 1;
-            vec2 vu = norm(fragCoord, 1.);
-            vec2 offsetFactor = vec2(-.5, 0.5);
-
-            // Normalization for cursor position and size;
-            // cursor xy has the postion in a space of -1 to 1;
-            // zw has the width and height
-            vec4 currentCursor = vec4(norm(iCurrentCursor.xy, 1.), norm(iCurrentCursor.zw, 0.));
-            vec4 previousCursor = vec4(norm(iPreviousCursor.xy, 1.), norm(iPreviousCursor.zw, 0.));
-
-            // When drawing a parellelogram between cursors for the trail i need to determine where to start at the top-left or top-right vertex of the cursor
-            float vertexFactor = determineStartVertexFactor(currentCursor.xy, previousCursor.xy);
-            float invertedVertexFactor = 1.0 - vertexFactor;
-
-            // Set every vertex of my parellogram
-            vec2 v0 = vec2(currentCursor.x + currentCursor.z * vertexFactor, currentCursor.y - currentCursor.w);
-            vec2 v1 = vec2(currentCursor.x + currentCursor.z * invertedVertexFactor, currentCursor.y);
-            vec2 v2 = vec2(previousCursor.x + currentCursor.z * invertedVertexFactor, previousCursor.y);
-            vec2 v3 = vec2(previousCursor.x + currentCursor.z * vertexFactor, previousCursor.y - previousCursor.w);
-
-            float sdfCurrentCursor = getSdfRectangle(vu, currentCursor.xy - (currentCursor.zw * offsetFactor), currentCursor.zw * 0.5);
-            float sdfTrail = getSdfParallelogram(vu, v0, v1, v2, v3);
-
-            float progress = clamp((iTime - iTimeCursorChange) / DURATION, 0.0, 1.0);
-            float easedProgress = ease(progress);
-            // Distance between cursors determine the total length of the parallelogram;
-            vec2 centerCC = getRectangleCenter(currentCursor);
-            vec2 centerCP = getRectangleCenter(previousCursor);
-            float lineLength = distance(centerCC, centerCP);
-
-            vec4 newColor = vec4(fragColor);
-            // Compute fade factor based on distance along the trail
-            float fadeFactor = 1.0 - smoothstep(lineLength, sdfCurrentCursor, easedProgress * lineLength);
-
-            // Apply fading effect to trail color
-            vec4 fadedTrailColor = TRAIL_COLOR * fadeFactor;
-
-            // Blend trail with fade effect
-            newColor = mix(newColor, fadedTrailColor, antialising(sdfTrail));
-            // Draw current cursor
-            newColor = mix(newColor, TRAIL_COLOR, antialising(sdfCurrentCursor));
-            newColor = mix(newColor, fragColor, step(sdfCurrentCursor, 0.));
-            fragColor = mix(fragColor, newColor, step(sdfCurrentCursor, easedProgress * lineLength));
-        }
-
+        (large shader to animate the cursor goes here, not important for documentation)
     '';
 }
 ```
-
-<br>
 
 ## Resources
 
@@ -1115,21 +1039,3 @@ The instance gets copied to the correct location during the activation phase of 
 
 ### `resources/grass.png`
 This is is simply the default minecraft icon, used for the desktop entry of the minecraft script.
-
-
-
-
-## TODO / Current Progress
-Things I need to do before this is fully ready. In no particular order
-
-- Set up a proper user account with a secure password.
-- ~~Set up Microsoft Edge with automatic login to the taplab account.~~ On hold for now
-- ~~Set up a local binary cache for faster installs/updates.~~  Managed to set up a good local demo, working version is in the [`cache-stable`](https://github.com/clamlum2/taplab-nix-config/tree/cache-stable) branch. Not gonna bother to make a cache server config as most of it is best done manually. Also added a shell alias to easily copy all of the new packages to the server on an update, requires a bit of manual work due to needing the server credentials but is required for security.
-- Comprehensive testing across all laptops and apps to ensure everything works as expected. - In progress
-- Potentially host this on a local git server for easier access.
-- ~~Set up wifi out of the box on the installed system.~~ seems unfeasible and would likely cause more issues than would be worth for saving 10s of typing the password in.
-- ~~Find the best solution for hiding/notifying about the prism launcher login prompt.~~ Managed to integrate it into the script, after running the prism launcher command it will check the active window, and if it contains "Prism" in the title it will automatically close it.
-- ~~Set up auto-updates for the system.~~ Set up a systemd service to automatically update the system as easrly as possible every day. Could probably be changed to less frequently but this is fine for now.
-- ~~Set up more KDE settings and move to separate file.~~
-- ~~Move packages to separate file for clearer configuration.nix~~
-- ~~Get network mounts working~~ Got the guest ones set up and mema is ready for once we set up a credentials server.

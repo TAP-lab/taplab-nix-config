@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
         pkgs.git
 
         # Dependencies for the minecraft script
@@ -11,7 +11,7 @@
         # Taplab apps
         pkgs.blockbench
         pkgs.arduino-ide
-        pkgs.chromium
+        pkgs.microsoft-edge
         pkgs.vlc
         pkgs.freecad
         pkgs.krita
@@ -22,5 +22,8 @@
         pkgs.blender
         pkgs.vscode
         pkgs.luanti
+
+        # For debugging
+        pkgs.libsForQt5.kdbusaddons
     ];
 }

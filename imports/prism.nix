@@ -44,7 +44,7 @@
   # Copies the offline script to the correct location and makes it executable
   home.activation.copyOfflineScript = ''
     mkdir -p ~/.local/share/PrismLauncher/
-    cp /etc/nixos/resources/offline.sh ~/.local/share/PrismLauncher/offline.sh
+    cp /etc/nixos/scripts/offline.sh ~/.local/share/PrismLauncher/offline.sh
     chmod +x ~/.local/share/PrismLauncher/offline.sh
   '';
 
