@@ -41,9 +41,9 @@
 
   # Defines a custom oh-my-zsh theme
   home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''
-    PROMPT="%F{cyan}%n@%f"
-    PROMPT+="%{$fg[blue]%}%M "
-    PROMPT+="%{$fg[cyan]%}%~%  "
+    PROMPT="%F{#116735}%n@%f"
+    PROMPT+="%{$fg[#991A36]%}%M "
+    PROMPT+="%{$fg[#116735]%}%~%  "
     PROMPT+="%(?:%{$fg[green]%}%1{➜%} :%{$fg[red]%}%1{➜%} )%{$reset_color%}"
 
     RPROMPT='$(git_prompt_info)'
