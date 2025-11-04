@@ -41,16 +41,16 @@
 
   # Defines a custom oh-my-zsh theme
   home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''
-    PROMPT="%F{cyan}%n@%f"
-    PROMPT+="%{$fg[blue]%}%M "
-    PROMPT+="%{$fg[cyan]%}%~%  "
-    PROMPT+="%(?:%{$fg[green]%}%1{➜%} :%{$fg[red]%}%1{➜%} )%{$reset_color%}"
+    PROMPT="%F{#116735}%n@%f"
+    PROMPT+="%F{#991A36}%M%f "
+    PROMPT+="%F{#116735}%~%f  "
+    PROMPT+="%(?:%F{#116735}%1{➜%} :%F{#991A36}%1{➜%} )%f"
 
     RPROMPT='$(git_prompt_info)'
 
-    ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[cyan]%}git:(%{$fg[blue]%}"
-    ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
-    ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[cyan]%}) %{$fg[yellow]%}%1{✗%}"
-    ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[cyan]%})"
+    ZSH_THEME_GIT_PROMPT_PREFIX="%F{135}git:(%F{133}"
+    ZSH_THEME_GIT_PROMPT_SUFFIX="%f "
+    ZSH_THEME_GIT_PROMPT_DIRTY="%F{135}) %F{221}%1{✗%}%f"
+    ZSH_THEME_GIT_PROMPT_CLEAN="%F{135})%f"
   '';
 }

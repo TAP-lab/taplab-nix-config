@@ -10,8 +10,7 @@ in
         enable = true;
         package = nixpkgs-unstable.ghostty;
         settings = {
-            background = "#0d1520";
-            background-opacity = 0.8;
+            background = "#000000";
             font-family = "DejaVuSansMono";
             font-size = 11;
             theme = "Kitty Default";
