@@ -25,7 +25,7 @@ sed -i "s/CHANGETHISNAME/$input_name/g" accounts.json
 pkill prismlauncher
 
 # Launches game and automatically connects to the TAPLab server
-prismlauncher -l taplab -a $input_name -s SurvivalLAB.exaroton.me &
+prismlauncher -l taplab -a $input_name -s 10.0.0.181 &
 
 # Waits for the Prism window to appear and then closes it
 while true; do                                          # Loop indefinitely
