@@ -24,4 +24,16 @@
     name = "Adwaita";
     package = pkgs.adwaita-icon-theme;
   };
+
+  home.file."/.config/gtk-3.0/bookmarks".text = ''
+    file:///mnt/nas/Hacklings Hacklings
+    file:///mnt/nas/manuhiri manuhiri
+    file:///mnt/nas/mema mema
+  '';
+
+  home.file."/.config/gtk-4.0/bookmarks".text = ''
+    file:///mnt/nas/Hacklings Hacklings
+    file:///mnt/nas/manuhiri manuhiri
+    file:///mnt/nas/mema mema
+  '';
 } 
