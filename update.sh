@@ -31,7 +31,7 @@ if [ -d "$CONFIG_DIR/.git" ]; then                                              
     fi
     git pull --rebase origin "$BRANCH"                              # Pulls the latest changes from the target branch
     sudo rsync -av --exclude='.git' "$CONFIG_DIR/" /etc/nixos/      # Copies the configuration files to /etc/nixos
-    sudo nixos-rebuild switch --upgrade                             # Rebuilds and updates the system with the latest configuration
+    sudo nixos-rebuild switch                                       # Rebuilds and updates the system with the latest configuration
     echo
     echo "Update complete!"
     echo "Please reboot if drivers/kernel were updated."
@@ -40,7 +40,7 @@ else        # If the config directory is not present
     git clone --branch "$BRANCH" "$REPO_URL" "$CONFIG_DIR"      # Clones the configuration repository
     cd "$CONFIG_DIR"                                            # Changes to the config directory
     sudo rsync -av --exclude='.git' "$CONFIG_DIR/" /etc/nixos/  # Copies the configuration files to /etc/nixos
-    sudo nixos-rebuild switch --upgrade         # Rebuilds and updates the system with the latest configuration
+    sudo nixos-rebuild switch                                   # Rebuilds and updates the system with the latest configuration
     echo
     echo
     echo "Update complete!"
