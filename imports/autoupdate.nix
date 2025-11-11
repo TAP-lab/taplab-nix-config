@@ -11,7 +11,7 @@
         serviceConfig = {
         Type = "oneshot";
         # Executes the autoupdate script
-        ExecStart = "${pkgs.bash}/bin/bash /home/taplab/nix-config/scripts/autoupdate.sh";
+        ExecStart = "${pkgs.bash}/bin/bash /etc/nixos/scripts/autoupdate.sh";
         };
     };
 

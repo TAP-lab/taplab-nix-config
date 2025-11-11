@@ -16,6 +16,7 @@
     ./imports/ghostty.nix
   ];
 
+  # GTK Icon Theme Configuration
   home.packages = [
     pkgs.adwaita-icon-theme
   ];
@@ -25,6 +26,7 @@
     package = pkgs.adwaita-icon-theme;
   };
 
+  # GTK Bookmarks Configuration
   home.file."/.config/gtk-3.0/bookmarks".text = ''
     file:///mnt/nas/Hacklings Hacklings
     file:///mnt/nas/manuhiri manuhiri
