@@ -7,12 +7,12 @@ if [ -d "/home/taplab/nix-config/.git" ]; then      # Checks if the config direc
     git pull --rebase origin "$BRANCH"              # Pulls the latest changes from the target branch
     # Copies the new configuration files
     rsync -av --exclude='.git' /home/taplab/nix-config/ /etc/nixos/
-    nixos-rebuild switch --upgrade && SUCCESS=true || SUCCESS=false         # Rebuilds the system
+    nixos-rebuild switch && SUCCESS=true || SUCCESS=false         # Rebuilds the system
 else
     git clone --branch main "$REPO_URL" /home/taplab/nix-config         # Clones the configuration repository
     # Copies the configuration files
     rsync -av --exclude='.git' /home/taplab/nix-config/ /etc/nixos/
-    nixos-rebuild switch --upgrade && SUCCESS=true || SUCCESS=false         # Rebuilds the system
+    nixos-rebuild switch && SUCCESS=true || SUCCESS=false         # Rebuilds the system
 fi
 if [ "$SUCCESS" = true ]; then      # Checks if the rebuild was successful
     # Notifies the user that the update process was successful
