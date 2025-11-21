@@ -27,6 +27,6 @@
         # For debugging
         pkgs.libsForQt5.kdbusaddons
 
-        (import ./gb-studio.nix)
+        (import ./gb-studio.nix { inherit pkgs; })
     ];
 }
