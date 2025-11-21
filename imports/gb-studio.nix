@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, icon }:
+{ pkgs ? import <nixpkgs> {} }:
 
 pkgs.stdenv.mkDerivation {
   pname = "gb-studio";
