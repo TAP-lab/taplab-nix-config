@@ -23,6 +23,7 @@
         pkgs.blender
         pkgs.vscode
         pkgs.luanti
+        pkgs.pixelorama
 
         # For debugging
         pkgs.libsForQt5.kdbusaddons
