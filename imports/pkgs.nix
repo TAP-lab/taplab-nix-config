@@ -3,6 +3,7 @@
 {
     environment.systemPackages = [
         pkgs.git
+        pkgs.appimage-run
 
         # Dependencies for the minecraft script
         pkgs.zenity
@@ -25,5 +26,7 @@
 
         # For debugging
         pkgs.libsForQt5.kdbusaddons
+
+        (import ./imports/gb-studio.nix { inherit pkgs; icon = ./resources/icons/gb-studio.png; })
     ];
 }
