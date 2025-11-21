@@ -27,6 +27,6 @@
         # For debugging
         pkgs.libsForQt5.kdbusaddons
 
-        (import ./imports/gb-studio.nix { inherit pkgs; icon = ./resources/icons/gb-studio.png; })
+        (import ./gb-studio.nix { inherit pkgs; icon = ./../resources/icons/gb-studio.png; })
     ];
 }
