@@ -28,8 +28,6 @@ pkgs.stdenv.mkDerivation {
     Terminal=false
     Categories=Development;Game;
     EOF
-
-    cp ${icon} $out/share/pixmaps/gb-studio.png
   '';
   meta = with pkgs.lib; {
     description = "GB Studio (AppImage wrapper)";
