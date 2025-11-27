@@ -30,6 +30,19 @@
     x11.enable = true;
   };
 
+  home.sessionVariables = {
+    XCURSOR_THEME = "breeze_cursors";
+    XCURSOR_SIZE  = "24";
+  };
+
+  programs.dconf.enable = true;
+  programs.dconf.settings = {
+    "org/cinnamon/desktop/interface" = {
+      "cursor-theme" = "breeze_cursors";
+      "cursor-size"  = 24;
+    };
+  };
+
   gtk.iconTheme = {
     name = "Adwaita";
     package = pkgs.adwaita-icon-theme;
