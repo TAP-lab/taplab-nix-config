@@ -57,15 +57,6 @@ in
     LC_TIME = "en_NZ.UTF-8";
   };
 
-  # Enables the X11 windowing system. Not sure if this is actually needed for KDE Plasma - might be for xwayland
-  services.xserver.enable = true;
-
-  # Configures the keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
   # Enables the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
@@ -129,5 +120,17 @@ in
     "vt.global_cursor_default=0"
   ];
 
-  services.xserver.desktopManager.cinnamon.enable = true;
+  services.xserver = {
+    enable = true;
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
+    desktopManager.cinnamon.enable = true;
+    displayManager.lightdm.enable = true;
+  };
+
+  environment.systemPackages = [
+    slick-greeter
+  ];
 }
