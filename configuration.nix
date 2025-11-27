@@ -57,12 +57,6 @@ in
     LC_TIME = "en_NZ.UTF-8";
   };
 
-  # Enables the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-  services.displayManager.autoLogin.enable = true;
-  services.displayManager.autoLogin.user = "taplab";
-
   # Enables CUPS to print documents. No idea how well this works
   services.printing.enable = true;
 
@@ -127,7 +121,11 @@ in
       variant = "";
     };
     desktopManager.cinnamon.enable = true;
-    displayManager.lightdm.enable = true;
+    displayManager = {
+      lightdm.enable = true;
+      autoLogin.enable = true;
+      autoLogin.user = "taplab";
+    };
   };
 
   environment.systemPackages = [
