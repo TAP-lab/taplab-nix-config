@@ -123,8 +123,9 @@ in
     desktopManager.cinnamon.enable = true;
     displayManager = {
       lightdm.enable = true;
-      # autoLogin.enable = true;
-      # autoLogin.user = "taplab";
+      autoLogin.enable = true;
+      autoLogin.user = "taplab";
+      defaultSession = "cinnamon-wayland";
     };
   };
 
