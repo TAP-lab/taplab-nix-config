@@ -131,6 +131,6 @@ in
   };
 
   environment.systemPackages = [
-    lightdm-slick-greeter
+    pkgs.lightdm-slick-greeter
   ];
 }
