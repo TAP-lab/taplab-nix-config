@@ -19,28 +19,7 @@
   # GTK Icon Theme Configuration
   home.packages = [
     pkgs.adwaita-icon-theme
-    pkgs.kdePackages.breeze
   ];
-
-  home.pointerCursor = {
-    name = "breeze_cursors";
-    package = pkgs.kdePackages.breeze;
-    size = 24;
-    gtk.enable = true;
-    x11.enable = true;
-  };
-
-  home.sessionVariables = {
-    XCURSOR_THEME = "breeze_cursors";
-    XCURSOR_SIZE  = "24";
-  };
-
-  dconf.settings = {
-    "org/cinnamon/desktop/interface" = {
-      "cursor-theme" = "breeze_cursors";
-      "cursor-size"  = 24;
-    };
-  };
 
   gtk.iconTheme = {
     name = "Adwaita";
