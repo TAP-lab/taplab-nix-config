@@ -35,7 +35,7 @@
     XCURSOR_SIZE  = "24";
   };
 
-  programs.dconf.settings = {
+  dconf.settings = {
     "org/cinnamon/desktop/interface" = {
       "cursor-theme" = "breeze_cursors";
       "cursor-size"  = 24;
