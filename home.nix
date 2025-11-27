@@ -9,7 +9,7 @@
 
 
   # Imports other nix files for modular configuration
-  imports = [ 
+  imports = [
     ./imports/prism.nix
     ./imports/kde.nix
     ./imports/zsh.nix
@@ -19,7 +19,16 @@
   # GTK Icon Theme Configuration
   home.packages = [
     pkgs.adwaita-icon-theme
+    pkgs.kdePackages.breeze
   ];
+
+  home.pointerCursor = {
+    name = "breeze_cursors";
+    package = pkgs.kdePackages.breeze;
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
+  };
 
   gtk.iconTheme = {
     name = "Adwaita";
@@ -38,4 +47,4 @@
     file:///mnt/nas/manuhiri manuhiri
     file:///mnt/nas/mema mema
   '';
-} 
+}
