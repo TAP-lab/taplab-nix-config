@@ -114,13 +114,15 @@ in
     "vt.global_cursor_default=0"
   ];
 
-  services.xserver = {
-    enable = true;
-    xkb = {
-      layout = "us";
-      variant = "";
+  services ={
+    xserver = {
+      enable = true;
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
+      desktopManager.cinnamon.enable = true;
     };
-    desktopManager.cinnamon.enable = true;
     displayManager = {
       lightdm.enable = true;
       autoLogin.enable = true;
