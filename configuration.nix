@@ -132,4 +132,9 @@ in
   environment.systemPackages = [
     pkgs.lightdm-slick-greeter
   ];
+
+  services.printing = {
+    enable = true;
+    drivers = [ pkgs.epson-escpr pkgs.epson-escpr2 ];
+  };
 }
