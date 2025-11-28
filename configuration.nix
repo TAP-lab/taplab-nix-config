@@ -57,9 +57,6 @@ in
     LC_TIME = "en_NZ.UTF-8";
   };
 
-  # Enables CUPS to print documents. No idea how well this works
-  services.printing.enable = true;
-
   # Enables sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
