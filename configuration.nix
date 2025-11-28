@@ -57,6 +57,24 @@ in
     LC_TIME = "en_NZ.UTF-8";
   };
 
+  # Enables the X11 windowing system. Not sure if this is actually needed for KDE Plasma - might be for xwayland
+  services.xserver.enable = true;
+
+  # Configures the keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  # Enables the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
+  services.displayManager.autoLogin.enable = true;
+  services.displayManager.autoLogin.user = "taplab";
+
+  # Enables CUPS to print documents. No idea how well this works
+  services.printing.enable = true;
+
   # Enables sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -111,27 +129,5 @@ in
     "vt.global_cursor_default=0"
   ];
 
-  services.xserver = {
-    enable = true;
-    xkb = {
-      layout = "us";
-      variant = "";
-    };
-    desktopManager.cinnamon.enable = true;
-    displayManager = {
-      lightdm.enable = true;
-      autoLogin.enable = true;
-      autoLogin.user = "taplab";
-      defaultSession = "cinnamon-wayland";
-    };
-  };
-
-  environment.systemPackages = [
-    pkgs.lightdm-slick-greeter
-  ];
-
-  services.printing = {
-    enable = true;
-    drivers = [ pkgs.epson-escpr pkgs.epson-escpr2 ];
-  };
+  services.xserver.desktopManager.cinnamon.enable = true;
 }
