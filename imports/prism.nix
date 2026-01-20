@@ -4,7 +4,7 @@
   # Installs prism launcher and the jdk23 package
   home.packages = [
     pkgs.prismlauncher
-    pkgs.jdk23
+    pkgs.jdk25
   ];
 
   # Ensures Prism Launcher is configured correctly, otherwise it will show the setup window when opened
@@ -33,7 +33,7 @@
     mkdir -p ~/.local/share/PrismLauncher/instances
     cp -r --no-preserve=mode,ownership /etc/nixos/resources/taplab ~/.local/share/PrismLauncher/instances
   '';
-  
+
   # Copies the accounts file to the correct location, and makes a backup of it (used for for the offline script)
   home.activation.copyAccountFile = ''
     mkdir -p ~/.local/share/PrismLauncher
