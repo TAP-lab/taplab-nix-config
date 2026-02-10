@@ -146,7 +146,7 @@ fi
 
 mkdir -p /mnt/etc/nixos
 
-git clone --branch "$BRANCH" https://github.com/clamlum2/nix-config.git /mnt/etc/nixos
+git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/etc/nixos
 
 nixos-generate-config --root /mnt
 
