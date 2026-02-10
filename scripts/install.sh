@@ -78,7 +78,7 @@ parted /dev/sda -- mkpart primary 1MB -8GB
 if [[ "$SWAP_SIZE" != "0" ]]; then
     echo "Swap enabled: ${SWAP_SIZE}GiB"
 
-    parted -s "$DISK" -- mkpart swap linux-swap -"${SWAP_SIZE}GiB" 100%
+    parted -s "$DISK" -- mkpart primary linux-swap -"${SWAP_SIZE}GiB" 100%
 fi
 
 parted -s $DISK -- set 1 boot on
