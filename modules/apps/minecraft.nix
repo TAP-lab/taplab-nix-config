@@ -26,8 +26,8 @@ in
 
     activation.copyAccounts = ''
       mkdir -p ~/.local/share/PrismLauncher/accounts
-      cp ~/nix-config/resources/minecraft/accounts.json ~/.local/share/PrismLauncher/accounts/accounts.json
-      cp ~/.local/share/PrismLauncher/accounts/accounts.json ~/.local/share/PrismLauncher/accounts/accounts.json_ORIGINAL
+      cp ~/nix-config/resources/minecraft/accounts.json ~/.local/share/PrismLauncher/accounts.json
+      cp ~/.local/share/PrismLauncher/accounts.json ~/.local/share/PrismLauncher/accounts.json_ORIGINAL
     '';
 
     activation.copyOfflineScript = ''
