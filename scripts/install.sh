@@ -88,7 +88,7 @@ fi
 
 parted -s $DISK -- set 1 boot on
 
-mkfs.ext4 -FL nixos "${DISK}2"
+mkfs.ext4 -FL nixos "${DISK}1"
 
 if [[ "$SWAP_SIZE" != "0" ]]; then
     mkswap -L swap "${DISK}2"
