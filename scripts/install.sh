@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-DISK=""
+DISK="/dev/sda"
 HOSTNAME="nixos"
 BRANCH="main"
 SWAP_SIZE="0"
