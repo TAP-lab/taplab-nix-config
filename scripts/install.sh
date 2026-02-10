@@ -5,7 +5,7 @@ set -euo pipefail
 DISK="/dev/sda"
 HOSTNAME="nixos"
 BRANCH="main"
-SWAP_SIZE="0"
+SWAP_SIZE="8"
 SKIP_INSTALL=false
 
 usage() {
@@ -73,13 +73,15 @@ umount -R /mnt || true
 swapoff -a || true
 
 parted -s $DISK -- mklabel msdos
-parted -s $DISK -- set 1 boot on
+parted /dev/sda -- mkpart primary 1MB -8GB
 
 if [[ "$SWAP_SIZE" != "0" ]]; then
     echo "Swap enabled: ${SWAP_SIZE}GiB"
 
     parted -s "$DISK" -- mkpart swap linux-swap -"${SWAP_SIZE}GiB" 100%
 fi
+
+parted -s $DISK -- set 1 boot on
 
 mkfs.ext4 -FL nixos "${DISK}2"
 
