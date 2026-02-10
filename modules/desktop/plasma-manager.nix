@@ -62,5 +62,7 @@
   xdg.configFile."kwalletrc".text = ''
     [Wallet]
     Enabled=false
-'';
+  '';
+
+  home.file.".local/share/icons/taplab.svg".source = ../../resources/icons/taplab.svg;
 }
