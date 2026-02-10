@@ -130,6 +130,8 @@ if [[ "$SWAP_SIZE" != "0" ]]; then
     mkswap -L swap "${DISK}2"
 fi
 
+echo "Disk partitioning complete."
+
 sync
 partprobe "$DISK" || true
 blockdev --rereadpt "$DISK" || true
