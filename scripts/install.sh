@@ -94,6 +94,8 @@ if [[ "$SWAP_SIZE" != "0" ]]; then
     mkswap -L swap "${DISK}2"
 fi
 
+echo "Disk partitioning complete. Mounting partitions..."
+
 partprobe /dev/sda
 
 mount /dev/disk/by-label/nixos /mnt
