@@ -22,6 +22,42 @@ Options:
 EOF
 }
 
+wait_for_path() {
+    local path="$1"
+    local timeout_s="${2:-10}"
+    local start
+    start="$(date +%s)"
+
+    while [[ ! -e "$path" ]]; do
+        if (( $(date +%s) - start >= timeout_s )); then
+            echo "Timed out waiting for $path to appear" >&2
+            return 1
+        fi
+        sleep 0.1
+    done
+}
+
+mount_with_retries() {
+    local source="$1"
+    local target="$2"
+    local timeout_s="${3:-10}"
+    local start
+    start="$(date +%s)"
+
+    while true; do
+        if mount "$source" "$target" 2>/dev/null; then
+            return 0
+        fi
+
+        if (( $(date +%s) - start >= timeout_s )); then
+            echo "Timed out mounting $source on $target" >&2
+            mount "$source" "$target"
+            return 1
+        fi
+        sleep 0.2
+    done
+}
+
 
 while [[ $# -gt 0 ]]; do
 	case $1 in
@@ -94,11 +130,13 @@ if [[ "$SWAP_SIZE" != "0" ]]; then
     mkswap -L swap "${DISK}2"
 fi
 
-echo "Disk partitioning complete. Mounting partitions..."
+sync
+partprobe "$DISK" || true
+blockdev --rereadpt "$DISK" || true
+udevadm settle --timeout=10 || true
 
-partprobe /dev/sda
-
-mount /dev/disk/by-label/nixos /mnt
+wait_for_path /dev/disk/by-label/nixos 10
+mount_with_retries /dev/disk/by-label/nixos /mnt 10
 
 if [[ "$SWAP_SIZE" != "0" ]]; then
     swapon "${DISK}2"
