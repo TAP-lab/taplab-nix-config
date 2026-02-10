@@ -73,12 +73,17 @@ umount -R /mnt || true
 swapoff -a || true
 
 parted -s $DISK -- mklabel msdos
-parted /dev/sda -- mkpart primary 1MB -8GB
 
 if [[ "$SWAP_SIZE" != "0" ]]; then
     echo "Swap enabled: ${SWAP_SIZE}GiB"
 
+    parted -s "$DISK" -- mkpart primary 1MiB -"${SWAP_SIZE}GiB"
+
     parted -s "$DISK" -- mkpart primary linux-swap -"${SWAP_SIZE}GiB" 100%
+else
+    echo "Swap disabled"
+
+    parted -s "$DISK" -- mkpart primary 1MiB 100%
 fi
 
 parted -s $DISK -- set 1 boot on
