@@ -173,3 +173,4 @@ done
 printf "\n"
 
 echo "Rebooting now..."
+reboot
