@@ -36,6 +36,23 @@
     ];
   };
 
+  # Mounts the Inventors Guild share
+  fileSystems."/mnt/nas/InventorsGuild" = {
+    device = "//nas/awheawhe/Inventors Guild";
+    fsType = "cifs";
+    options = [
+      "guest"
+      "nofail"
+      "x-systemd.automount"
+      "x-systemd.mount-timeout=5"
+      "soft"
+      "uid=1000" 
+      "gid=100"  
+      "file_mode=0644"
+      "dir_mode=0755"
+    ];
+  };
+
   # Mounts the mema share with credentials
   fileSystems."/mnt/nas/mema" = {
     device = "//nas/mema";
