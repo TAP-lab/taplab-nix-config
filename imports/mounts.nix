@@ -21,7 +21,7 @@
 
   # Mounts the Hacklings share
   fileSystems."/mnt/nas/Hacklings" = {
-    device = "//nas/awheawhe/STEaM/Hacklings";
+    device = "//nas/awheawhe/Hacklings";
     fsType = "cifs";
     options = [
       "guest"
