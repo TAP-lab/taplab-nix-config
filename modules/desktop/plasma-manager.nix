@@ -57,6 +57,10 @@
         "Lock Session" = [];
       };
     };
+
+    configFile."touchpadrc"."General" = {
+      DisableWhileTyping = false;
+    };
   };
 
   xdg.configFile."kwalletrc".text = ''
