@@ -31,7 +31,7 @@ in
 
     activation.copyOfflineScript = ''
       mkdir -p ~/.local/share/PrismLauncher/
-      cp ${../../resources/minecraft/minecraft.sh} ~/.local/share/PrismLauncher/minecraft.sh
+      cp ${../../scripts/minecraft.sh} ~/.local/share/PrismLauncher/minecraft.sh
       chmod +x ~/.local/share/PrismLauncher/minecraft.sh
     '';
 
