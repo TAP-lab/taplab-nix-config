@@ -21,24 +21,23 @@ in
 
     activation.copyPrismInstance = ''
       mkdir -p ~/.local/share/PrismLauncher/instances
-      cp -r --no-preserve=mode,ownership ~/nix-config/resources/minecraft/taplab ~/.local/share/PrismLauncher/instances
+      cp -r --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ~/.local/share/PrismLauncher/instances
     '';
 
     activation.copyAccounts = ''
-      mkdir -p ~/.local/share/PrismLauncher/accounts
-      cp ~/nix-config/resources/minecraft/accounts.json ~/.local/share/PrismLauncher/accounts.json
+      cp ${../../resources/minecraft/accounts.json} ~/.local/share/PrismLauncher/accounts.json
       cp ~/.local/share/PrismLauncher/accounts.json ~/.local/share/PrismLauncher/accounts.json_ORIGINAL
     '';
 
     activation.copyOfflineScript = ''
       mkdir -p ~/.local/share/PrismLauncher/
-      cp ~/nix-config/scripts/minecraft.sh ~/.local/share/PrismLauncher/minecraft.sh
+      cp ${../../resources/minecraft/minecraft.sh} ~/.local/share/PrismLauncher/minecraft.sh
       chmod +x ~/.local/share/PrismLauncher/minecraft.sh
     '';
 
     activation.copyGrassIcon = ''
       mkdir -p ~/.local/share/icons
-      cp ~/nix-config/resources/minecraft/grass.png ~/.local/share/icons/grass.png
+      cp ${../../resources/minecraft/grass.png} ~/.local/share/icons/grass.png
     '';
 
     file.".local/share/applications/Minecraft.desktop".text = ''
