@@ -8,14 +8,18 @@ usage() {
 Usage: $(basename "$0") [--upgrade] [--help]
 
 Options:
-  --upgrade    Run 'nix flake update' in $CONFIG_REPO and then upgrade the system
-  -h, --help   Show this help
+  --action <action>    Specify the nixos-rebuild action (default: test)
+  --branch <branch>    Specify the git branch to use (default: main)
+  --hostname <hostname> Specify the hostname to use for the flake (default: current hostname)
+  --upgrade            Pull the latest changes from the config repo (default: false)
+  --help               Show this help message and exit
 EOF
 }
 
 UPGRADE=0
 ACTION="test"
 HOSTNAME=$(hostname)
+BRANCH="main"
 while [[ ${#} -gt 0 ]]; do
     case "$1" in
         -a|--action)
@@ -25,6 +29,15 @@ while [[ ${#} -gt 0 ]]; do
                 exit 2
             fi
             ACTION="$2"
+            shift 2
+            ;;
+        -b|--branch)
+            if [[ $# -lt 2 ]]; then
+                echo "Error: --branch requires an argument"
+                usage
+                exit 2
+            fi
+            BRANCH="$2"
             shift 2
             ;;
         -u|--upgrade)
@@ -52,18 +65,23 @@ while [[ ${#} -gt 0 ]]; do
     esac
 done
 
+
+if [[ "$UPGRADE" -eq 1 ]]; then
+    if cd "$CONFIG_REPO"; then
+        git pull
+    else
+        git clone https://github.com/TAP-lab/taplab-nix-config.git "$CONFIG_REPO"
+    fi
+fi
+
 if [[ ! -d "$CONFIG_REPO" ]]; then
     echo "Error: config repo '$CONFIG_REPO' not found"
     exit 1
 fi
 
+cd "$CONFIG_REPO"
 
-if [[ "$UPGRADE" -eq 1 ]]; then
-    echo "==> Updating flake in $CONFIG_REPO"
-    cd "$CONFIG_REPO"
-    nix flake update
-    echo "==> Flake update complete"
-fi
+git checkout "$BRANCH" || { echo "Error: branch '$BRANCH' not found in $CONFIG_REPO"; exit 1; }
 
 echo "Using hostname: $HOSTNAME"
 
