@@ -19,7 +19,7 @@ EOF
 UPGRADE=0
 ACTION="test"
 HOSTNAME=$(hostname)
-BRANCH="main"
+BRANCH=""
 while [[ ${#} -gt 0 ]]; do
     case "$1" in
         -a|--action)
@@ -65,6 +65,13 @@ while [[ ${#} -gt 0 ]]; do
     esac
 done
 
+if [[ -z "$BRANCH" ]]; then
+    if [[ -d "$CONFIG_REPO/.git" ]]; then
+        BRANCH=$(git -C "$CONFIG_REPO" rev-parse --abbrev-ref HEAD)
+    else
+        BRANCH="main"
+    fi
+fi
 
 if [[ "$UPGRADE" -eq 1 ]]; then
     if cd "$CONFIG_REPO"; then
