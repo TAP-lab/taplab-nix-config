@@ -25,6 +25,7 @@ in
     '';
 
     activation.copyAccounts = ''
+      mkdir -p ~/.local/share/PrismLauncher
       cp ${../../resources/minecraft/accounts.json} ~/.local/share/PrismLauncher/accounts.json
       cp ~/.local/share/PrismLauncher/accounts.json ~/.local/share/PrismLauncher/accounts.json_ORIGINAL
     '';
