@@ -22,7 +22,10 @@
     pulse.enable = true;
   };
 
-  environment.systemPackages = [
-    pkgs.kdePackages.xdg-desktop-portal-kde
-  ];
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.kdePackages.xdg-desktop-portal-kde
+    ];
+  };
 }
