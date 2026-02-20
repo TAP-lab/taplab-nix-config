@@ -32,7 +32,7 @@
 
   environment.systemPackages = [
     pkgs.hicolor-icon-theme
-    pkgs.breeze-icons
+    pkgs.kdePackages.breeze-icons
     pkgs.adwaita-icon-theme
   ];
 }
