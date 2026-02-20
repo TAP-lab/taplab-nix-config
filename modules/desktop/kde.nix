@@ -29,4 +29,10 @@
     ];
     config.common.default = [ "kde" ];
   };
+
+  environment.systemPackages = [
+    pkgs.hicolor-icon-theme
+    pkgs.breeze-icons
+    pkgs.adwaita-icon-theme
+  ];
 }
