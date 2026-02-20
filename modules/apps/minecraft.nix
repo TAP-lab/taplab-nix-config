@@ -5,6 +5,7 @@ let
     system = pkgs.system or "x86_64-linux";
     config.allowUnfree = true;
   };
+  prismdir = "${config.home.homeDirectory}/.local/share/PrismLauncher";
 in
 
 {
@@ -20,25 +21,25 @@ in
     file.".local/share/PrismLauncher/prismlauncher.cfg".source = ../../resources/minecraft/prismlauncher.cfg;
 
     activation.copyPrismInstance = ''
-      mkdir -p ~/.local/share/PrismLauncher/instances
-      cp -r --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ~/.local/share/PrismLauncher/instances
+      mkdir -p ${prismdir}/instances
+      cp -r --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ${prismdir}/instances
     '';
 
     activation.copyAccounts = ''
-      mkdir -p ~/.local/share/PrismLauncher
-      cp ${../../resources/minecraft/accounts.json} ~/.local/share/PrismLauncher/accounts.json
-      cp ~/.local/share/PrismLauncher/accounts.json ~/.local/share/PrismLauncher/accounts.json_ORIGINAL
+      mkdir -p ${prismdir}
+      rm -f ${prismdir}/accounts.json ${prismdir}/accounts.json_ORIGINAL
+      install -m 600 ${../../resources/minecraft/accounts.json} ${prismdir}/accounts.json
+      cp ${prismdir}/accounts.json ${prismdir}/accounts.json_ORIGINAL
     '';
 
     activation.copyOfflineScript = ''
-      mkdir -p ~/.local/share/PrismLauncher/
-      cp ${../../scripts/minecraft.sh} ~/.local/share/PrismLauncher/minecraft.sh
-      chmod +x ~/.local/share/PrismLauncher/minecraft.sh
+      mkdir -p ${prismdir}
+      install -m 755 ${../../scripts/minecraft.sh} ${prismdir}/minecraft.sh
     '';
 
     activation.copyGrassIcon = ''
       mkdir -p ~/.local/share/icons
-      cp ${../../resources/minecraft/grass.png} ~/.local/share/icons/grass.png
+      install -m 644 ${../../resources/minecraft/grass.png} ~/.local/share/icons/grass.png
     '';
 
     file.".local/share/applications/Minecraft.desktop".text = ''
