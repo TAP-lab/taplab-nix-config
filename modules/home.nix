@@ -16,9 +16,14 @@ in
     experimental-features = nix-command flakes
   '';
 
-  gtk.iconTheme = {
-    name = "Adwaita";
-    package = pkgs.adwaita-icon-theme;
+
+
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
+    };
   };
 
   home.file."/.config/gtk-3.0/bookmarks".text = ''
