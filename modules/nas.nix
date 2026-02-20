@@ -34,7 +34,7 @@
     ];
   };
 
-  fileSystems."/mnt/nas/Inventors_Guild" = {
+  fileSystems."/mnt/nas/Inventors Guild" = {
     device = "//nas/awheawhe/Inventors Guild";
     fsType = "cifs";
     options = [
