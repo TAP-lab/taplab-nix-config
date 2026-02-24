@@ -157,6 +157,10 @@ fi
 
 nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$HOSTNAME"
 
+git clone --branch "$BRANCH" /mnt/home/taplab/nix-config
+
+chown -R 1000:1000 /mnt/home/taplab/nix-config
+
 trap 'echo "Reboot cancelled"; exit 0' SIGINT
 
 echo "Installation Complete... Rebooting in 10 seconds"
