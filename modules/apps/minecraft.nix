@@ -25,7 +25,8 @@ in
 
     activation.copyPrismInstance = ''
       mkdir -p ${prismdir}/instances
-      cp -r --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ${prismdir}/instances
+      rm -rf ${prismdir}/instances/taplab
+      cp -rT --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ${prismdir}/instances/taplab
     '';
 
     activation.copyOfflineScript = ''
