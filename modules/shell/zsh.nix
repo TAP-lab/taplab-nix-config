@@ -41,13 +41,13 @@
 
     alias i="nix-shell -p"
 
+    eval "$(zoxide init zsh)"
+
     if [[ -n "$IN_NIX_SHELL" ]]; then
       source ~/.oh-my-zsh/custom/themes/nix-shell.zsh-theme
     else
       source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
       cd ~
     fi
-
-    eval "$(zoxide init zsh)"
   '';
 }
