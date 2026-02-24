@@ -22,6 +22,7 @@
     pkgs.vscode
     pkgs.luanti
     pkgs.pixelorama
+    pkgs.libreoffice
 
     (import ./apps/gb-studio.nix { inherit pkgs; icon = ../resources/icons/gb-studio.png; })
   ];
