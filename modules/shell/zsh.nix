@@ -45,10 +45,9 @@
       source ~/.oh-my-zsh/custom/themes/nix-shell.zsh-theme
     else
       source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
+      cd ~
     fi
 
     eval "$(zoxide init zsh)"
-
-    cd ~
   '';
 }
