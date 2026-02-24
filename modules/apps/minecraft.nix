@@ -18,18 +18,15 @@ in
       pkgs.kdotool
     ];
 
-    file.".local/share/PrismLauncher/prismlauncher.cfg".source = ../../resources/minecraft/prismlauncher.cfg;
+    activation.copyPrismConfig = ''
+      mkdir -p ${prismdir}
+      cp --no-preserve=mode,ownership ${../../resources/minecraft/prismlauncher.cfg} ${prismdir}/prismlauncher.cfg
+    '';
 
     activation.copyPrismInstance = ''
       mkdir -p ${prismdir}/instances
-      cp -r --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ${prismdir}/instances
-    '';
-
-    activation.copyAccounts = ''
-      mkdir -p ${prismdir}
-      rm -f ${prismdir}/accounts.json ${prismdir}/accounts.json_ORIGINAL
-      install -m 600 ${../../resources/minecraft/accounts.json} ${prismdir}/accounts.json
-      cp ${prismdir}/accounts.json ${prismdir}/accounts.json_ORIGINAL
+      rm -rf ${prismdir}/instances/taplab
+      cp -rT --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ${prismdir}/instances/taplab
     '';
 
     activation.copyOfflineScript = ''

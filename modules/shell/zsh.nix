@@ -38,17 +38,17 @@
     alias wifi="bash ~/nix-config/scripts/credentials/wifi.sh";
     alias mema="bash ~/nix-config/scripts/credentials/mema.sh";
     alias edge="bash ~/nix-config/scripts/credentials/edge.sh";
+    alias minecraft="bash ~/nix-config/scripts/credentials/minecraft.sh";
 
     alias i="nix-shell -p"
+
+    eval "$(zoxide init zsh)"
 
     if [[ -n "$IN_NIX_SHELL" ]]; then
       source ~/.oh-my-zsh/custom/themes/nix-shell.zsh-theme
     else
       source ~/.oh-my-zsh/custom/themes/custom.zsh-theme
+      cd ~
     fi
-
-    eval "$(zoxide init zsh)"
-
-    cd ~
   '';
 }

@@ -88,6 +88,8 @@ fi
 
 cd "$CONFIG_REPO"
 
+cp /etc/nixos/hardware-configuration.nix "$CONFIG_REPO"
+
 git checkout "$BRANCH" || { echo "Error: branch '$BRANCH' not found in $CONFIG_REPO"; exit 1; }
 
 echo "Using hostname: $HOSTNAME"
