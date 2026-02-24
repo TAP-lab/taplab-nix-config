@@ -18,7 +18,10 @@ in
       pkgs.kdotool
     ];
 
-    file.".local/share/PrismLauncher/prismlauncher.cfg".source = ../../resources/minecraft/prismlauncher.cfg;
+    activation.copyPrismConfig = ''
+      mkdir -p ${prismdir}
+      cp --no-preserve=mode,ownership ${../../resources/minecraft/prismlauncher.cfg} ${prismdir}/prismlauncher.cfg
+    '';
 
     activation.copyPrismInstance = ''
       mkdir -p ${prismdir}/instances
