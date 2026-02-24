@@ -157,7 +157,7 @@ fi
 
 nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$HOSTNAME"
 
-git clone --branch "$BRANCH" /mnt/home/taplab/nix-config
+git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/home/taplab/nix-config
 
 chown -R 1000:1000 /mnt/home/taplab/nix-config
 
