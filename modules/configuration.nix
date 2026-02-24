@@ -54,4 +54,6 @@
       "vt.global_cursor_default=0"
     ];
   };
+
+  services.printing.enable = true;
 }
