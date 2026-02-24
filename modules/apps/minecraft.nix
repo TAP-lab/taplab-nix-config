@@ -25,13 +25,6 @@ in
       cp -r --no-preserve=mode,ownership ${../../resources/minecraft/taplab} ${prismdir}/instances
     '';
 
-    activation.copyAccounts = ''
-      mkdir -p ${prismdir}
-      rm -f ${prismdir}/accounts.json ${prismdir}/accounts.json_ORIGINAL
-      install -m 600 ${../../resources/minecraft/accounts.json} ${prismdir}/accounts.json
-      cp ${prismdir}/accounts.json ${prismdir}/accounts.json_ORIGINAL
-    '';
-
     activation.copyOfflineScript = ''
       mkdir -p ${prismdir}
       install -m 755 ${../../scripts/minecraft.sh} ${prismdir}/minecraft.sh
