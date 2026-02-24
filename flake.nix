@@ -65,6 +65,7 @@
 
                   ./modules/apps/wezterm.nix
                   ./modules/apps/minecraft.nix
+                  ./modules/apps/orcaslicer.nix
                 ];
               };
             };
