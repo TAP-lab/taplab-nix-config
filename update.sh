@@ -1,0 +1,1 @@
+sh <(curl https://raw.githubusercontent.com/tap-lab/taplab-nix-config/main/scripts/rebuild sh) -u -b main -a switch
