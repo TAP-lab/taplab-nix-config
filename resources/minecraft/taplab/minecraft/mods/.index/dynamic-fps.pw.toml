@@ -1,0 +1,17 @@
+filename = 'dynamic-fps-3.11.3+minecraft-1.21.11-fabric.jar'
+name = 'Dynamic FPS'
+side = ''
+x-prismlauncher-loaders = [ 'fabric' ]
+x-prismlauncher-mc-versions = [ '1.21.11', '1.21.11' ]
+x-prismlauncher-release-type = 'release'
+x-prismlauncher-version-number = '3.11.3'
+
+[download]
+hash = 'ad30e0fcaf7eddf55aad7bdbc38550fb5fc731e6b93c871e2de04a6254609d9bd896e3aeb5eadb085971df5c097f369e2e59ef9a2d42a1bc782b71b5df551013'
+hash-format = 'sha512'
+mode = 'url'
+url = 'https://cdn.modrinth.com/data/LQ3K71Q1/versions/K05lAbNd/dynamic-fps-3.11.3%2Bminecraft-1.21.11-fabric.jar'
+
+[update.modrinth]
+mod-id = 'LQ3K71Q1'
+version = 'K05lAbNd'
