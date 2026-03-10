@@ -55,5 +55,16 @@
     ];
   };
 
+  security.pam.u2f = {
+    enable = true;
+    control = "sufficient"; 
+  };
+
+  security.pam.services.sudo.u2fAuth = true;
+
+  environment.systemPackages = with pkgs; [
+    pam_u2f
+  ];
+
   services.printing.enable = true;
 }
