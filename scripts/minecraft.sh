@@ -22,5 +22,5 @@ fi
 sed -i "s/CHANGETHISNAME/$input_name/g" accounts.json
 
 # Launches game and automatically connects to the TAPLab server
-prismlauncher -l taplab -a $input_name -s 10.0.0.181 &
+prismlauncher -l taplab -a $input_name -s 10.5.0.200 &
 
