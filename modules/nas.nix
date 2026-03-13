@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+  # Sets up various network file shares to automatically mount.
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/nas/manuhiri" = {
     device = "//nas/manuhiri";

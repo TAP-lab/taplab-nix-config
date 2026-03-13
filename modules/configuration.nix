@@ -1,20 +1,27 @@
 { config, lib, pkgs, ... }:
 
 {
+  # Enables the GRUB bootloader.
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
 
+  # Specifies the kernal to use.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Enables NetworkManager.
   networking.networkmanager.enable = true;
 
+  # Enables the OpenSSH server for remote access.
   services.openssh.enable = true;
 
+  # Sets the system state version - this should not be changed.
   system.stateVersion = "25.11";
 
+  # Sets the hostname and domain for the system.
   networking.hostName = "nixos";
   networking.domain = "taplab.nz";
 
+  # Configures timezone and locale settings for New Zealand.
   time.timeZone = "Pacific/Auckland";
 
   i18n.defaultLocale = "en_NZ.UTF-8";
@@ -30,8 +37,10 @@
     LC_TIME = "en_NZ.UTF-8";
   };
 
+  # Enables zsh.
   programs.zsh.enable = true;
 
+  # Sets up the taplab user account with a password.
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
@@ -40,6 +49,7 @@
     shell = pkgs.zsh;
   };
 
+  # Enables the plymouth boot screen to hide some of the boot messages.
   boot = {
     plymouth = {
       enable = true;
@@ -55,5 +65,6 @@
     ];
   };
 
+  # Enables the CUPS printing system.
   services.printing.enable = true;
 }

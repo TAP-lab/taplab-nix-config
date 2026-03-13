@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Sets the path to the config repo.
 CONFIG_REPO="$HOME/nix-config"
 
+# Displays a help message.
 usage() {
     cat <<EOF
 Usage: $(basename "$0") [--upgrade] [--help]
@@ -16,10 +18,13 @@ Options:
 EOF
 }
 
+# Sets the default values for the script.
 UPGRADE=0
 ACTION="test"
 HOSTNAME=$(hostname)
 BRANCH=""
+
+# Parses the command line arguments.
 while [[ ${#} -gt 0 ]]; do
     case "$1" in
         -a|--action)
@@ -65,6 +70,7 @@ while [[ ${#} -gt 0 ]]; do
     esac
 done
 
+# Checks if the config repo exists, and auto picks the branch to use.
 if [[ -z "$BRANCH" ]]; then
     if [[ -d "$CONFIG_REPO/.git" ]]; then
         BRANCH=$(git -C "$CONFIG_REPO" rev-parse --abbrev-ref HEAD)
@@ -73,6 +79,7 @@ if [[ -z "$BRANCH" ]]; then
     fi
 fi
 
+# Checks if the config repo exists, and pulls the latest changes. If it doesn't exist, clones it.
 if [[ "$UPGRADE" -eq 1 ]]; then
     if cd "$CONFIG_REPO"; then
         git pull
@@ -86,14 +93,21 @@ if [[ ! -d "$CONFIG_REPO" ]]; then
     exit 1
 fi
 
+# Changes working directory.
 cd "$CONFIG_REPO"
 
+# Copies the hardware configuration file to the config repo to ensure it is included in the rebuild.
 cp /etc/nixos/hardware-configuration.nix "$CONFIG_REPO"
 
+# Ensures the correct branch is being used.
 git checkout "$BRANCH" || { echo "Error: branch '$BRANCH' not found in $CONFIG_REPO"; exit 1; }
 
 echo "Using hostname: $HOSTNAME"
 
+# this file breaks the rebuild for some reason, quick workaround.
+rm ~/.gtkrc-2.0 || true
+
+# Rebuilds the system using specified parameters.
 echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$HOSTNAME"
 if sudo nixos-rebuild $ACTION --flake "$CONFIG_REPO#$HOSTNAME"; then
     echo "==> Rebuild/$ACTION complete"

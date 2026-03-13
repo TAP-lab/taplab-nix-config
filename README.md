@@ -4,11 +4,15 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 
 # Table of Contents
 
+- [Taplab NixOS Config](#taplab-nixos-config)
+- [Table of Contents](#table-of-contents)
 - [Quick Start Guide](#quick-start-guide)
 - [Usage Guide](#usage-guide)
 - [Full Instructions](#full-instructions)
+      - [In case of any issues, please Contact Callum (callum@taplab.nz).](#in-case-of-any-issues-please-contact-callum-callumtaplabnz)
 - [Rebuild Script](#rebuild-script)
 
+- [TAP-lab NixOS Config Wiki](https://github.com/TAP-lab/taplab-nix-config/wiki)
 
 # Quick Start Guide
 
@@ -21,8 +25,8 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
     ```bash
     sh <(curl https://raw.githubusercontent.com/TAP-lab/taplab-nix-config/main/install.sh)
     ```
-7. The script should automatically install NixOS and the configuration. It will automatically reboot when finished.
-8. In case of any issues, you can refer to the [Full Instructions](#full-instructions), have a read through the full documentation, or contact Callum (clamlum2@gmail.com).
+7. The script automaticlal installs NixOS and the configuration. It will automatically reboot when finished.
+8. In case of any issues, you can refer to the [Full Instructions](#full-instructions), have a read through the full documentation (work in progress), or contact Callum (callum@taplab.nz).
 
 # Usage Guide
 
@@ -67,7 +71,7 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 
 8. The script should automatically install NixOS and the configuration. It will automatically reboot when finished.
 
-#### In case of any issues, please Contact Callum (clamlum2@gmail.com).
+#### In case of any issues, please Contact Callum (callum@taplab.nz).
 
 
 # Rebuild Script

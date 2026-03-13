@@ -1,8 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  # Allows installing unfree packages, which is required for some of the apps.
   nixpkgs.config.allowUnfree = true;
 
+  # Installs the packages needed for the system.
   environment.systemPackages = [
     pkgs.git
     pkgs.appimage-run
@@ -24,6 +26,7 @@
     pkgs.pixelorama
     pkgs.libreoffice
 
-    (import ./apps/gb-studio.nix { inherit pkgs; icon = ../resources/icons/gb-studio.png; })
+    # Imports the custom gb-studio package.
+    (pkgs.callPackage ./apps/gb-studio.nix {})
   ];
 }

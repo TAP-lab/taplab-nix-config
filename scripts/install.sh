@@ -2,12 +2,14 @@
 
 set -euo pipefail
 
+# Sets the default values for the installation, which can be overridden by command line arguments.
 DISK="/dev/sda"
 HOSTNAME="nixos"
 BRANCH="main"
 SWAP_SIZE="8"
 SKIP_INSTALL=false
 
+# Displays a help message.
 usage() {
     cat <<EOF
 Usage: $(basename "$0") [--disk <disk>] [--branch <branch>] [--hostname <hostname>] [--swap <size>] [--help]
@@ -22,6 +24,8 @@ Options:
 EOF
 }
 
+# Waits for the disk to be available before proceeding.
+# Used to fix a race condition where the disk is not immediately available after partitioning.
 wait_for_path() {
     local path="$1"
     local timeout_s="${2:-10}"
@@ -37,6 +41,7 @@ wait_for_path() {
     done
 }
 
+# Tries to mount the disk, with retries and a timeout to handle cases where the disk is not immediately ready.
 mount_with_retries() {
     local source="$1"
     local target="$2"
@@ -58,7 +63,7 @@ mount_with_retries() {
     done
 }
 
-
+# Parses the arguments passed to the script and sets the corresponding variables.
 while [[ $# -gt 0 ]]; do
 	case $1 in
 		-b|--branch)
@@ -93,6 +98,7 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
+# Validates that the required arguments are provided.
 if [[ -z "$DISK" ]]; then
     echo "Error: --disk argument is required."
     usage
@@ -105,9 +111,11 @@ echo "Using configuration branch: $BRANCH"
 
 echo "Partitioning disk $DISK"
 
+# Ensures that there are no existing mounts or swap.
 umount -R /mnt || true
 swapoff -a || true
 
+# Partitions the disk with a single root partition and an optional swap partition, using parted.
 parted -s $DISK -- mklabel msdos
 
 if [[ "$SWAP_SIZE" != "0" ]]; then
@@ -124,6 +132,7 @@ fi
 
 parted -s $DISK -- set 1 boot on
 
+# Formats the partitions.
 mkfs.ext4 -FL nixos "${DISK}1"
 
 if [[ "$SWAP_SIZE" != "0" ]]; then
@@ -132,35 +141,42 @@ fi
 
 echo "Disk partitioning complete."
 
+# Ensures that the partitioning and formatting is complete before proceeding.
 sync
 partprobe "$DISK" || true
 blockdev --rereadpt "$DISK" || true
 udevadm settle --timeout=10 || true
 
 wait_for_path /dev/disk/by-label/nixos 10
+
+# Mounts the disk and enables swap.
 mount_with_retries /dev/disk/by-label/nixos /mnt 10
 
 if [[ "$SWAP_SIZE" != "0" ]]; then
     swapon "${DISK}2"
 fi
 
+# Clones the configuration repository.
 mkdir -p /mnt/etc/nixos
-
 git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/etc/nixos
 
+# Generates the NixOS hardware configuration file.
 nixos-generate-config --root /mnt
 
+# Stops the script if the user has chosen to skip the installation.
 if [[ $SKIP_INSTALL = true ]]; then
     echo "Skipping NixOS installation as per user request."
     exit 0
 fi
 
+# Installs NixOS using the configuration.
 nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$HOSTNAME"
 
+# Clones the configuration repository to the new system and sets the correct ownership.
 git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/home/taplab/nix-config
-
 chown -R 1000:1000 /mnt/home/taplab/nix-config
 
+# Prompts user that the installation and reboots in 10 seconds if not cancelled.
 trap 'echo "Reboot cancelled"; exit 0' SIGINT
 
 echo "Installation Complete... Rebooting in 10 seconds"

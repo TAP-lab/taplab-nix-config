@@ -1,5 +1,6 @@
 {
   inputs = {
+    # The inputs for the flake, which include the nixpkgs repositories, home manager, and plasma manager.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -26,6 +27,7 @@
     ...
   }:
   {
+    # Defines the main system configuration for the laptops
     nixosConfigurations = {
       nixos = let
         system = "x86_64-linux";
@@ -33,6 +35,7 @@
       in nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
+          # Imports the nixos modules
           ./hardware-configuration.nix
 
           ./modules/configuration.nix
@@ -56,6 +59,7 @@
               sharedModules = [ plasma-manager.homeModules.plasma-manager ];
               users.taplab = { pkgs, ... }: {
                 imports = [
+                  # Imports the home manager modules
                   ./modules/home.nix
 
                   ./modules/shell/zsh.nix
