@@ -65,7 +65,7 @@
     source = ../resources/security/u2f_keys;
     user = "root";
     group = "root";
-    mode = "0644";
+    mode = "0600";
   };
 
   security.pam.services.sudo.u2fAuth = true;
