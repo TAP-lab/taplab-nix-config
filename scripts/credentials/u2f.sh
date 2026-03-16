@@ -70,18 +70,17 @@ fi
 
 echo "Pulling U2F keys from server: '$SERVER' at '$SELECTED_IP'"
 
-# Ensures the Yubico config directory exists
-mkdir -p ~/.config/Yubico
+sudo mkdir -p /etc/Yubico
 
 # Downloads the U2F keys
-if curl -fsSL "$SELECTED_IP:8080/u2f" -o ~/.config/Yubico/u2f_keys; then
+if sudo curl -fsSL "$SELECTED_IP:8080/u2f" -o /etc/Yubico/u2f_keys; then
     echo "U2F keys downloaded successfully."
 else
     echo "Failed to download U2F keys." >&2
     exit 1
 fi
 
-# Makes the U2F keys file readable only by the user
-chmod 600 ~/.config/Yubico/u2f_keys
+sudo chown root:root /etc/Yubico/u2f_keys
+sudo chmod 644 /etc/Yubico/u2f_keys
 
 echo "U2F configuration complete."

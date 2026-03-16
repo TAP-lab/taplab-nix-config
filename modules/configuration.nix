@@ -57,7 +57,8 @@
 
   security.pam.u2f = {
     enable = true;
-    control = "sufficient"; 
+    control = "sufficient";
+    authFile = "/etc/Yubico/u2f_keys";
   };
 
   security.pam.services.sudo.u2fAuth = true;
