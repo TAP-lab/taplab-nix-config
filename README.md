@@ -43,7 +43,7 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 
 - There is a script to automatically set up Microsoft Edge to log in to the TAP-lab account. This can be run by executing the `edge` command in terminal. This also requires the laptop to be on the TAP-lab network.
 
-- **U2F Authentication**: The system supports U2F security keys for sudo authentication. U2F keys can be deployed centrally by running the `u2f` command in terminal, which pulls the pre-configured keys from the local server. Once deployed, you can use a security key instead of a password for sudo commands. If the U2F key is not present, the system will fall back to password authentication.
+- **U2F Authentication**: The system supports U2F security keys for sudo authentication. U2F keys are managed directly in this repo at `resources/security/u2f_keys` and installed to `/etc/Yubico/u2f_keys` during rebuild. If the U2F key is not present, the system will fall back to password authentication.
 
 
 # Full Instructions

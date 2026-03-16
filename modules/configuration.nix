@@ -61,7 +61,15 @@
     authFile = "/etc/Yubico/u2f_keys";
   };
 
+  environment.etc."Yubico/u2f_keys" = {
+    source = ../resources/security/u2f_keys;
+    user = "root";
+    group = "root";
+    mode = "0644";
+  };
+
   security.pam.services.sudo.u2fAuth = true;
+  security.pam.u2f.settings.cue = true;
 
   environment.systemPackages = with pkgs; [
     pam_u2f
