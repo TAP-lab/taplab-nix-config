@@ -1,2 +1,2 @@
-/.github/CODEOWNERS @TAP-lab/securityManagers
-**/security @TAP-lab/securityManagers
+/.github/** @TAP-lab/securityManagers
+**/security/** @TAP-lab/securityManagers
