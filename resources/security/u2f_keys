@@ -1,10 +1,17 @@
-# pam_u2f key mappings
+# pam_u2f key mappings for sudo
 #
 # One user per line, format:
 #   <username>:<KeyHandle1>,<UserKey1>[,<COSEType1>,<Options1>][:<KeyHandle2>,...]
 #
 # Generate entries with:
 #   pamu2fcfg -u <username>
-#
-# Example:
-#   taplab:BASE64_KEY_HANDLE,BASE64_USER_KEY,es256,+presence
+
+
+# Alex Yubikey 35 045 300
+
+
+# COW Yubikey
+
+
+# Cage Yubikey
+
