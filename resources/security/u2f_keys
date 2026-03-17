@@ -1,0 +1,16 @@
+# pam_u2f key mappings for sudo
+#
+# One user per line, format:
+#   <username>:<KeyHandle1>,<UserKey1>[,<COSEType1>,<Options1>][:<KeyHandle2>,...]
+#
+# Generate entries with:
+#   pamu2fcfg -u <username>
+
+# Alex YK 35 05 300
+taplab:spMUBfmDpXfJCdt51Fz7JzzDr5wPkGIsbvzNz27pAAIdrOEEDvRL6t0Yixt5TtBRyJNPZL72LFEvh+JnPTJwVQ==,SET63p8SFVAbn5eBSE2OyhtTEjxNm2Ih/hi/HQV4wMQpl2T0nEuXKQw+WArY2xNG9dSYBKj0rLisK0VeIb+p/A==,es256,+presence
+
+# COW YK 35 045 221
+taplab:6rWV6JPYCF+b3cH9dqAy6WHdS2i/bj1gRhTt/oXMAEX8YP83IFt0HU6ZnzvK92sqYcWl63ahxwfsk6J7EgkJ4w==,zjEzzdOODYetTWdX9/LK01Z3W4KSC916dXNjEBGUcdabTOJVi2wZBLT/Mc8g9I2E6R/fYVIMZWTKhHDFrlNzaw==,es256,+presence
+
+# Cage YK 35 045 479
+taplab:bKER6N+Y0NQX0MlYKxd1upcVduuJ+lEjc1AocT62QRIZY2S3tIHomimk8ggDyUBX5g1pOVbMBHL+DFW7ILFtoA==,C815XDY3u35+ioYy41eOm8usAxdUi9xuMmn210cqvHWIn08z4JmyaFjJqGSliB0cSTtfHl2hmpH++VrKgff8Ww==,es256,+presence
