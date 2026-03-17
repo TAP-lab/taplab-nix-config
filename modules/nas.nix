@@ -2,7 +2,7 @@
 
 {
   environment.systemPackages = [ pkgs.cifs-utils ];
-  fileSystems."/mnt/nas/manuhiri" = {
+  fileSystems."/mnt/nas.taplab.nz/manuhiri" = {
     device = "//nas/manuhiri";
     fsType = "cifs";
     options = [
@@ -18,7 +18,7 @@
     ];
   };
 
-  fileSystems."/mnt/nas/Hacklings" = {
+  fileSystems."/mnt/nas.taplab.nz/Hacklings" = {
     device = "//nas/awheawhe/Hacklings";
     fsType = "cifs";
     options = [
@@ -34,7 +34,7 @@
     ];
   };
 
-  fileSystems."/mnt/nas/Inventors-Guild" = {
+  fileSystems."/mnt/nas.taplab.nz/Inventors-Guild" = {
     device = "//nas/awheawhe/Inventors Guild";
     fsType = "cifs";
     options = [
@@ -51,7 +51,7 @@
   };
 
   fileSystems."/mnt/nas/mema" = {
-    device = "//nas/mema";
+    device = "//nas.taplab.nz/mema";
     fsType = "cifs";
     options = [
       "credentials=/etc/nixos/secrets/mema"
