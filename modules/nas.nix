@@ -2,8 +2,8 @@
 
 {
   environment.systemPackages = [ pkgs.cifs-utils ];
-  fileSystems."/mnt/nas.taplab.nz/manuhiri" = {
-    device = "//nas/manuhiri";
+  fileSystems."/mnt/nas/manuhiri" = {
+    device = "//nas.taplab.nz/manuhiri";
     fsType = "cifs";
     options = [
       "guest"
@@ -18,8 +18,8 @@
     ];
   };
 
-  fileSystems."/mnt/nas.taplab.nz/Hacklings" = {
-    device = "//nas/awheawhe/Hacklings";
+  fileSystems."/mnt/nas/Hacklings" = {
+    device = "//nas.taplab.nz/awheawhe/Hacklings";
     fsType = "cifs";
     options = [
       "guest"
@@ -34,8 +34,8 @@
     ];
   };
 
-  fileSystems."/mnt/nas.taplab.nz/Inventors-Guild" = {
-    device = "//nas/awheawhe/Inventors Guild";
+  fileSystems."/mnt/nas/Inventors-Guild" = {
+    device = "//nas.taplab.nz/awheawhe/Inventors Guild";
     fsType = "cifs";
     options = [
       "guest"
