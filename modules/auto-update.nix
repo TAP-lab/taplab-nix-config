@@ -55,4 +55,6 @@ in
     timerConfig.OnUnitActiveSec = "1m";
     timerConfig.Persistent = true;
   };
+
+  enironment.etc."autoupdate_test".text = ''if this file exists, the auto-update script is running'';
 }
