@@ -9,8 +9,8 @@ let
 
       git fetch origin
 
-      LOCAL=$(git rev-parse HEAD)
-      REMOTE=$(git rev-parse "@{u}")
+      LOCAL=$(git -c safe.directory="$REPO" rev-parse HEAD)
+      REMOTE=$(git -c safe.directory="$REPO" rev-parse "@{u}")
 
       if [ "$LOCAL" = "$REMOTE" ]; then
         echo "nixos-auto-update: Already up to date, skipping rebuild."
@@ -35,7 +35,7 @@ in
     wantedBy = [ "multi-user.target" ];
     serviceConfig.ExecStart = "${autoUpdateScript}/bin/nixos-auto-update";
     serviceConfig.Type = "oneshot";
-    serviceConfig.User = "taplab";
+    serviceConfig.User = "root";
   };
 
   systemd.timers.nixos-auto-update = {
