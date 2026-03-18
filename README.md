@@ -6,6 +6,8 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 
 - [Taplab NixOS Config](#taplab-nixos-config)
 - [Table of Contents](#table-of-contents)
+- [Taplab NixOS Config](#taplab-nixos-config)
+- [Table of Contents](#table-of-contents)
 - [Quick Start Guide](#quick-start-guide)
 - [Usage Guide](#usage-guide)
 - [Full Instructions](#full-instructions)
@@ -43,6 +45,8 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 - The system has 3 network shares automatically mounted, manuhiri, Hacklings , and mema. The first 2 should mount automatically provided the laptop is on the TAP-lab network. The mema share requires credentials to access, which can be pulled from the local server by running the `mema` command in terminal.
 
 - There is a script to automatically set up Microsoft Edge to log in to the TAP-lab account. This can be run by executing the `edge` command in terminal. This also requires the laptop to be on the TAP-lab network.
+
+- **U2F Authentication**: The system supports U2F security keys for sudo authentication. U2F keys are managed directly in this repo at `resources/security/u2f_keys` and installed to `/etc/Yubico/u2f_keys` during rebuild. If the U2F key is not present, the system will fall back to password authentication.
 
 
 # Full Instructions

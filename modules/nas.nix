@@ -4,7 +4,7 @@
   # Sets up various network file shares to automatically mount.
   environment.systemPackages = [ pkgs.cifs-utils ];
   fileSystems."/mnt/nas/manuhiri" = {
-    device = "//nas/manuhiri";
+    device = "//nas.taplab.nz/manuhiri";
     fsType = "cifs";
     options = [
       "guest"
@@ -20,7 +20,7 @@
   };
 
   fileSystems."/mnt/nas/Hacklings" = {
-    device = "//nas/awheawhe/Hacklings";
+    device = "//nas.taplab.nz/awheawhe/Hacklings";
     fsType = "cifs";
     options = [
       "guest"
@@ -36,7 +36,7 @@
   };
 
   fileSystems."/mnt/nas/Inventors-Guild" = {
-    device = "//nas/awheawhe/Inventors Guild";
+    device = "//nas.taplab.nz/awheawhe/Inventors Guild";
     fsType = "cifs";
     options = [
       "guest"
@@ -52,7 +52,7 @@
   };
 
   fileSystems."/mnt/nas/mema" = {
-    device = "//nas/mema";
+    device = "//nas.taplab.nz/mema";
     fsType = "cifs";
     options = [
       "credentials=/etc/nixos/secrets/mema"

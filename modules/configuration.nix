@@ -44,7 +44,7 @@
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "dialout"];
     hashedPassword = "$6$aGlmHH1OI2haTRMb$HdvQGthHpfDfWfsrD969TcSa/doH5yfL21yZOpH19TZ1sEwfxYbTfcOnB5vGAxcovGxom7VvCJI7xGUJqv808.";
     shell = pkgs.zsh;
   };
@@ -67,4 +67,26 @@
 
   # Enables the CUPS printing system.
   services.printing.enable = true;
+
+  # Enable the U2F PAM module and set the key file. Make U2F optional with a fallback to password.
+  security.pam.u2f = {
+    enable = true;
+    control = "sufficient";
+    authFile = "/etc/Yubico/u2f_keys";
+  };
+
+  # Copy the U2F key file to the appropriate location with correct permissions.
+  environment.etc."Yubico/u2f_keys" = {
+    source = ../resources/security/u2f_keys;
+    user = "root";
+    group = "root";
+    mode = "0600";
+  };
+
+  # Enable U2F and set up cue
+  security.pam.services.sudo.u2fAuth = true;
+  security.pam.u2f.settings.cue = true;
+  environment.systemPackages = with pkgs; [
+    pam_u2f
+  ];
 }
