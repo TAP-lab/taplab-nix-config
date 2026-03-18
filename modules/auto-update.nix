@@ -9,8 +9,8 @@ let
 
       git fetch origin
 
-      LOCAL=$(git -c safe.directory="$REPO" rev-parse HEAD)
-      REMOTE=$(git -c safe.directory="$REPO" rev-parse "@{u}")
+      LOCAL=$(git rev-parse HEAD)
+      REMOTE=$(git rev-parse "@{u}")
 
       if [ "$LOCAL" = "$REMOTE" ]; then
         echo "nixos-auto-update: Already up to date, skipping rebuild."
@@ -36,6 +36,11 @@ in
     serviceConfig.ExecStart = "${autoUpdateScript}/bin/nixos-auto-update";
     serviceConfig.Type = "oneshot";
     serviceConfig.User = "root";
+    serviceConfig.Environment = [
+      "GIT_CONFIG_COUNT=1"
+      "GIT_CONFIG_KEY_0=safe.directory"
+      "GIT_CONFIG_VALUE_0=/home/taplab/nix-config"
+    ];
   };
 
   systemd.timers.nixos-auto-update = {
