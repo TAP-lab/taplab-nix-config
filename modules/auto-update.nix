@@ -3,7 +3,7 @@
 let
   autoUpdateScript = pkgs.writeShellApplication {
     name = "nixos-auto-update";
-    runtimeInputs = with pkgs; [ git nixos-rebuild ];
+    runtimeInputs = with pkgs; [ git nixos-rebuild util-linux ];
     text = ''
         REPO="/etc/nixos"
         REMOTE_URL="https://github.com/tap-lab/taplab-nix-config.git"
