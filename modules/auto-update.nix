@@ -5,7 +5,7 @@ let
     name = "nixos-auto-update";
     runtimeInputs = with pkgs; [ git nixos-rebuild ];
     text = ''
-      cd "${self}"
+      cd "$HOME/nix-config"
 
       git fetch origin
 
@@ -35,7 +35,7 @@ in
     wantedBy = [ "multi-user.target" ];
     serviceConfig.ExecStart = "${autoUpdateScript}/bin/nixos-auto-update";
     serviceConfig.Type = "oneshot";
-    serviceConfig.User = "root";
+    serviceConfig.User = "taplab";
   };
 
   systemd.timers.nixos-auto-update = {
