@@ -72,7 +72,7 @@
   security.pam.u2f = {
     enable = true;
     control = "sufficient";
-    authFile = "/etc/Yubico/u2f_keys";
+    authfile = "/etc/Yubico/u2f_keys";
   };
 
   # Copy the U2F key file to the appropriate location with correct permissions.
