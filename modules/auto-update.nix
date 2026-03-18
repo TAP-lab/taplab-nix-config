@@ -5,22 +5,29 @@ let
     name = "nixos-auto-update";
     runtimeInputs = with pkgs; [ git nixos-rebuild ];
     text = ''
-      cd "/home/taplab/nix-config"
+        REPO="/etc/nixos"
+        REMOTE_URL="https://github.com/tap-lab/taplab-nix-config.git"
 
-      git fetch origin
+        if [ ! -d "$REPO/.git" ]; then
+          logger -t nixos-auto-update "No repo found, cloning..."
+          git clone "$REMOTE_URL" "$REPO" /etc/nixos
+        fi
 
-      LOCAL=$(git rev-parse HEAD)
-      REMOTE=$(git rev-parse "@{u}")
+        cd "$REPO"
+        git fetch origin
 
-      if [ "$LOCAL" = "$REMOTE" ]; then
-        echo "nixos-auto-update: Already up to date, skipping rebuild."
-        exit 0
-      fi
+        LOCAL=$(git rev-parse HEAD)
+        REMOTE=$(git rev-parse "@{u}")
 
-      echo "nixos-auto-update: Updates found, pulling and rebuilding..."
-      git pull --ff-only origin
-      nixos-rebuild switch --flake ".#$(hostname)"
-      echo "nixos-auto-update: Done."
+        if [ "$LOCAL" = "$REMOTE" ]; then
+          logger -t nixos-auto-update "Already up to date, skipping rebuild."
+          exit 0
+        fi
+
+        logger -t nixos-auto-update "Updates found, pulling and rebuilding..."
+        git pull --ff-only origin
+        nixos-rebuild switch --flake "$REPO#$(hostname)"
+        logger -t nixos-auto-update "Done."
     '';
   };
 
@@ -44,7 +51,7 @@ in
   };
 
   systemd.timers.nixos-auto-update = {
-    wantedBy = [ "timers.target" ];
+    # wantedBy = [ "timers.target" ];
     timerConfig.OnUnitActiveSec = "1m";
     timerConfig.Persistent = true;
   };
