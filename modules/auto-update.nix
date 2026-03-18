@@ -5,6 +5,7 @@ let
     runtimeInputs = [ pkgs.git pkgs.nixos-rebuild ];
     text = ''
       REPO=/root/nix-config
+      cd $REPO
 
       if [ ! -d "$REPO" ]; then
         echo "Error: Git repo does not exist at $REPO"
@@ -27,8 +28,6 @@ let
       git pull --ff-only origin
       nixos-rebuild switch --flake ".#$(hostname)"
       echo "Done"
-
-      cd $REPO
     '';
   };
 in
