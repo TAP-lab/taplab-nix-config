@@ -25,7 +25,7 @@ let
 
       echo "Updating from $LOCAL to $REMOTE"
       git pull --ff-only origin
-      nixos-rebuild switch --flake .#$(hostname)
+      nixos-rebuild switch --flake ".#$(hostname)"
       echo "Done"
 
       cd $REPO
