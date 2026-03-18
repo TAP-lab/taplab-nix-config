@@ -56,5 +56,5 @@ in
     timerConfig.Persistent = true;
   };
 
-  environment.etc."autoupdate_test".text = ''if this file exists, the auto-update script is running'';
+  environment.etc."autoupdate_test".text = ''if this file exists, the auto-update script is running v2'';
 }
