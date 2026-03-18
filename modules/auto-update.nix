@@ -3,13 +3,13 @@
 let
   autoUpdateScript = pkgs.writeShellApplication {
     name = "nixos-auto-update";
-    runtimeInputs = with pkgs; [ git nixos-rebuild util-linux ];
+    runtimeInputs = with pkgs; [ git nixos-rebuild ];
     text = ''
         REPO="/etc/nixos"
         REMOTE_URL="https://github.com/tap-lab/taplab-nix-config.git"
 
         if [ ! -d "$REPO/.git" ]; then
-          logger -t nixos-auto-update "No repo found, cloning..."
+          echo "nixos-auto-update: No repo found, cloning..."
           git clone "$REMOTE_URL" "$REPO" /etc/nixos
         fi
 
@@ -20,14 +20,14 @@ let
         REMOTE=$(git rev-parse "@{u}")
 
         if [ "$LOCAL" = "$REMOTE" ]; then
-          logger -t nixos-auto-update "Already up to date, skipping rebuild."
+          echo "nixos-auto-update: Already up to date, skipping rebuild."
           exit 0
         fi
 
-        logger -t nixos-auto-update "Updates found, pulling and rebuilding..."
+        echo "nixos-auto-update: Updates found, pulling and rebuilding..."
         git pull --ff-only origin
         nixos-rebuild switch --flake "$REPO#$(hostname)"
-        logger -t nixos-auto-update "Done."
+        echo "nixos-auto-update: Done."
     '';
   };
 
