@@ -5,7 +5,7 @@ let
     name = "nixos-auto-update";
     runtimeInputs = with pkgs; [ git nixos-rebuild ];
     text = ''
-      cd "$HOME/nix-config"
+      cd "/home/taplab/nix-config"
 
       git fetch origin
 
