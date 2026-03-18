@@ -1,60 +1,56 @@
-{ pkgs, self, ... }:
-
+{ pkgs, ... }:
 let
   autoUpdateScript = pkgs.writeShellApplication {
     name = "nixos-auto-update";
-    runtimeInputs = with pkgs; [ git nixos-rebuild ];
+    runtimeInputs = [ pkgs.git pkgs.nixos-rebuild ];
     text = ''
-        REPO="/etc/nixos"
-        REMOTE_URL="https://github.com/tap-lab/taplab-nix-config.git"
+      REPO=/root/nix-config
 
-        if [ ! -d "$REPO/.git" ]; then
-          echo "nixos-auto-update: No repo found, cloning..."
-          git clone "$REMOTE_URL" "$REPO" /etc/nixos
-        fi
+      if [ ! -d "$REPO" ]; then
+        echo "Error: Git repo does not exist at $REPO"
+        exit 1
+      fi
 
-        cd "$REPO"
-        git fetch origin
+      git fetch origin
 
-        LOCAL=$(git rev-parse HEAD)
-        REMOTE=$(git rev-parse "@{u}")
+      LOCAL=$(git rev-parse HEAD)
+      REMOTE=$(git rev-parse "@{u}")
 
-        if [ "$LOCAL" = "$REMOTE" ]; then
-          echo "nixos-auto-update: Already up to date, skipping rebuild."
-          exit 0
-        fi
+      if [ "$LOCAL" = "$REMOTE" ]; then
+        echo "Already up to date"
+        exit 0
+      fi
 
-        echo "nixos-auto-update: Updates found, pulling and rebuilding..."
-        git pull --ff-only origin
-        nixos-rebuild switch --flake "$REPO#$(hostname)"
-        echo "nixos-auto-update: Done."
+      cp /etc/nixos/hardware-configuration.nix $REPO/hardware-configuration.nix
+
+      echo "Updating from $LOCAL to $REMOTE"
+      git pull --ff-only origin
+      nixos-rebuild switch --flake .#$(hostname)
+      echo "Done"
+
+      cd $REPO
     '';
   };
-
 in
 {
-  environment.systemPackages = [ autoUpdateScript ];
-
   systemd.services.nixos-auto-update = {
-    description = "Auto-update NixOS configuration from git";
+    description = "NixOS Auto Update Service";
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
     # wantedBy = [ "multi-user.target" ];
-    serviceConfig.ExecStart = "${autoUpdateScript}/bin/nixos-auto-update";
-    serviceConfig.Type = "oneshot";
-    serviceConfig.User = "root";
-    serviceConfig.Environment = [
-      "GIT_CONFIG_COUNT=1"
-      "GIT_CONFIG_KEY_0=safe.directory"
-      "GIT_CONFIG_VALUE_0=/home/taplab/nix-config"
-    ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+      ExecStart = "${pkgs.nixos-auto-update}/bin/nixos-auto-update";
+    };
   };
 
   systemd.timers.nixos-auto-update = {
+    description = "NixOS Auto Update Timer";
     # wantedBy = [ "timers.target" ];
-    timerConfig.OnUnitActiveSec = "1m";
-    timerConfig.Persistent = true;
+    timerConfig = {
+      OnCalendar = "1h";
+      Persistent = true;
+    };
   };
-
-  environment.etc."autoupdate_test".text = ''if this file exists, the auto-update script is running v2'';
 }
