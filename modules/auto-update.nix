@@ -32,14 +32,14 @@ in
     description = "Auto-update NixOS configuration from git";
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
+    # wantedBy = [ "multi-user.target" ];
     serviceConfig.ExecStart = "${autoUpdateScript}/bin/nixos-auto-update";
     serviceConfig.Type = "oneshot";
     serviceConfig.User = "root";
   };
 
   systemd.timers.nixos-auto-update = {
-    wantedBy = [ "timers.target" ];
+    # wantedBy = [ "timers.target" ];
     timerConfig.OnUnitActiveSec = "1h";
     timerConfig.Persistent = true;
   };
