@@ -10,7 +10,7 @@ let
       git fetch origin
 
       LOCAL=$(git rev-parse HEAD)
-      REMOTE=$(git rev-parse @{u})
+      REMOTE=$(git rev-parse "@{u}")
 
       if [ "$LOCAL" = "$REMOTE" ]; then
         echo "nixos-auto-update: Already up to date, skipping rebuild."
