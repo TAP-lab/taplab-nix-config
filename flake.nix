@@ -41,6 +41,7 @@
           ./modules/configuration.nix
           ./modules/pkgs.nix
           ./modules/nas.nix
+          ./modules/auto-update.nix
 
           ./modules/debug.nix
 
