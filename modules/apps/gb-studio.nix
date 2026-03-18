@@ -7,7 +7,7 @@ let
 
   src = fetchurl {
     url = "https://github.com/chrismaltby/gb-studio/releases/download/v${version}/gb-studio-linux.AppImage";
-    sha256 = "sha256-Kh6UgdleK+L+G4LNiQL2DkQIwS43cyzX+Jo6K0/fX1M=";
+    sha256 = "sha256-GscN9nFyDqgTEgx9bQI78blDJOlynkZX83cgqLIHkQ8=";
   };
 in
 
