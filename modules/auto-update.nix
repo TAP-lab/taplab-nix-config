@@ -33,6 +33,8 @@ let
   };
 in
 {
+  environment.systemPackages = [ autoUpdateScript ];
+
   systemd.services.nixos-auto-update = {
     description = "NixOS Auto Update Service";
     wants = [ "network-online.target" ];
