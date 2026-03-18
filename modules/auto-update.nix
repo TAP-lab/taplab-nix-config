@@ -43,7 +43,7 @@ in
     serviceConfig = {
       Type = "oneshot";
       User = "root";
-      ExecStart = "${pkgs.nixos-auto-update}/bin/nixos-auto-update";
+      ExecStart = "${nixos-auto-update}/bin/nixos-auto-update";
     };
   };
 
