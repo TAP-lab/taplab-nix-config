@@ -44,8 +44,8 @@ in
   };
 
   systemd.timers.nixos-auto-update = {
-    # wantedBy = [ "timers.target" ];
-    timerConfig.OnUnitActiveSec = "1h";
+    wantedBy = [ "timers.target" ];
+    timerConfig.OnUnitActiveSec = "1m";
     timerConfig.Persistent = true;
   };
 }
