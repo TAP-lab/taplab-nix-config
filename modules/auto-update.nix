@@ -26,7 +26,7 @@ let
 
       echo "Updating from $LOCAL to $REMOTE"
       git pull --ff-only origin
-      nixos-rebuild switch --flake ".#$(hostname)"
+      nixos-rebuild switch --flake ".#$(cat /etc/hostname)"
       echo "Done"
     '';
   };
@@ -42,6 +42,7 @@ in
     serviceConfig = {
       Type = "oneshot";
       User = "root";
+      Delegate = "yes";
       ExecStart = "${autoUpdateScript}/bin/nixos-auto-update";
     };
   };
@@ -50,7 +51,7 @@ in
     description = "NixOS Auto Update Timer";
     # wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnCalendar = "1h";
+      OnUnitActiveSec = "1h";
       Persistent = true;
     };
   };
