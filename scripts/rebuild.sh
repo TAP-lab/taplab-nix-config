@@ -105,7 +105,7 @@ git checkout "$BRANCH" || { echo "Error: branch '$BRANCH' not found in $CONFIG_R
 echo "Using hostname: $HOSTNAME"
 
 # this file breaks the rebuild for some reason, quick workaround.
-rm ~/.gtkrc-2.0 || true
+rm /home/taplab/.gtkrc-2.0 || true
 
 # Rebuilds the system using specified parameters.
 echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$HOSTNAME"
