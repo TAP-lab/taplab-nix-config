@@ -43,7 +43,7 @@ in
     # Copies the icon for the script.
     activation.copyGrassIcon = ''
       mkdir -p ~/.local/share/icons
-      install -m 644 ${../../resources/minecraft/grass.png} ~/.local/share/icons/grass.png
+      install -m 644 ${../../resources/icons/grass.png} ~/.local/share/icons/grass.png
     '';
 
     # Creates a desktop entry for the script.
