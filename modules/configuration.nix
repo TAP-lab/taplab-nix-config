@@ -3,7 +3,7 @@
 {
   # Enables the GRUB bootloader.
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.device = "/dev/vda";
 
   # Specifies the kernal to use.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -48,6 +48,8 @@
     hashedPassword = "$6$aGlmHH1OI2haTRMb$HdvQGthHpfDfWfsrD969TcSa/doH5yfL21yZOpH19TZ1sEwfxYbTfcOnB5vGAxcovGxom7VvCJI7xGUJqv808.";
     shell = pkgs.zsh;
   };
+
+  users.users.root.shell = pkgs.zsh;
 
   # Enables the plymouth boot screen to hide some of the boot messages.
   boot = {
