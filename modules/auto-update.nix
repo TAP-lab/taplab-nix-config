@@ -39,7 +39,7 @@ in
     description = "NixOS Auto Update Service";
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
-    # wantedBy = [ "multi-user.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       User = "root";
@@ -50,7 +50,7 @@ in
 
   systemd.timers.nixos-auto-update = {
     description = "NixOS Auto Update Timer";
-    # wantedBy = [ "timers.target" ];
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnUnitActiveSec = "1h";
       Persistent = true;
