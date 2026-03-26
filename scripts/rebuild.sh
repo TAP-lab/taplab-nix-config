@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Sets the path to the config repo.
-CONFIG_REPO="$HOME/nix-config"
+CONFIG_REPO="/root/nix-config"
 
 # Displays a help message.
 usage() {
@@ -109,7 +109,7 @@ rm ~/.gtkrc-2.0 || true
 
 # Rebuilds the system using specified parameters.
 echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$HOSTNAME"
-if sudo nixos-rebuild $ACTION --flake "$CONFIG_REPO#$HOSTNAME"; then
+if nixos-rebuild $ACTION --flake "$CONFIG_REPO#$HOSTNAME"; then
     echo "==> Rebuild/$ACTION complete"
 else
     echo "Error: nixos-rebuild failed"
