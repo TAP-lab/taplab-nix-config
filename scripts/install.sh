@@ -172,9 +172,8 @@ fi
 # Installs NixOS using the configuration.
 nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$HOSTNAME"
 
-# Clones the configuration repository to the new system and sets the correct ownership.
-git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/home/taplab/nix-config
-chown -R 1000:1000 /mnt/home/taplab/nix-config
+# Clones the configuration repository to the new system.
+git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/root/nix-config
 
 # Prompts user that the installation and reboots in 10 seconds if not cancelled.
 trap 'echo "Reboot cancelled"; exit 0' SIGINT
