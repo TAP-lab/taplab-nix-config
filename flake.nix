@@ -58,20 +58,28 @@
                 self = self;
               };
               sharedModules = [ plasma-manager.homeModules.plasma-manager ];
-              users.taplab = { pkgs, ... }: {
-                imports = [
-                  # Imports the home manager modules
-                  ./modules/home.nix
+              users = {
+                taplab = { pkgs, ... }: {
+                  imports = [
+                    # Imports the home manager modules
+                    ./modules/home.nix
 
-                  ./modules/shell/zsh.nix
-                  ./modules/shell/themes/taplab-theme.nix
+                    ./modules/shell/zsh.nix
+                    ./modules/shell/themes/taplab-theme.nix
 
-                  ./modules/desktop/plasma-manager.nix
+                    ./modules/desktop/plasma-manager.nix
 
-                  ./modules/apps/wezterm.nix
-                  ./modules/apps/minecraft.nix
-                  ./modules/apps/orcaslicer.nix
-                ];
+                    ./modules/apps/wezterm.nix
+                    ./modules/apps/minecraft.nix
+                    ./modules/apps/orcaslicer.nix
+                  ];
+                };
+                root = { pkgs, ... }: {
+                  imports = [
+                    ./modules/shell/zsh.nix
+                    ./modules/shell/themes/taplab-theme.nix
+                  ];
+                };
               };
             };
           }

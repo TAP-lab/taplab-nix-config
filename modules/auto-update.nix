@@ -9,7 +9,7 @@ let
 
       if [ ! -d "$REPO" ]; then
         echo "Error: Git repo does not exist at $REPO"
-        exit 1
+        git clone https://github.com/taplab/taplab-nix-config.git $REPO
       fi
 
       git fetch origin
