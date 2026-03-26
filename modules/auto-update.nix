@@ -5,12 +5,13 @@ let
     runtimeInputs = [ pkgs.git pkgs.nixos-rebuild ];
     text = ''
       REPO=/root/nix-config
-      cd $REPO
 
       if [ ! -d "$REPO" ]; then
         echo "Error: Git repo does not exist at $REPO"
-        git clone https://github.com/taplab/taplab-nix-config.git $REPO
+        git clone https://github.com/tap-lab/taplab-nix-config.git $REPO
       fi
+
+      cd $REPO
 
       git fetch origin
 
