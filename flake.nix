@@ -75,6 +75,9 @@
                   ];
                 };
                 root = { pkgs, ... }: {
+                  home.username = "root";
+                  home.homeDirectory = "/root";
+                  home.stateVersion = "25.11";
                   imports = [
                     ./modules/shell/zsh.nix
                     ./modules/shell/themes/taplab-theme.nix
