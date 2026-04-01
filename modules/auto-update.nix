@@ -4,6 +4,8 @@ let
     name = "nixos-auto-update";
     runtimeInputs = [ pkgs.git pkgs.nixos-rebuild ];
     text = ''
+      set -euo pipefail
+
       REPO=/root/nix-config
 
       if [ ! -d "$REPO" ]; then
