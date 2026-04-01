@@ -2,7 +2,7 @@
 let
   autoUpdateScript = pkgs.writeShellApplication {
     name = "nixos-auto-update";
-    runtimeInputs = [ pkgs.git pkgs.nixos-rebuild ];
+    runtimeInputs = [ pkgs.git pkgs.nixos-rebuild pkgs.systemd ];
     text = ''
       set -euo pipefail
 
@@ -29,7 +29,7 @@ let
 
       echo "Updating from $LOCAL to $REMOTE"
       git pull --ff-only origin
-      nixos-rebuild switch --flake ".#$(cat /etc/hostname)"
+      systemd-run --no-block -collect --unit=nixos-auto-rebuild nixos-rebuild switch --flake ".#$(cat /etc/hostname)"
       echo "Done"
     '';
   };
@@ -41,7 +41,7 @@ in
     description = "NixOS Auto Update Service";
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
-    # wantedBy = [ "multi-user.target" ];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       User = "root";
@@ -52,7 +52,7 @@ in
 
   systemd.timers.nixos-auto-update = {
     description = "NixOS Auto Update Timer";
-    # wantedBy = [ "timers.target" ];
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnUnitActiveSec = "1h";
       Persistent = true;
