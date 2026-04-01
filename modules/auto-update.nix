@@ -29,7 +29,7 @@ let
 
       echo "Updating from $LOCAL to $REMOTE"
       git pull --ff-only origin
-      systemd-run --no-block -collect --unit=nixos-auto-rebuild nixos-rebuild switch --flake ".#$(cat /etc/hostname)"
+      systemd-run --no-block --collect --unit=nixos-auto-rebuild nixos-rebuild switch --flake ".#$(cat /etc/hostname)"
       echo "Done"
     '';
   };
