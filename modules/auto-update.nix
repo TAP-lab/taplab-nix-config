@@ -59,5 +59,5 @@ in
     };
   };
 
-  environment.etc."autoupdate-test".text = ''if this file exists, the auto update script is working correctly 1'';
+  environment.etc."autoupdate-test".text = ''if this file exists, the auto update script is working correctly'';
 }
