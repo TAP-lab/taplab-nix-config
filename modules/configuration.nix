@@ -50,7 +50,7 @@
 
   users.users.root ={
     shell = pkgs.zsh;
-    hashedPassword = "$6$qOucumwcwRFp3sEf$aShraYfIKajQDW5LkBtJnm91o6WzFvvkptHq7BUJGqXOEQaLiwqmxL2oEMdapEXQ772tu9siT95WP9E8HjNJB.";
+    hashedPassword = "$6$IjNBo6zU9DtZYKzS$8vO7.SzS4KwpTwt3h9lXsEyglUKybgjJcUkB7s3uShXs/ChAer12eNvzZiml9i1DS46I5SODd1HP9A9v4aBLU0";
   };
 
   # Enables the plymouth boot screen to hide some of the boot messages.
