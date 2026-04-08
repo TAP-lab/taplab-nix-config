@@ -74,11 +74,13 @@ echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 
-# Downloads the wifi credentials
-if curl -fsSL "$SELECTED_IP:8080/wifi" -o "$TMPFILE"; then
-    echo "WiFi credentials downloaded successfully."
+# Downloads the wifi credentials (SSH/SFTP first, web fallback)
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 "nix@$SELECTED_IP:/srv/wifi" "$TMPFILE"; then
+    echo "WiFi credentials downloaded successfully via SSH/SFTP."
+elif curl -fsSL "$SELECTED_IP:8080/wifi" -o "$TMPFILE"; then
+    echo "WiFi credentials downloaded successfully via web fallback."
 else
-    echo "Failed to download WiFi credentials." >&2
+    echo "Failed to download WiFi credentials via SSH/SFTP and web fallback." >&2
     exit 1
 fi
 

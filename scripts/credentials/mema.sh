@@ -72,13 +72,20 @@ echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 # Ensure the secrets directory exists
 sudo mkdir -p /etc/nixos/secrets
 
-# Downloads the mema credentials
-if sudo curl -fsSL "$SELECTED_IP:8080/mema" -o /etc/nixos/secrets/mema; then
-    echo "Credentials downloaded successfully."
+# Downloads the mema credentials (SSH/SFTP first, web fallback)
+TMPFILE=$(mktemp)
+trap 'rm -f "$TMPFILE"' EXIT
+
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 "nix@$SELECTED_IP:/srv/mema" "$TMPFILE"; then
+    echo "Credentials downloaded successfully via SSH/SFTP."
+elif curl -fsSL "$SELECTED_IP:8080/mema" -o "$TMPFILE"; then
+    echo "Credentials downloaded successfully via web fallback."
 else
-    echo "Failed to download credentials." >&2
+    echo "Failed to download credentials via SSH/SFTP and web fallback." >&2
     exit 1
 fi
+
+sudo mv "$TMPFILE" /etc/nixos/secrets/mema
 
 # Makes the credentials file readable only by root
 sudo chmod 600 /etc/nixos/secrets/mema
