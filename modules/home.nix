@@ -1,23 +1,17 @@
-{ config, pkgs, lib, nixpkgs-unstable, ... }:
-
-let
-  unstable = import nixpkgs-unstable {
-    system = pkgs.system or "x86_64-linux";
-    config.allowUnfree = true;
-  };
-in
+{ config, pkgs, lib, ... }:
 
 {
+  # Sets up the home manager configuration for the taplab user.
   home.username = "taplab";
   home.homeDirectory = "/home/taplab";
   home.stateVersion = "25.11";
 
+  # Enables the nix command, and flakes.
   home.file.".config/nix/nix.conf".text = ''
     experimental-features = nix-command flakes
   '';
 
-
-
+  # Sets up some GTK configuration, mainly to set up the bookmarks for the file manager.
   gtk = {
     enable = true;
     iconTheme = {

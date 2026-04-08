@@ -3,6 +3,7 @@
 {
   imports = [ ./themes/nix-shell.nix ];
 
+  # Installs zsh and some plugins.
   home.packages = [
     pkgs.zsh
     pkgs.oh-my-zsh
@@ -16,6 +17,7 @@
     pkgs.zoxide
   ];
 
+  # Sets up the .zshrc file, with some custom aliases and configuration.
   home.file.".zshrc".text = ''
     export ZSH="${pkgs.oh-my-zsh}/share/oh-my-zsh"
 
@@ -34,6 +36,8 @@
     alias nrs="sh ~/nix-config/scripts/rebuild.sh -a switch"
     alias nrt="sh ~/nix-config/scripts/rebuild.sh -a test"
     alias ncg="sudo nix-collect-garbage -d"
+
+    alias credentials-setup="bash ~/nix-config/scripts/credentials/auto-setup.sh";
 
     alias wifi="bash ~/nix-config/scripts/credentials/wifi.sh";
     alias mema="bash ~/nix-config/scripts/credentials/mema.sh";

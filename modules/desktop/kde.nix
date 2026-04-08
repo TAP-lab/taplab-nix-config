@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+  # Sets up the KDE desktop environment, and enabled various related services.
   services.xserver.enable = true;
 
   services.xserver.xkb = {
