@@ -44,12 +44,14 @@
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
-    extraGroups = [ "networkmanager" "wheel" "dialout"];
-    hashedPassword = "$6$aGlmHH1OI2haTRMb$HdvQGthHpfDfWfsrD969TcSa/doH5yfL21yZOpH19TZ1sEwfxYbTfcOnB5vGAxcovGxom7VvCJI7xGUJqv808.";
+    extraGroups = [ "networkmanager" "dialout"];
     shell = pkgs.zsh;
   };
 
-  users.users.root.shell = pkgs.zsh;
+  users.users.root ={
+    shell = pkgs.zsh;
+    hashedPassword = "$6$qOucumwcwRFp3sEf$aShraYfIKajQDW5LkBtJnm91o6WzFvvkptHq7BUJGqXOEQaLiwqmxL2oEMdapEXQ772tu9siT95WP9E8HjNJB.";
+  };
 
   # Enables the plymouth boot screen to hide some of the boot messages.
   boot = {
@@ -86,7 +88,7 @@
   };
 
   # Enable U2F and set up cue
-  security.pam.services.sudo.u2fAuth = true;
+  security.pam.services.login.u2fAuth = true;
   security.pam.u2f.settings.cue = true;
   environment.systemPackages = with pkgs; [
     pam_u2f
