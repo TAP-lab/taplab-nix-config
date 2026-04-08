@@ -1,4 +1,4 @@
-version:4671
+version:4786
 ao:true
 biomeBlendRadius:2
 chunkSectionFadeInTime:0.75
@@ -16,6 +16,7 @@ glintStrength:0.75
 graphicsPreset:"custom"
 prioritizeChunkUpdates:1
 fullscreen:true
+exclusiveFullscreen:true
 gamma:1.0
 guiScale:3
 maxAnisotropyBit:1
@@ -86,14 +87,14 @@ notificationDisplayTime:1.0
 useNativeTransport:true
 mainHand:"right"
 attackIndicator:1
-tutorialStep:movement
+tutorialStep:none
 mouseWheelSensitivity:1.0
 rawMouseInput:true
 allowCursorChanges:true
 glDebugVerbosity:1
 skipMultiplayerWarning:true
 hideMatchedNames:true
-joinedFirstServer:false
+joinedFirstServer:true
 syncChunkWrites:false
 showAutosaveIndicator:true
 allowServerListing:true
@@ -165,6 +166,9 @@ key_key.debug.dumpVersion:key.keyboard.v
 key_key.debug.profilingChart:key.keyboard.1
 key_key.debug.fpsCharts:key.keyboard.2
 key_key.debug.networkCharts:key.keyboard.3
+key_key.debug.lightmapTexture:key.keyboard.4
+key_key.dynamic_fps.toggle_forced:key.keyboard.unknown
+key_key.dynamic_fps.toggle_disabled:key.keyboard.unknown
 soundCategory_master:0.5
 soundCategory_music:0.0
 soundCategory_record:1.0
