@@ -33,16 +33,7 @@
     alias cat="bat -p"
     alias cd="z"
 
-    alias nrs="sh ~/nix-config/scripts/rebuild.sh -a switch"
-    alias nrt="sh ~/nix-config/scripts/rebuild.sh -a test"
-    alias ncg="sudo nix-collect-garbage -d"
-
-    alias credentials-setup="bash ~/nix-config/scripts/credentials/auto-setup.sh";
-
-    alias wifi="bash ~/nix-config/scripts/credentials/wifi.sh";
-    alias mema="bash ~/nix-config/scripts/credentials/mema.sh";
-    alias edge="bash ~/nix-config/scripts/credentials/edge.sh";
-    alias minecraft="bash ~/nix-config/scripts/credentials/minecraft-account.sh";
+    alias credentials-setup="sh /root/nix-config/scripts/credentials/auto-setup.sh";
 
     alias i="nix-shell -p"
 
