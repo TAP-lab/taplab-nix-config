@@ -40,7 +40,10 @@
   # Enables zsh.
   programs.zsh.enable = true;
 
-  # Sets up the taplab user account with a password.
+  # Prevents the modification of user accounts outside of NixOS configuration.
+  users.mutableUsers = false;
+
+ # Sets up the taplab user account.
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
@@ -48,9 +51,10 @@
     shell = pkgs.zsh;
   };
 
+  # Sets up the root user account with a hashed password.
   users.users.root ={
     shell = pkgs.zsh;
-    hashedPassword = "$y$j9T$238cZBt20LmSulL9BnpbR/$sD84TEeJUbIU0u0gTBQEvKaXuDY4QVVE3t0Hxt3KYuB";
+    hashedPassword = "$6$0qyksVNkFXpXLynw$PgzzPOc55e9eB.vxA6.oxKHe5nrmrBgo0zdltvLGM1T3gqF2sCTG3MF5BZ1UNK1/lxpaVYUmM3G4h0plt4Sy01";
   };
 
   # Enables the plymouth boot screen to hide some of the boot messages.
