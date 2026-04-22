@@ -70,6 +70,11 @@ while [[ ${#} -gt 0 ]]; do
     esac
 done
 
+if [[ $(whoami) != "root" ]]; then
+    echo "Error: This script must be run as root"
+    exit 1
+fi
+
 # Checks if the config repo exists, and auto picks the branch to use.
 if [[ -z "$BRANCH" ]]; then
     if [[ -d "$CONFIG_REPO/.git" ]]; then
@@ -104,12 +109,9 @@ git checkout "$BRANCH" || { echo "Error: branch '$BRANCH' not found in $CONFIG_R
 
 echo "Using hostname: $HOSTNAME"
 
-# this file breaks the rebuild for some reason, quick workaround.
-rm /home/taplab/.gtkrc-2.0 || true
-
 # Rebuilds the system using specified parameters.
 echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$HOSTNAME"
-if nixos-rebuild $ACTION --flake "$CONFIG_REPO#$HOSTNAME"; then
+if nixos-rebuild "$ACTION" --flake "$CONFIG_REPO#$HOSTNAME"; then
     echo "==> Rebuild/$ACTION complete"
 else
     echo "Error: nixos-rebuild failed"
