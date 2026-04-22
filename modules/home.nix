@@ -18,6 +18,7 @@
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
     };
+    gtk2.force = true;
   };
 
   home.file."/.config/gtk-3.0/bookmarks".text = ''
