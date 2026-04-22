@@ -7,6 +7,7 @@ LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
 
 SERVER=""
 IP=""
+SELECTED_IP=""
 
 # Parses arguments
 while [[ "$#" -gt 0 ]]; do
@@ -70,7 +71,7 @@ fi
 
 echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
-cd $HOME/.local/share/PrismLauncher/
+cd "$HOME"/.local/share/PrismLauncher/
 
 if curl -fsSL "$SELECTED_IP:8080/minecraft" -o accounts.json_ORIGINAL; then
     echo "Minecraft account downloaded successfully."

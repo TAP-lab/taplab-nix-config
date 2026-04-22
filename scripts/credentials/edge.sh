@@ -7,6 +7,7 @@ LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
 
 SERVER=""
 IP=""
+SELECTED_IP=""
 
 # Parses arguments
 while [[ "$#" -gt 0 ]]; do
