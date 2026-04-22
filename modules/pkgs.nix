@@ -1,5 +1,13 @@
 { config, pkgs, ... }:
 
+let
+  rebuildScript = pkgs.writeShellApplication {
+    name = "rebuild";
+    runtimeInputs = with pkgs; [ openssh curl ];
+    text = builtins.readFile ../scripts/rebuild.sh;
+  };
+in
+
 {
   # Allows installing unfree packages, which is required for some of the apps.
   nixpkgs.config.allowUnfree = true;
@@ -28,5 +36,7 @@
 
     # Imports the custom gb-studio package.
     (pkgs.callPackage ./apps/gb-studio.nix {})
+
+    rebuildScript
   ];
 }
