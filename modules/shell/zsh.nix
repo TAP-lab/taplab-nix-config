@@ -33,7 +33,9 @@
     alias cat="bat -p"
     alias cd="z"
 
-    alias credentials-setup="sh /root/nix-config/scripts/credentials/auto-setup.sh";
+    alias nrs="rebuild -a switch"
+    alias nrt="rebuild -a test"
+    alias ncg="nix-collect-garbage -d"
 
     alias i="nix-shell -p"
 
