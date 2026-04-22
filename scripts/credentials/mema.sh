@@ -7,6 +7,7 @@ LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
 
 SERVER=""
 IP=""
+SELECTED_IP=""
 
 # Parses arguments
 while [[ "$#" -gt 0 ]]; do
@@ -69,16 +70,15 @@ else
 fi
 
 echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
-# Ensure the secrets directory exists
-sudo mkdir -p /etc/nixos/secrets
 
-# Downloads the mema credentials
-if sudo curl -fsSL "$SELECTED_IP:8080/mema" -o /etc/nixos/secrets/mema; then
-    echo "Credentials downloaded successfully."
+echo "Please enter root password:"
+if su root -c "
+  mkdir -p /etc/nixos/secrets
+  curl -fsSL '$SELECTED_IP:8080/mema' -o /etc/nixos/secrets/mema
+  chmod 600 /etc/nixos/secrets/mema
+"; then
+  echo "Credentials downloaded successfully."
 else
-    echo "Failed to download credentials." >&2
-    exit 1
+  echo "Failed to download credentials." >&2
+  exit 1
 fi
-
-# Makes the credentials file readable only by root
-sudo chmod 600 /etc/nixos/secrets/mema
