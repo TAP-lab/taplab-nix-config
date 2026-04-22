@@ -45,6 +45,8 @@
 
           ./modules/debug.nix
 
+          ./modules/credentials.nix
+
           ./modules/desktop/kde.nix
           home-manager.nixosModules.home-manager
           {
