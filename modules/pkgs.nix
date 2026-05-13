@@ -30,7 +30,7 @@ in
     pkgs.p7zip
     pkgs.blender
     pkgs.vscode
-    pkgs.luanti
+    # pkgs.luanti
     pkgs.pixelorama
     pkgs.libreoffice
 
