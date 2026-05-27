@@ -52,4 +52,4 @@ if [[ $? -ne 0 || -z "$selected_instance" ]]; then
 fi
 
 # Launches the selected instance and automatically connects to the TAPLab server
-prismlauncher -l "$selected_instance" -a "$input_name" -s 10.5.0.200 &
+prismlauncher -l "$selected_instance" -a "$input_name"

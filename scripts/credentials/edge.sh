@@ -3,7 +3,7 @@
 set -e
 
 # Default server lookup file
-LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
+LOOKUP_FILE="/etc/servers.ini"
 
 SERVER=""
 IP=""
@@ -75,8 +75,8 @@ echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 pkill msedge || true
 
 # Ensures the config directory exists
-mkdir -p ~/.config/microsoft-edge
-cd ~/.config/microsoft-edge
+mkdir -p /home/taplab/edge/.config/microsoft-edge
+cd /home/taplab/edge/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile
 if curl -fsSL "$SELECTED_IP:8080/edge" -o Default.tar.xz; then

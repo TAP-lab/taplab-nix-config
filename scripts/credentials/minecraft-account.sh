@@ -3,7 +3,7 @@
 set -e
 
 # Default server lookup file
-LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
+LOOKUP_FILE="/etc/servers.ini"
 
 SERVER=""
 IP=""
@@ -71,7 +71,7 @@ fi
 
 echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
-cd "$HOME"/.local/share/PrismLauncher/
+cd /home/taplab/.local/share/PrismLauncher/
 
 if curl -fsSL "$SELECTED_IP:8080/minecraft" -o accounts.json_ORIGINAL; then
     echo "Minecraft account downloaded successfully."
@@ -79,3 +79,5 @@ else
     echo "Failed to download Minecraft account." >&2
     exit 1
 fi
+
+cp accounts.json_ORIGINAL accounts.json

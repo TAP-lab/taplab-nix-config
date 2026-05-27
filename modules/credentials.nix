@@ -28,11 +28,14 @@ let
 
 in
 {
-  environment.systemPackages = [
-    autoSetupScript
-    edgeScript
-    memaScript
-    minecraftAccountScript
-    wifiScript
-  ];
+  environment = {
+    systemPackages = [
+      autoSetupScript
+      edgeScript
+      memaScript
+      minecraftAccountScript
+      wifiScript
+    ];
+    etc."servers.ini".source = ../resources/servers.ini;
+  };
 }
