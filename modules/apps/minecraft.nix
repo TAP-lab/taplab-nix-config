@@ -3,7 +3,7 @@
 # Sets up the older version of nixpkgs, as the newer version of prism launcher has issues
 let
   old = import nixpkgs-old {
-    system = pkgs.system or "x86_64-linux";
+    system = system = pkgs.stdenv.hostPlatform.system;
     config.allowUnfree = true;
   };
   prismdir = "${config.home.homeDirectory}/.local/share/PrismLauncher";

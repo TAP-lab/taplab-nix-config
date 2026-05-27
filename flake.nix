@@ -31,11 +31,8 @@
       # Defines the main system configuration for the laptops
       nixosConfigurations = {
         nixos =
-          let
-            system = "x86_64-linux";
-          in
           nixpkgs.lib.nixosSystem {
-            system = system;
+            system = "x86_64-linux";
             modules = [
               # Imports the nixos modules
               ./hardware-configuration.nix
