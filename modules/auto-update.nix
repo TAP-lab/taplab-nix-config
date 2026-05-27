@@ -15,6 +15,8 @@ let
 
       cd $REPO
 
+      git remote set-url origin https://github.com/tap-lab/taplab-nix-config.git
+
       git fetch origin
 
       LOCAL=$(git rev-parse HEAD)
