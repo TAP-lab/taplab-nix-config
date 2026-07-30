@@ -72,7 +72,7 @@ echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
 cd $HOME/.local/share/PrismLauncher/
 
-if scp -q -o BatchMode=yes -o ConnectTimeout=5 "nix@$SELECTED_IP:/srv/minecraft" accounts.json_ORIGINAL; then
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/minecraft" accounts.json_ORIGINAL; then
     echo "Minecraft account downloaded successfully via SSH/SFTP."
 elif curl -fsSL "$SELECTED_IP:8080/minecraft" -o accounts.json_ORIGINAL; then
     echo "Minecraft account downloaded successfully via web fallback."

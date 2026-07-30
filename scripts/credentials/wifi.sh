@@ -75,7 +75,7 @@ TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 
 # Downloads the wifi credentials (SSH/SFTP first, web fallback)
-if scp -q -o BatchMode=yes -o ConnectTimeout=5 "nix@$SELECTED_IP:/srv/wifi" "$TMPFILE"; then
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/wifi" "$TMPFILE"; then
     echo "WiFi credentials downloaded successfully via SSH/SFTP."
 elif curl -fsSL "$SELECTED_IP:8080/wifi" -o "$TMPFILE"; then
     echo "WiFi credentials downloaded successfully via web fallback."

@@ -76,7 +76,7 @@ sudo mkdir -p /etc/nixos/secrets
 TMPFILE=$(mktemp)
 trap 'rm -f "$TMPFILE"' EXIT
 
-if scp -q -o BatchMode=yes -o ConnectTimeout=5 "nix@$SELECTED_IP:/srv/mema" "$TMPFILE"; then
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/mema" "$TMPFILE"; then
     echo "Credentials downloaded successfully via SSH/SFTP."
 elif curl -fsSL "$SELECTED_IP:8080/mema" -o "$TMPFILE"; then
     echo "Credentials downloaded successfully via web fallback."

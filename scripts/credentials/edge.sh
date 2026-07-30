@@ -78,7 +78,7 @@ mkdir -p ~/.config/microsoft-edge
 cd ~/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile (SSH/SFTP first, web fallback)
-if scp -q -o BatchMode=yes -o ConnectTimeout=5 "nix@$SELECTED_IP:/srv/edge" Default.tar.xz; then
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/edge" Default.tar.xz; then
     echo "Edge profile downloaded successfully via SSH/SFTP."
 elif curl -fsSL "$SELECTED_IP:8080/edge" -o Default.tar.xz; then
     echo "Edge profile downloaded successfully via web fallback."
