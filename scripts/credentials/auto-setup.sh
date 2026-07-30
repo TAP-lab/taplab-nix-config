@@ -3,7 +3,7 @@
 # Simple wrapper script to run all of the credential setup scripts in one go.
 set -euo pipefail
 
-SCRIPT_DIR = "$HOME/nix-config/scripts/credentials"
+SCRIPT_DIR="$HOME/nix-config/scripts/credentials"
 
 echo "Running auto-setup for credentials..."
 
