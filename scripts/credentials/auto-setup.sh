@@ -19,4 +19,7 @@ sh "$SCRIPT_DIR/minecraft-account.sh"
 echo "Running edge setup..."
 sh "$SCRIPT_DIR/edge.sh"
 
+echo "Running OrcaSlicer setup..."
+sh "$SCRIPT_DIR/orcaslicer.sh"
+
 echo "All credentials setup complete!"
