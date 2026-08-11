@@ -33,7 +33,7 @@ done
 # Only allow either --server or --ip, not both
 if [[ -n "$SERVER" && -n "$IP" ]]; then
     echo "Error: --server and --ip cannot be used together."
-    echo "Usage: edge [--server <name> | --ip <address>]"
+    echo "Usage: orcaslicer [--server <name> | --ip <address>]"
     exit 1
 fi
 
@@ -70,13 +70,30 @@ fi
 
 echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
-cd $HOME/.local/share/PrismLauncher/
+# Kills OrcaSlicer if it's running
+pkill orca-slicer || true
 
-if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/minecraft" accounts.json_ORIGINAL; then
-    echo "Minecraft account downloaded successfully via SSH/SFTP."
-elif curl -fsSL "$SELECTED_IP:8080/minecraft" -o accounts.json_ORIGINAL; then
-    echo "Minecraft account downloaded successfully via web fallback."
+# Ensures the config directory exists
+mkdir -p ~/.config
+cd ~/.config
+
+# Downloads the pre-configured OrcaSlicer profile (SSH/SFTP first, web fallback)
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/orcaslicer.tar.xz" OrcaSlicer.tar.xz; then
+    echo "OrcaSlicer profile downloaded successfully via SSH/SFTP."
+elif curl -fsSL "$SELECTED_IP:8080/orcaslicer.tar.xz" -o OrcaSlicer.tar.xz; then
+    echo "OrcaSlicer profile downloaded successfully via web fallback."
 else
-    echo "Failed to download Minecraft account via SSH/SFTP and web fallback." >&2
+    echo "Failed to download OrcaSlicer profile via SSH/SFTP and web fallback." >&2
     exit 1
 fi
+
+# Removes the old profile
+rm -rf OrcaSlicer
+
+# Extracts the new profile
+tar -xf OrcaSlicer.tar.xz
+
+# Cleans up the downloaded file
+rm OrcaSlicer.tar.xz
+
+echo "OrcaSlicer profile updated."
