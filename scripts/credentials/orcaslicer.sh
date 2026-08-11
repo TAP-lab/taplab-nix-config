@@ -97,6 +97,6 @@ tar -xf OrcaSlicer.tar.xz
 rm OrcaSlicer.tar.xz
 
 # Ensures the profile is owned by taplab, not root
-chown -R taplab:taplab /home/taplab/.config/OrcaSlicer
+chown -R taplab:users /home/taplab/.config/OrcaSlicer
 
 echo "OrcaSlicer profile updated."
