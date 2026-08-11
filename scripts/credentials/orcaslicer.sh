@@ -74,8 +74,8 @@ echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 pkill orca-slicer || true
 
 # Ensures the config directory exists
-mkdir -p ~/.config
-cd ~/.config
+mkdir -p /home/taplab/.config
+cd /home/taplab/.config
 
 # Downloads the pre-configured OrcaSlicer profile (SSH/SFTP first, web fallback)
 if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/orcaslicer.tar.xz" OrcaSlicer.tar.xz; then
@@ -95,5 +95,8 @@ tar -xf OrcaSlicer.tar.xz
 
 # Cleans up the downloaded file
 rm OrcaSlicer.tar.xz
+
+# Ensures the profile is owned by taplab, not root
+chown -R taplab:taplab /home/taplab/.config/OrcaSlicer
 
 echo "OrcaSlicer profile updated."
