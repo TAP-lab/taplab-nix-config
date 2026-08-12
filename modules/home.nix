@@ -2,8 +2,6 @@
 
 {
   # Sets up the home manager configuration for the taplab user.
-  home.username = "taplab";
-  home.homeDirectory = "/home/taplab";
   home.stateVersion = "25.11";
 
   # Enables the nix command, and flakes.
