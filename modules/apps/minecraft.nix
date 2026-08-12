@@ -1,11 +1,6 @@
-{ config, pkgs, nixpkgs-old, ... }:
+{ config, pkgs, ... }:
 
-# Sets up the older version of nixpkgs, as the newer version of prism launcher has issues
 let
-  old = import nixpkgs-old {
-    system = pkgs.stdenv.hostPlatform.system;
-    config.allowUnfree = true;
-  };
   prismdir = "${config.home.homeDirectory}/.local/share/PrismLauncher";
 in
 
@@ -14,7 +9,7 @@ in
 
     # Installs the packages needed for minecaft, and the script.
     packages = [
-      old.prismlauncher
+      pkgs.prismlauncher
       pkgs.jdk25
 
       pkgs.zenity
