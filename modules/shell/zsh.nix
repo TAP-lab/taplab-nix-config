@@ -37,6 +37,14 @@
     alias nrt="rebuild -a test"
     alias ncg="nix-collect-garbage -d"
 
+    alias credentials-setup="bash ~/nix-config/scripts/credentials/auto-setup.sh";
+
+    alias wifi="bash ~/nix-config/scripts/credentials/wifi.sh";
+    alias mema="bash ~/nix-config/scripts/credentials/mema.sh";
+    alias edge="bash ~/nix-config/scripts/credentials/edge.sh";
+    alias minecraft="bash ~/nix-config/scripts/credentials/minecraft-account.sh";
+    alias orcaslicer="bash ~/nix-config/scripts/credentials/orcaslicer.sh";
+
     alias i="nix-shell -p"
 
     eval "$(zoxide init zsh)"

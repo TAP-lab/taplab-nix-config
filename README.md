@@ -46,7 +46,28 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 
 - There is a script to automatically set up Microsoft Edge to log in to the TAP-lab account. This can be run by executing the `edge` command in terminal. This also requires the laptop to be on the TAP-lab network.
 
+- OrcaSlicer can be pre-configured with the TAP-lab 3D printer profiles by running the `orcaslicer` command in terminal. This also requires the laptop to be on the TAP-lab network.
+
+- All of the above (`wifi`, `mema`, `edge`, `minecraft`, `orcaslicer`) can be run in one go with the `credentials-setup` command.
+
 - **U2F Authentication**: The system supports U2F security keys for sudo authentication. U2F keys are managed directly in this repo at `resources/security/u2f_keys` and installed to `/etc/Yubico/u2f_keys` during rebuild. If the U2F key is not present, the system will fall back to password authentication.
+
+## Credential Scripts
+
+The `wifi`, `mema`, `edge`, `minecraft`, and `orcaslicer` commands (in `scripts/credentials/`) all pull their respective credentials/config from a local "credserver" on the TAP-lab network. Each script:
+
+1. Looks up which credserver to use, either from `resources/servers.ini` (pinging each configured server in order until one responds), or via an explicit `--server <name>` / `--ip <address>` flag.
+2. Tries to fetch the file over SSH/SFTP first (using a pinned private key and known_hosts file, see below), falling back to a plain HTTP download on port `8080` if SSH is unavailable or fails.
+3. Installs the file into the appropriate location (e.g. `nmcli` for wifi, `/etc/nixos/secrets/mema` for the NAS share, `~/.config/microsoft-edge` for Edge, etc).
+
+### SSH key setup
+
+For the SSH/SFTP path to work, each machine needs:
+
+- The credserver's private key at `~/.ssh/credserver.key`, `chmod 600`. This is **not** committed to the repo (see `.gitignore`) and must be copied to each machine manually.
+- A known_hosts file at `~/.ssh/taplab_known_hosts` containing the credserver's host key(s). This can start out empty and be populated the first time each server is trusted (e.g. via `ssh-keyscan`).
+
+If either of these is missing or invalid, the scripts silently fall back to the HTTP download instead of failing outright.
 
 
 # Full Instructions

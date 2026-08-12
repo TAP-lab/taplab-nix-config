@@ -78,11 +78,13 @@ pkill msedge || true
 mkdir -p /home/taplab/edge/.config/microsoft-edge
 cd /home/taplab/edge/.config/microsoft-edge
 
-# Downloads the pre-configured edge profile
-if curl -fsSL "$SELECTED_IP:8080/edge" -o Default.tar.xz; then
-    echo "Edge profile downloaded successfully."
+# Downloads the pre-configured edge profile (SSH/SFTP first, web fallback)
+if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/edge" Default.tar.xz; then
+    echo "Edge profile downloaded successfully via SSH/SFTP."
+elif curl -fsSL "$SELECTED_IP:8080/edge" -o Default.tar.xz; then
+    echo "Edge profile downloaded successfully via web fallback."
 else
-    echo "Failed to download edge profile." >&2
+    echo "Failed to download edge profile via SSH/SFTP and web fallback." >&2
     exit 1
 fi
 
