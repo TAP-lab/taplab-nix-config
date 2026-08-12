@@ -24,6 +24,7 @@ UPGRADE=0
 ACTION="test"
 OUTPUT="nixos"
 BRANCH=""
+GC=0
 
 # Parses the command line arguments.
 while [[ ${#} -gt 0 ]]; do
@@ -58,6 +59,10 @@ while [[ ${#} -gt 0 ]]; do
             fi
             OUTPUT="$2"
             shift 2
+            ;;
+        -g)
+            GC=1
+            shift
             ;;
         --help)
             usage
@@ -117,4 +122,11 @@ if nixos-rebuild "$ACTION" --flake "$CONFIG_REPO#$OUTPUT"; then
 else
     echo "Error: nixos-rebuild failed"
     exit 1
+fi
+
+if [[ "$GC" -eq 1 ]]; then
+    echo "==> Running garbage collection"
+    sudo nix-collect-garbage -d 2>/dev/null | tail -n 1
+    nix-collect-garbage -d 2>/dev/null | tail -n 1
+    echo "==> Garbage collection complete"
 fi
