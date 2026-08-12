@@ -46,6 +46,25 @@
     alias orcaslicer="bash ~/nix-config/scripts/credentials/orcaslicer.sh";
 
     alias i="nix-shell -p"
+    i () {
+      if [[ $# -eq 0 ]]; then
+        nix-shell
+      else
+        nix-shell -p "$@"
+      fi
+    }
+
+    f () {
+      if [[ $# -eq 0 ]]; then
+        if [[ -f flake.nix ]]; then
+          nix develop
+        else
+          nix shell
+        fi
+      else
+        nix shell "''${@/#/nixpkgs#}"
+      fi
+    }
 
     eval "$(zoxide init zsh)"
 
