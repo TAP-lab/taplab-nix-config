@@ -4,7 +4,7 @@ set -euo pipefail
 
 # Sets the default values for the installation, which can be overridden by command line arguments.
 DISK="/dev/sda"
-HOSTNAME="nixos"
+OUTPUT="nixos"
 BRANCH="main"
 SWAP_SIZE="8"
 SKIP_INSTALL=false
@@ -12,12 +12,12 @@ SKIP_INSTALL=false
 # Displays a help message.
 usage() {
     cat <<EOF
-Usage: $(basename "$0") [--disk <disk>] [--branch <branch>] [--hostname <hostname>] [--swap <size>] [--help]
+Usage: $(basename "$0") [--disk <disk>] [--branch <branch>] [--output <output>] [--swap <size>] [--help]
 
 Options:
     --branch    Specify the configuration branch to use (default: main)
     --disk      Specify the target disk for installation (e.g., /dev/sda)
-    --hostname  Specify the hostname for the new installation (default: nixos)
+    --output    Specify the output to use for the flake (default: nixos)
     --swap      Specify the swap size in gigabytes (e.g., 4 for 4GB, defaults to no swap)
     --skip-install  Skip the NixOS installation step (for further customization)
   -h, --help   Show this help
@@ -74,25 +74,25 @@ while [[ $# -gt 0 ]]; do
 			DISK="$2"
 			shift 2
 			;;
-        -h|--hostname)
-            HOSTNAME="$2"
-            shift 2
-            ;;
-        -s|--swap)
-            SWAP_SIZE="$2"
-            shift 2
-            ;;
-        -i|--skip-install)
-            SKIP_INSTALL=true
-            shift 1
-            ;;
-        --help)
-            usage
-            exit 0
-            ;;
-        *)
-            echo "Error: Unknown argument: $1"
-            usage
+		-o|--output)
+			OUTPUT="$2"
+			shift 2
+			;;
+		-s|--swap)
+			SWAP_SIZE="$2"
+			shift 2
+			;;
+		-i|--skip-install)
+			SKIP_INSTALL=true
+			shift 1
+			;;
+		--help)
+			usage
+			exit 0
+			;;
+		*)
+			echo "Error: Unknown argument: $1"
+			usage
 			exit 1
 			;;
 	esac
@@ -106,7 +106,7 @@ if [[ -z "$DISK" ]]; then
 fi
 
 echo "Installing NixOS on disk: $DISK"
-echo "Using hostname: $HOSTNAME"
+echo "Using output: $OUTPUT"
 echo "Using configuration branch: $BRANCH"
 
 echo "Partitioning disk $DISK"
@@ -170,7 +170,7 @@ if [[ $SKIP_INSTALL = true ]]; then
 fi
 
 # Installs NixOS using the configuration.
-nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$HOSTNAME"
+nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$OUTPUT"
 
 # Clones the configuration repository to the new system.
 git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/root/nix-config
