@@ -90,8 +90,19 @@ fi
 # Removes the old profile
 rm -rf OrcaSlicer
 
-# Extracts the new profile
-tar -xf OrcaSlicer.tar.xz
+# Extracts the new profile into a temp dir, since the archive's top-level
+# entry name/casing (OrcaSlicer/Orcaslicer/no wrapping folder) varies
+EXTRACT_DIR=$(mktemp -d)
+tar -xf OrcaSlicer.tar.xz -C "$EXTRACT_DIR"
+
+# Normalizes whatever came out into ./OrcaSlicer
+TOP_ENTRIES=("$EXTRACT_DIR"/*)
+if [[ ${#TOP_ENTRIES[@]} -eq 1 && -d "${TOP_ENTRIES[0]}" ]]; then
+    mv "${TOP_ENTRIES[0]}" OrcaSlicer
+else
+    mv "$EXTRACT_DIR" OrcaSlicer
+fi
+rmdir "$EXTRACT_DIR" 2>/dev/null || true
 
 # Cleans up the downloaded file
 rm OrcaSlicer.tar.xz
