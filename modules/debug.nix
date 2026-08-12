@@ -12,7 +12,4 @@
 
   # Needed to run the VSCode SSH server.
   programs.nix-ld.enable = true;
-
-  # For KDE Plasma debugging.
-  environment.systemPackages = [ pkgs.libsForQt5.kdbusaddons ];
 }
