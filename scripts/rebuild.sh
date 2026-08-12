@@ -10,10 +10,11 @@ usage() {
 Usage: $(basename "$0") [--upgrade] [--help]
 
 Options:
-  --action <action>    Specify the nixos-rebuild action (default: test)
-  --branch <branch>    Specify the git branch to use (default: main)
-  --hostname <hostname> Specify the hostname to use for the flake (default: current hostname)
-  --upgrade            Pull the latest changes from the config repo (default: false)
+  --action|a <action>    Specify the nixos-rebuild action (default: test)
+  --branch|b <branch>    Specify the git branch to use (default: main)
+  -g                     Run garbage collection after rebuild (default: false)
+  --output|o <output>    Specify the output to use for the flake (default: nixos)
+  --upgrade|u            Pull the latest changes from the config repo (default: false)
   --help               Show this help message and exit
 EOF
 }
@@ -21,7 +22,7 @@ EOF
 # Sets the default values for the script.
 UPGRADE=0
 ACTION="test"
-HOSTNAME=$(hostname)
+OUTPUT="nixos"
 BRANCH=""
 
 # Parses the command line arguments.
@@ -49,13 +50,13 @@ while [[ ${#} -gt 0 ]]; do
             UPGRADE=1
             shift
             ;;
-        -h|--hostname)
+        -o|--output)
             if [[ $# -lt 2 ]]; then
-                echo "Error: --hostname requires an argument"
+                echo "Error: --output requires an argument"
                 usage
                 exit 2
             fi
-            HOSTNAME="$2"
+            OUTPUT="$2"
             shift 2
             ;;
         --help)
@@ -107,11 +108,11 @@ cp /etc/nixos/hardware-configuration.nix "$CONFIG_REPO"
 # Ensures the correct branch is being used.
 git checkout "$BRANCH" || { echo "Error: branch '$BRANCH' not found in $CONFIG_REPO"; exit 1; }
 
-echo "Using hostname: $HOSTNAME"
+echo "Using output: $OUTPUT"
 
 # Rebuilds the system using specified parameters.
-echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$HOSTNAME"
-if nixos-rebuild "$ACTION" --flake "$CONFIG_REPO#$HOSTNAME"; then
+echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$OUTPUT"
+if nixos-rebuild "$ACTION" --flake "$CONFIG_REPO#$OUTPUT"; then
     echo "==> Rebuild/$ACTION complete"
 else
     echo "Error: nixos-rebuild failed"
