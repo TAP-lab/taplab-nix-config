@@ -1,103 +1,63 @@
 {
   inputs = {
-    # The inputs for the flake, which include the nixpkgs repositories, home manager, and plasma manager.
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-old.url = "github:NixOS/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     plasma-manager = {
-      url = "github:pjones/plasma-manager";
+      url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    inputs.disko.url = "github:nix-community/disko/latest";
+    inputs.disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      nixpkgs-unstable,
-      nixpkgs-old,
-      home-manager,
-      plasma-manager,
       ...
-    }:
+    }@inputs:
     {
-      # Defines the main system configuration for the laptops
       nixosConfigurations = {
-        nixos =
-          nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [
-              # Imports the nixos modules
-              ./hardware-configuration.nix
-
-              ./modules/configuration.nix
-              ./modules/pkgs.nix
-              ./modules/nas.nix
-              ./modules/auto-update.nix
-
-              ./modules/debug.nix
-
-              ./modules/credentials.nix
-
-              ./modules/desktop/kde.nix
-              home-manager.nixosModules.home-manager
-              {
-                home-manager = {
-                  useGlobalPkgs = true;
-                  useUserPackages = true;
-                  backupFileExtension = "backup";
-                  extraSpecialArgs = {
-                    nixpkgs-unstable = nixpkgs-unstable;
-                    nixpkgs-old = nixpkgs-old;
-                    self = self;
-                  };
-                  sharedModules = [ plasma-manager.homeModules.plasma-manager ];
-                  users = {
-                    taplab =
-                      { ... }:
-                      {
-                        imports = [
-                          # Imports the home manager modules
-                          ./modules/home.nix
-
-                          ./modules/shell/zsh.nix
-                          ./modules/shell/themes/taplab-theme.nix
-
-                          ./modules/desktop/plasma-manager.nix
-
-                          ./modules/apps/wezterm.nix
-                          ./modules/apps/minecraft.nix
-                          ./modules/apps/orcaslicer.nix
-                        ];
-                      };
-                    root =
-                      { ... }:
-                      {
-                        home.username = "root";
-                        home.homeDirectory = "/root";
-                        home.stateVersion = "25.11";
-                        imports = [
-                          ./modules/shell/zsh.nix
-                          ./modules/shell/themes/taplab-theme.nix
-                        ];
-                      };
-                  };
-                };
-              }
-            ];
-            specialArgs = {
-              inherit nixpkgs-unstable;
-              inherit nixpkgs-old;
-              inherit self;
-            };
+        nixos = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit (inputs) self;
+            inherit inputs;
           };
+          modules = [
+            ./hardware-configuration.nix
+
+            ./modules
+            ./modules/apps
+            ./modules/desktop
+            ./modules/shell
+            inputs.home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                sharedModules = [ inputs.plasma-manager.homeModules.plasma-manager ];
+                extraSpecialArgs = {
+                  inherit (inputs) self;
+                  inherit inputs;
+                };
+              };
+            }
+          ];
+        };
       };
+    };
+
+    nixConfig = {
+      experimentalFeatures = [
+        "nix-command"
+        "flakes"
+        "auto-optimise-store"
+      ];
     };
 }
