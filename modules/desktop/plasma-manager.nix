@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   # Defines some custom configuration for the Plasma desktop environment, such as the panel layout and shortcuts.

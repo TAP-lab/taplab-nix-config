@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 let
   autoSetupScript = pkgs.writeShellApplication {
     name = "credentials-auto-setup";
