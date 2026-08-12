@@ -35,7 +35,7 @@
 
     alias nrs="rebuild -a switch"
     alias nrt="rebuild -a test"
-    alias ncg="nix-collect-garbage -d"
+    alias ncg="nix-collect-garbage -d 2>/dev/null | tail -n 1"
 
     alias credentials-setup="bash ~/nix-config/scripts/credentials/auto-setup.sh";
 
