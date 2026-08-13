@@ -20,6 +20,11 @@ let
     runtimeInputs = with pkgs; [ openssh curl ];
     text = builtins.readFile ../scripts/credentials/minecraft-account.sh;
   };
+  orcaslicerScript = pkgs.writeShellApplication {
+    name = "orcaslicer-setup";
+    runtimeInputs = with pkgs; [ openssh curl ];
+    text = builtins.readFile ../scripts/credentials/orcaslicer.sh;
+  };
   wifiScript = pkgs.writeShellApplication {
     name = "wifi-setup";
     runtimeInputs = with pkgs; [ openssh curl ];
@@ -34,6 +39,7 @@ in
       edgeScript
       memaScript
       minecraftAccountScript
+      orcaslicerScript
       wifiScript
     ];
     etc."servers.ini".source = ../resources/servers.ini;
