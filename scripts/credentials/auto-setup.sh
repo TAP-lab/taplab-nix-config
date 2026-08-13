@@ -3,8 +3,6 @@
 # Simple wrapper script to run all of the credential setup scripts in one go.
 set -euo pipefail
 
-SCRIPT_DIR="$HOME/nix-config/scripts/credentials"
-
 echo "Running auto-setup for credentials..."
 
 echo "Running wifi setup..."
@@ -20,6 +18,6 @@ echo "Running edge setup..."
 edge-setup
 
 echo "Running OrcaSlicer setup..."
-sh "$SCRIPT_DIR/orcaslicer.sh"
+orcaslicer-setup
 
 echo "All credentials setup complete!"
