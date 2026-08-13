@@ -48,6 +48,8 @@
           ];
         };
       };
+
+      diskoConfigurations.disko = import ./disko.nix;
     };
 
     nixConfig = {
