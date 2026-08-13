@@ -37,15 +37,7 @@
     alias nrt="rebuild -a test"
     alias ncg="nix-collect-garbage -d 2>/dev/null | tail -n 1"
 
-    alias credentials-setup="bash ~/nix-config/scripts/credentials/auto-setup.sh";
 
-    alias wifi="bash ~/nix-config/scripts/credentials/wifi.sh";
-    alias mema="bash ~/nix-config/scripts/credentials/mema.sh";
-    alias edge="bash ~/nix-config/scripts/credentials/edge.sh";
-    alias minecraft="bash ~/nix-config/scripts/credentials/minecraft-account.sh";
-    alias orcaslicer="bash ~/nix-config/scripts/credentials/orcaslicer.sh";
-
-    alias i="nix-shell -p"
     i () {
       if [[ $# -eq 0 ]]; then
         nix-shell
