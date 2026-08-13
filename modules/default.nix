@@ -1,7 +1,6 @@
 {
   imports = [
     ./configuration.nix
-    ./disko.nix
     ./pkgs.nix
     ./nas.nix
     ./auto-update.nix
