@@ -8,6 +8,7 @@ OUTPUT="nixos"
 BRANCH="main"
 SWAP_SIZE="8"
 SKIP_INSTALL=false
+REPO="https://github.com/tap-lab/taplab-nix-config"
 
 # Displays a help message.
 usage() {
@@ -170,10 +171,9 @@ if [[ $SKIP_INSTALL = true ]]; then
 fi
 
 # Installs NixOS using the configuration.
-nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$OUTPUT"
+nixos-install --no-root-passwd --flake "$REPO/?ref=$BRANCH#$OUTPUT"
 
-# Clones the configuration repository to the new system.
-git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/root/nix-config
+echo "$BRANCH" > /mnt/etc/branch
 
 # Prompts user that the installation and reboots in 10 seconds if not cancelled.
 trap 'echo "Reboot cancelled"; exit 0' SIGINT
