@@ -1,7 +1,7 @@
 { pkgs, ... }:
 let
   autoSetupScript = pkgs.writeShellApplication {
-    name = "credentials-auto-setup";
+    name = "credentials-setup";
     runtimeInputs = with pkgs; [ openssh curl ];
     text = builtins.readFile ../scripts/credentials/auto-setup.sh;
   };
@@ -16,7 +16,7 @@ let
     text = builtins.readFile ../scripts/credentials/mema.sh;
   };
   minecraftAccountScript = pkgs.writeShellApplication {
-    name = "minecraft-account-setup";
+    name = "minecraft-setup";
     runtimeInputs = with pkgs; [ openssh curl ];
     text = builtins.readFile ../scripts/credentials/minecraft-account.sh;
   };
