@@ -43,7 +43,7 @@
   # Prevents the modification of user accounts outside of NixOS configuration.
   users.mutableUsers = false;
 
- # Sets up the taplab user account.
+  # Sets up the taplab user account.
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
