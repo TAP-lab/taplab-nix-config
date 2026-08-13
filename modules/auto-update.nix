@@ -2,36 +2,20 @@
 let
   autoUpdateScript = pkgs.writeShellApplication {
     name = "nixos-auto-update";
-    runtimeInputs = [ pkgs.git pkgs.nixos-rebuild pkgs.systemd ];
+    runtimeInputs = [ pkgs.git pkgs.nix pkgs.nixos-rebuild pkgs.systemd ];
     text = ''
       set -euo pipefail
 
-      REPO=/root/nix-config
+      REPO="https://github.com/tap-lab/taplab-nix-config"
 
-      if [ ! -d "$REPO" ]; then
-        echo "Error: Git repo does not exist at $REPO"
-        git clone https://github.com/tap-lab/taplab-nix-config.git $REPO
+      if [[ -f /etc/branch ]]; then
+        BRANCH=$(cat /etc/branch)
+      else
+        BRANCH="main"
       fi
 
-      cd $REPO
-
-      git remote set-url origin https://github.com/tap-lab/taplab-nix-config.git
-
-      git fetch origin
-
-      LOCAL=$(git rev-parse HEAD)
-      REMOTE=$(git rev-parse "@{u}")
-
-      if [ "$LOCAL" = "$REMOTE" ]; then
-        echo "Already up to date"
-        exit 0
-      fi
-
-      cp /etc/nixos/hardware-configuration.nix $REPO/hardware-configuration.nix
-
-      echo "Updating from $LOCAL to $REMOTE"
-      git pull --ff-only origin
-      systemd-run --no-block --collect --unit=nixos-auto-rebuild nixos-rebuild switch --flake "$REPO#$(cat /etc/hostname)"
+      systemd-run --no-block --collect --unit=nixos-auto-rebuild nixos-rebuild switch --flake "$REPO/?ref=$BRANCH#$(cat /etc/hostname)"
+      echo "$BRANCH" > /etc/branch
       echo "Rebuild complete"
       echo "Running garbage collection"
       nix-collect-garbage -d
@@ -63,6 +47,4 @@ in
       Persistent = true;
     };
   };
-
-  environment.etc."autoupdate-test".text = ''if this file exists, the auto update script is working correctly'';
 }
