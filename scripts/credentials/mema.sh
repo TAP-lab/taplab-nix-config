@@ -87,7 +87,7 @@ fi
 echo "Please enter root password:"
 if su root -c "
   mkdir -p /etc/nixos/secrets
-  mv "$TMPFILE" /etc/nixos/secrets/mema
+  mv $TMPFILE /etc/nixos/secrets/mema
   chmod 600 /etc/nixos/secrets/mema
 "; then
   echo "Credentials downloaded successfully."
