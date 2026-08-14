@@ -12,7 +12,7 @@ echo "Running mema nas share setup..."
 mema-setup
 
 echo "Running Minecraft account setup..."
-minecraft-account-setup
+minecraft-setup
 
 echo "Running edge setup..."
 edge-setup
