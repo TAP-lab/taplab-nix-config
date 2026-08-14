@@ -4,6 +4,7 @@
   # Enables the GRUB bootloader.
   boot.loader.grub.enable = true;
   boot.loader.grub.devices = [ "/dev/sda" ];
+  boot.loader.grub.efiSupport = false;
 
   # Specifies the kernal to use.
   boot.kernelPackages = pkgs.linuxPackages_latest;
