@@ -98,6 +98,4 @@
   environment.systemPackages = with pkgs; [
     pam_u2f
   ];
-
-  home-manager.backupFileExtension = "backup";
 }

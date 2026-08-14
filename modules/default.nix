@@ -8,6 +8,7 @@
     ./credentials.nix
   ];
 
+  home-manager.backupFileExtension = "backup";
   home-manager.users = {
     taplab = {
       imports = [ ./home.nix ];
