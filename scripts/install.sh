@@ -13,13 +13,13 @@ REPO="https://github.com/tap-lab/taplab-nix-config"
 # Displays a help message.
 usage() {
     cat <<EOF
-Usage: $(basename "$0") [--disk <disk>] [--branch <branch>] [--output <output>] [--help]
+Usage: $(basename "$0") [--disk <disk>] [--branch <branch>] [--output <output>] [--skip-disko | --skip-install] [--help]
 
 Options:
     --branch        Specify the configuration branch to use (default: main)
     --disk          Specify the target disk for installation (e.g., /dev/sda)
     --output        Specify the output to use for the flake (default: nixos)
-    --skip-disko    Skip the disk partitioning step
+    --skip-disko    Skip the disk partitioning step (will not mount the filesystem)
     --skip-install  Skip the NixOS installation step (for further customization)
     -h, --help      Show this help
 EOF
