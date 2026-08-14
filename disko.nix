@@ -6,28 +6,30 @@
         device = disk;
         type = "disk";
         content = {
-          type = "gpt";
-          partitions = {
-            boot = {
-              size = "1M";
-              type = "EF02";
-              priority = 1;
-            };
-            root = {
-              size = "100%";
+          type = "table";
+          format = "msdos";
+          partitions = [
+            {
+              name = "root";
+              start = "1MiB";
+              end = "-8G";
+              part-type = "primary";
+              bootable = true;
               content = {
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
               };
-            };
-            swap = {
-              size = "8G";
+            }
+            {
+              name = "swap";
+              start = "-8G";
+              end = "100%";
               content = {
                 type = "swap";
               };
-            };
-          };
+            }
+          ];
         };
       };
     };
