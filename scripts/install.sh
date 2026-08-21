@@ -156,6 +156,10 @@ if [[ "$SWAP_SIZE" != "0" ]]; then
     swapon "${DISK}2"
 fi
 
+# Prompts for the laptop number to identify the device onthe network (e.g. via DHCP/SSH) without changing its local hostname.
+read -rp "Enter the laptop number: " LAPTOP_NUMBER
+echo "$LAPTOP_NUMBER" > /mnt/etc/taplab-laptop-number
+
 # Clones the configuration repository.
 mkdir -p /mnt/etc/nixos
 git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/etc/nixos
