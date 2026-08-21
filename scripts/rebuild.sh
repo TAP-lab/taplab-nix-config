@@ -107,6 +107,13 @@ echo "Using hostname: $HOSTNAME"
 # this file breaks the rebuild for some reason, quick workaround.
 rm /home/taplab/.gtkrc-2.0 || true
 
+# Prompts for the laptop number if it hasn't been set yet, (used for identifying the device on the network)
+# Will only prompt if rebuild.sh is manually run with an interactive terminal
+if [[ ! -f /etc/taplab-laptop-number && -t 0 ]]; then
+    read -rp "Enter the laptop number: " LAPTOP_NUMBER
+    echo "$LAPTOP_NUMBER" > /etc/taplab-laptop-number
+fi
+
 # Rebuilds the system using specified parameters.
 echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$HOSTNAME"
 if nixos-rebuild $ACTION --flake "$CONFIG_REPO#$HOSTNAME"; then
