@@ -42,6 +42,7 @@
           ./modules/pkgs.nix
           ./modules/nas.nix
           ./modules/auto-update.nix
+          ./modules/session-reset.nix
 
           ./modules/debug.nix
 
