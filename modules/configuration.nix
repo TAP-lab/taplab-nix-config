@@ -68,7 +68,6 @@
     plymouth = {
       enable = true;
       theme = "spinner";
-      logo = ../resources/icons/taplab.svg;
     };
 
     kernelParams = [

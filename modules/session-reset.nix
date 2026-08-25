@@ -30,7 +30,10 @@ in
 
       if [ "$elapsed" -ge ${toString suspendThresholdSeconds} ]; then
         ${pkgs.brightnessctl}/bin/brightnessctl set ${toString resetBrightnessPercent}% || true
-        ${pkgs.systemd}/bin/loginctl terminate-user taplab || true
+        # Restart the display manager rather than just terminating the user session.
+        # loginctl terminate-user alone killed the session without reliably respawning
+        # SDDM/the X server, leaving a blank screen until the laptop was power cycled.
+        ${pkgs.systemd}/bin/systemctl restart display-manager.service || true
       fi
 
       rm -f ${suspendTimestampFile}
