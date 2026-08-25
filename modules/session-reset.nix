@@ -10,7 +10,7 @@ let
   suspendTimestampFile = "/run/taplab-suspend-at";
 
   # Reset the session if the laptop was asleep for longer than this
-  suspendThresholdSeconds = 5 * 60;
+  suspendThresholdSeconds = 90 * 60;
 in
 {
   environment.systemPackages = [ pkgs.brightnessctl ];
