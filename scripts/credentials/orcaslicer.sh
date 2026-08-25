@@ -87,25 +87,52 @@ else
     exit 1
 fi
 
-# Removes the old profile
-rm -rf OrcaSlicer
+# Sets aside the old profile instead of deleting it outright, so it can be
+# restored if the extract below fails
+BACKUP_DIR=""
+if [[ -d OrcaSlicer ]]; then
+    BACKUP_DIR="OrcaSlicer.bak"
+    rm -rf "$BACKUP_DIR"
+    mv OrcaSlicer "$BACKUP_DIR"
+fi
+
+# Restores the backup and exits on failure
+restore_backup() {
+    echo "Restoring previous OrcaSlicer profile." >&2
+    rm -rf OrcaSlicer
+    if [[ -n "$BACKUP_DIR" ]]; then
+        mv "$BACKUP_DIR" OrcaSlicer
+    fi
+    rm -f OrcaSlicer.tar.xz
+    exit 1
+}
 
 # Extracts the new profile into a temp dir, since the archive's top-level
 # entry name/casing (OrcaSlicer/Orcaslicer/no wrapping folder) varies
 EXTRACT_DIR=$(mktemp -d)
-tar -xf OrcaSlicer.tar.xz -C "$EXTRACT_DIR"
+if ! tar -xf OrcaSlicer.tar.xz -C "$EXTRACT_DIR"; then
+    echo "Failed to extract OrcaSlicer profile archive." >&2
+    rm -rf "$EXTRACT_DIR"
+    restore_backup
+fi
 
 # Normalizes whatever came out into ./OrcaSlicer
 TOP_ENTRIES=("$EXTRACT_DIR"/*)
 if [[ ${#TOP_ENTRIES[@]} -eq 1 && -d "${TOP_ENTRIES[0]}" ]]; then
-    mv "${TOP_ENTRIES[0]}" OrcaSlicer
+    if ! mv "${TOP_ENTRIES[0]}" OrcaSlicer; then
+        rm -rf "$EXTRACT_DIR"
+        restore_backup
+    fi
 else
-    mv "$EXTRACT_DIR" OrcaSlicer
+    if ! mv "$EXTRACT_DIR" OrcaSlicer; then
+        restore_backup
+    fi
 fi
 rmdir "$EXTRACT_DIR" 2>/dev/null || true
 
-# Cleans up the downloaded file
+# Cleans up the downloaded file and backup now that the new profile is in place
 rm OrcaSlicer.tar.xz
+rm -rf "$BACKUP_DIR"
 
 # Ensures the profile is owned by taplab, not root
 chown -R taplab:users /home/taplab/.config/OrcaSlicer
