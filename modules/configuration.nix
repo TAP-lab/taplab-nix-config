@@ -21,6 +21,18 @@
   networking.hostName = "nixos";
   networking.domain = "taplab.nz";
 
+  # Sets the network-facing hostname from the number in /etc/taplab-laptop-number, if it exists. This is used to identify the device on the network (e.g. via DHCP/SSH) without changing its local hostname from nixos
+  systemd.services.set-network-hostname = {
+    wantedBy = [ "multi-user.target" ];
+    before = [ "network-pre.target" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      if [ -f /etc/taplab-laptop-number ]; then
+        ${pkgs.systemd}/bin/hostnamectl set-hostname --transient "nixos-$(cat /etc/taplab-laptop-number)"
+      fi
+    '';
+  };
+
   # Configures timezone and locale settings for New Zealand.
   time.timeZone = "Pacific/Auckland";
 

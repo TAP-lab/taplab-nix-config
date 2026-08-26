@@ -42,6 +42,7 @@
           ./modules/pkgs.nix
           ./modules/nas.nix
           ./modules/auto-update.nix
+          ./modules/session-reset.nix
 
           ./modules/debug.nix
 
@@ -71,7 +72,6 @@
 
                     ./modules/apps/wezterm.nix
                     ./modules/apps/minecraft.nix
-                    ./modules/apps/orcaslicer.nix
                   ];
                 };
                 root = { pkgs, ... }: {

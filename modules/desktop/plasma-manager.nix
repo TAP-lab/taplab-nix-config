@@ -62,6 +62,12 @@
     configFile."touchpadrc"."General" = {
       DisableWhileTyping = false;
     };
+
+    # Always start with a clean desktop instead of restoring the previous
+    # user's applications from their last (or crashed) session.
+    configFile."ksmserverrc"."General" = {
+      loginMode = "emptySession";
+    };
   };
 
   xdg.configFile."kwalletrc".text = ''
