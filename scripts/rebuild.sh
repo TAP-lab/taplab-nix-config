@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Sets the path to the config repo.
+# Sets the url to the config repo.
 REPO="https://github.com/tap-lab/taplab-nix-config"
 
 # Displays a help message.
@@ -85,7 +85,6 @@ echo "$BRANCH" > /etc/branch
 
 if [[ "$GC" -eq 1 ]]; then
     echo "==> Running garbage collection"
-    sudo nix-collect-garbage -d 2>/dev/null | tail -n 1
     nix-collect-garbage -d 2>/dev/null | tail -n 1
     echo "==> Garbage collection complete"
 fi
