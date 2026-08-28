@@ -99,6 +99,9 @@ echo "Connecting to SSID: $SSID"
 # Sets up the wifi connection using nmcli
 nmcli device wifi connect "$SSID" password "$PSK"
 
+# Explicitly sets key-mgmt, since nmcli doesn't always set it when connecting via password alone
+nmcli connection modify "$SSID" 802-11-wireless-security.key-mgmt wpa-psk
+
 echo "Connected to $SSID."
 
 # Cleans up the temporary file

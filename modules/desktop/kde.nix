@@ -14,6 +14,9 @@
   services.displayManager.autoLogin.enable = true;
   services.displayManager.autoLogin.user = "taplab";
 
+  # force autologin on all reboots and sessions
+  services.displayManager.sddm.settings.Autologin.Relogin = true;
+
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
