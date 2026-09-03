@@ -16,7 +16,10 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    veyon.url = "github:veyon/veyon";
+    veyon = {
+      url = "git+https://github.com/veyon/veyon.git?submodules=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@ {
