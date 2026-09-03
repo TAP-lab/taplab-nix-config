@@ -4,6 +4,10 @@
   # Allows installing unfree packages, which is required for some of the apps.
   nixpkgs.config.allowUnfree = true;
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "luanti-5.14.0"
+  ];
+
   # Installs the packages needed for the system.
   environment.systemPackages = [
     pkgs.git
