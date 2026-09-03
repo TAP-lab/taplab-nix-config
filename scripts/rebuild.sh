@@ -39,7 +39,7 @@ else
 fi
 
 # Parses the command line arguments.
-while getopts ":hgf:a:o:" opt; do
+while getopts ":hgf:b:a:o:" opt; do
     case "$opt" in
         h)
             usage
