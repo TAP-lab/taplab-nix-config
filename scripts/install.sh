@@ -3,60 +3,59 @@
 set -euo pipefail
 
 # Sets the default values for the installation, which can be overridden by command line arguments.
+FLAKE="https://github.com/tap-lab/taplab-nix-config"
+
 DISK="/dev/sda"
 OUTPUT="nixos"
 BRANCH="main"
 SKIP_DISKO=false
 SKIP_INSTALL=false
-REPO="https://github.com/tap-lab/taplab-nix-config"
 
 # Displays a help message.
 usage() {
     cat <<EOF
-Usage: $(basename "$0") [--disk <disk>] [--branch <branch>] [--output <output>] [--skip-disko | --skip-install] [--help]
+Usage:
+    $(basename "$0") [OPTIONS]
 
 Options:
-    --branch        Specify the configuration branch to use (default: main)
-    --disk          Specify the target disk for installation (e.g., /dev/sda)
-    --output        Specify the output to use for the flake (default: nixos)
+    -f              Override the flake path (default: "$FLAKE").
+    -b              Override the flake branch (default: "$BRANCH").
+    -d              Specify the target disk for installation (default: "$DISK").
+    -o              Specify the output to use for the flake (default: "$OUTPUT").
     --skip-disko    Skip the disk partitioning step (will not mount the filesystem)
     --skip-install  Skip the NixOS installation step (for further customization)
     -h, --help      Show this help
 EOF
 }
 
+for arg in "$@"; do
+    if [[ "$arg" == "--help" ]]; then
+        usage
+        exit 0
+    fi
+done
+
 # Parses the arguments passed to the script and sets the corresponding variables.
-while [[ $# -gt 0 ]]; do
-	case $1 in
-		-b|--branch)
-			BRANCH="$2"
-			shift 2
-			;;
-		-d|--disk)
-			DISK="$2"
-			shift 2
-			;;
-		-o|--output)
-			OUTPUT="$2"
-			shift 2
-			;;
-		-p|--skip-disko)
-			SKIP_DISKO=true
-			shift 1
-			;;
-		-i|--skip-install)
-			SKIP_INSTALL=true
-			shift 1
-			;;
-		--help)
+while getopts ":f:b:d:o:h" opt; do
+	case $opt in
+		-h)
 			usage
 			exit 0
 			;;
-		*)
-			echo "Error: Unknown argument: $1"
-			usage
-			exit 1
-			;;
+		f) FLAKE="$OPTARG" ;;
+		b) BRANCH="$OPTARG" ;;
+		d) DISK="$OPTARG" ;;
+		o) OUTPUT="$OPTARG" ;;
+		:)
+            echo "Error: -$OPTARG requires an argument"
+            usage
+            exit 2
+            ;;
+        \?)
+            echo "Unknown flag: -$OPTARG"
+            usage
+            exit 2
+            ;;
 	esac
 done
 
