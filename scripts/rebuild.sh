@@ -79,7 +79,7 @@ fi
 
 # Rebuilds the system using specified parameters.
 rebuild_start=$(date +%s)
-if nixos-rebuild $ACTION --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"; then
+if nixos-rebuild "$ACTION" --refresh --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"; then
     rebuild_elapsed=$(( $(date +%s) - rebuild_start ))
     echo "==> Rebuild/$ACTION complete in $(( rebuild_elapsed / 60 ))m $(( rebuild_elapsed % 60 ))s"
 else
