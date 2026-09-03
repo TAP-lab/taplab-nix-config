@@ -25,6 +25,7 @@
     pkgs.luanti
     pkgs.pixelorama
     pkgs.libreoffice
+    pkgs.mblock-mlink
 
     # Imports the custom gb-studio package.
     (pkgs.callPackage ./apps/gb-studio.nix {})
