@@ -13,6 +13,7 @@ Usage:
 Options:
     -g              Run garbage collection after rebuilding.
     -f FLAKE        Override the flake path (default: "$FLAKE").
+    -b BRANCH       Override the flake branch (default: "$BRANCH").
     -a ACTION       Rebuild action to run (default: switch).
     -o OUTPUT       Override flake output (default: current hostname).
     --help          Show this help and exit.
@@ -46,6 +47,7 @@ while getopts ":hgf:a:o:" opt; do
             ;;
         g) GC=1 ;;
         f) FLAKE="$OPTARG" ;;
+        b) BRANCH="$OPTARG" ;;
         a) ACTION="$OPTARG" ;;
         o) OUTPUT="$OPTARG" ;;
         :)
