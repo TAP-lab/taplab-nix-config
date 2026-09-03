@@ -2,6 +2,15 @@
 {
   imports = [ inputs.veyon.outputs.nixosModules.default ];
 
+  # The veyon flake's package derivation references a top-level
+  # `libdbusmenu-qt5` package that doesn't exist in nixpkgs - it's
+  # `libsForQt5.libdbusmenu` there. Alias it so the veyon overlay resolves.
+  nixpkgs.overlays = [
+    (final: prev: {
+      libdbusmenu-qt5 = final.libsForQt5.libdbusmenu;
+    })
+  ];
+
   services.veyon = {
     enable = true;
     publicKey = {
