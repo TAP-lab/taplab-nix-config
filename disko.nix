@@ -22,6 +22,10 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
+                extraArgs = [
+                  "-L"
+                  "nixos"
+                ];
               };
             }
             {
@@ -30,6 +34,10 @@
               end = "100%";
               content = {
                 type = "swap";
+                extraArgs = [
+                  "-L"
+                  "swap"
+                ];
               };
             }
           ];

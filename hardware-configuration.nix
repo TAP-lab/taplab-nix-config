@@ -23,12 +23,12 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/sda1";
+    device = "/dev/disk/by-label/nixos";
     fsType = "ext4";
   };
 
   swapDevices = [
-    { device = "/dev/sda2"; }
+    { device = "/dev/disk/by-label/swap"; }
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
