@@ -2,25 +2,34 @@
 set -euo pipefail
 
 # Sets the url to the config repo.
-REPO="https://github.com/tap-lab/taplab-nix-config"
+FLAKE="https://github.com/tap-lab/taplab-nix-config"
 
 # Displays a help message.
 usage() {
     cat <<EOF
-Usage: $(basename "$0")[--branch <branch>] [--output <output>] [-g] [--help]
+Usage:
+    $(basename "$0") [OPTIONS]
 
 Options:
-  --action|a <action>    Specify the nixos-rebuild action (default: test)
-  -g                     Run garbage collection after rebuild (default: false)
-  --output|o <output>    Specify the output to use for the flake (default: nixos)
-  --help               Show this help message and exit
+    -g              Run garbage collection after rebuilding.
+    -f FLAKE        Override the flake path (default: "$FLAKE").
+    -a ACTION       Rebuild action to run (default: switch).
+    -o OUTPUT       Override flake output (default: current hostname).
+    --help          Show this help and exit.
 EOF
 }
 
+for arg in "$@"; do
+    if [[ "$arg" == "--help" ]]; then
+        usage
+        exit 0
+    fi
+done
+
 # Sets the default values for the script.
-ACTION="test"
-OUTPUT="nixos"
 GC=0
+ACTION="switch"
+OUTPUT=$(hostname)
 
 if [[ -f /etc/branch ]]; then
     BRANCH=$(cat /etc/branch)
@@ -29,36 +38,23 @@ else
 fi
 
 # Parses the command line arguments.
-while [[ ${#} -gt 0 ]]; do
-    case "$1" in
-        -a|--action)
-            if [[ $# -lt 2 ]]; then
-                echo "Error: --action requires an argument"
-                usage
-                exit 2
-            fi
-            ACTION="$2"
-            shift 2
-            ;;
-        -o|--output)
-            if [[ $# -lt 2 ]]; then
-                echo "Error: --output requires an argument"
-                usage
-                exit 2
-            fi
-            OUTPUT="$2"
-            shift 2
-            ;;
-        -g)
-            GC=1
-            shift
-            ;;
-        --help)
+while getopts ":hgf:a:o:" opt; do
+    case "$opt" in
+        h)
             usage
             exit 0
             ;;
-        *)
-            echo "Unknown argument: $1"
+        g) GC=1 ;;
+        f) FLAKE="$OPTARG" ;;
+        a) ACTION="$OPTARG" ;;
+        o) OUTPUT="$OPTARG" ;;
+        :)
+            echo "Error: -$OPTARG requires an argument"
+            usage
+            exit 2
+            ;;
+        \?)
+            echo "Unknown flag: -$OPTARG"
             usage
             exit 2
             ;;
@@ -80,11 +76,12 @@ if [[ ! -f /etc/taplab-laptop-number && -t 0 ]]; then
 fi
 
 # Rebuilds the system using specified parameters.
-echo "==> Rebuild/$ACTION system for flake: $REPO/$BRANCH#$OUTPUT"
-if nixos-rebuild "$ACTION" --flake "git+$REPO/?ref=$BRANCH#$OUTPUT"; then
-    echo "==> Rebuild/$ACTION complete"
+rebuild_start=$(date +%s)
+if nixos-rebuild $ACTION --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"; then
+    rebuild_elapsed=$(( $(date +%s) - rebuild_start ))
+    echo "==> Rebuild/$ACTION complete in $(( rebuild_elapsed / 60 ))m $(( rebuild_elapsed % 60 ))s"
 else
-    echo "Error: nixos-rebuild failed"
+    echo "Error: nixos-rebuild $ACTION failed"
     exit 1
 fi
 
