@@ -25,7 +25,13 @@
     pkgs.luanti
     pkgs.pixelorama
     pkgs.libreoffice
-    pkgs.mblock-mlink
+
+    (pkgs.mblock-mlink.overrideAttrs (old: {
+      src = pkgs.fetchurl {
+        url = "http://srv.it.taplab.nz/apps/linux/mlink.deb";
+        sha256 = "sha256-KLxj81ZjbEvhhaz0seNB4WXX5ybeZ7/WcT1dGfdWle0=";
+      };
+    }))
 
     # Imports the custom gb-studio package.
     (pkgs.callPackage ./apps/gb-studio.nix {})
