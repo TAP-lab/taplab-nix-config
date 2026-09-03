@@ -4,7 +4,6 @@
 
   services.veyon = {
     enable = true;
-    enableService = true;
   };
 
   # The upstream module only exposes a single named key via
