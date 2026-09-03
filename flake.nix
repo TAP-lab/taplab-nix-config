@@ -15,6 +15,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    veyon.url = "github:veyon/veyon";
   };
 
   outputs = inputs@ {
@@ -24,6 +26,7 @@
     nixpkgs-old,
     home-manager,
     plasma-manager,
+    veyon,
     ...
   }:
   {
@@ -43,6 +46,7 @@
           ./modules/nas.nix
           ./modules/auto-update.nix
           ./modules/session-reset.nix
+          ./modules/veyon.nix
 
           ./modules/debug.nix
 
@@ -91,6 +95,7 @@
           inherit nixpkgs-unstable;
           inherit nixpkgs-old;
           inherit self;
+          inherit inputs;
         };
       };
     };
