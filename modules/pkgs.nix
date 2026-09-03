@@ -3,7 +3,10 @@
 let
   rebuildScript = pkgs.writeShellApplication {
     name = "rebuild";
-    runtimeInputs = with pkgs; [ openssh curl ];
+    runtimeInputs = with pkgs; [
+      openssh
+      curl
+    ];
     text = builtins.readFile ../scripts/rebuild.sh;
   };
 in
@@ -35,7 +38,7 @@ in
     pkgs.libreoffice
 
     # Imports the custom gb-studio package.
-    (pkgs.callPackage ./apps/gb-studio.nix {})
+    (pkgs.callPackage ./apps/gb-studio.nix { })
 
     rebuildScript
   ];

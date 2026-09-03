@@ -52,11 +52,11 @@
       diskoConfigurations.disko = import ./disko.nix;
     };
 
-    nixConfig = {
-      experimentalFeatures = [
-        "nix-command"
-        "flakes"
-        "auto-optimise-store"
-      ];
-    };
+  nixConfig = {
+    experimentalFeatures = [
+      "nix-command"
+      "flakes"
+      "auto-optimise-store"
+    ];
+  };
 }

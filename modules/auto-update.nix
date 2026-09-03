@@ -2,7 +2,12 @@
 let
   autoUpdateScript = pkgs.writeShellApplication {
     name = "nixos-auto-update";
-    runtimeInputs = [ pkgs.git pkgs.nix pkgs.nixos-rebuild pkgs.systemd ];
+    runtimeInputs = [
+      pkgs.git
+      pkgs.nix
+      pkgs.nixos-rebuild
+      pkgs.systemd
+    ];
     text = ''
       set -euo pipefail
 

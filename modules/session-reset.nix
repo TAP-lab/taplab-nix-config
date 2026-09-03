@@ -15,7 +15,6 @@ in
 {
   environment.systemPackages = [ pkgs.brightnessctl ];
 
-
   # Records the time the laptop went to sleep
   powerManagement.powerDownCommands = ''
     date +%s > ${suspendTimestampFile}

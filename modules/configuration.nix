@@ -60,12 +60,15 @@
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
-    extraGroups = [ "networkmanager" "dialout"];
+    extraGroups = [
+      "networkmanager"
+      "dialout"
+    ];
     shell = pkgs.zsh;
   };
 
   # Sets up the root user account with a hashed password.
-  users.users.root ={
+  users.users.root = {
     shell = pkgs.zsh;
     hashedPassword = "$6$0qyksVNkFXpXLynw$PgzzPOc55e9eB.vxA6.oxKHe5nrmrBgo0zdltvLGM1T3gqF2sCTG3MF5BZ1UNK1/lxpaVYUmM3G4h0plt4Sy01";
   };

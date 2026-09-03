@@ -55,8 +55,8 @@
     };
 
     shortcuts = {
-      ksmserver ={
-        "Lock Session" = [];
+      ksmserver = {
+        "Lock Session" = [ ];
       };
     };
 
