@@ -16,7 +16,7 @@ Options:
     -b BRANCH       Override the flake branch (default: "$BRANCH").
     -a ACTION       Rebuild action to run (default: switch).
     -o OUTPUT       Override flake output (default: current hostname).
-    --help          Show this help and exit.
+    -h, --help      Show this help and exit.
 EOF
 }
 
