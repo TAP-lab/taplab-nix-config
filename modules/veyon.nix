@@ -1,7 +1,6 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 {
   imports = [ inputs.veyon.outputs.nixosModules.default ];
-
 
   nixpkgs.overlays = [
     (final: prev: {
@@ -15,6 +14,13 @@
       name = "alex";
       value = builtins.readFile ../resources/veyon/alex.pub;
     };
+
+    # Pull in PipeWire so the portal/Wayland screen-capture plugin builds -
+    # needed since this machine runs a KDE session, where the legacy X11
+    # VNC grabber alone won't work under Wayland.
+    package = pkgs.veyon.overrideAttrs (old: {
+      buildInputs = old.buildInputs ++ [ pkgs.pipewire ];
+    });
   };
 
   # The upstream module only exposes a single named key via
