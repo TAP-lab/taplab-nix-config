@@ -1,9 +1,9 @@
-{ config, lib, pkgs, ... }:
-
+{ pkgs, ... }:
 {
   # Enables the GRUB bootloader.
   boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.devices = [ "/dev/sda" ];
+  boot.loader.grub.efiSupport = false;
 
   # Specifies the kernal to use.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -26,11 +26,19 @@
     wantedBy = [ "multi-user.target" ];
     before = [ "network-pre.target" ];
     serviceConfig.Type = "oneshot";
+    path = [ pkgs.nettools ];
     script = ''
       if [ -f /etc/taplab-laptop-number ]; then
-        ${pkgs.systemd}/bin/hostnamectl set-hostname --transient "nixos-$(cat /etc/taplab-laptop-number)"
+        hostname "nixos-$(cat /etc/taplab-laptop-number)"
+      else
+        echo "taplab-laptop-number file not found"
       fi
     '';
+  };
+
+  #Prevents NetworkManager from overriding the hostname
+  networking.networkmanager.settings = {
+    main.hostname-mode = "none";
   };
 
   # Configures timezone and locale settings for New Zealand.
@@ -52,16 +60,25 @@
   # Enables zsh.
   programs.zsh.enable = true;
 
-  # Sets up the taplab user account with a password.
+  # Prevents the modification of user accounts outside of NixOS configuration.
+  users.mutableUsers = false;
+
+  # Sets up the taplab user account.
   users.users.taplab = {
     isNormalUser = true;
     description = "taplab";
-    extraGroups = [ "networkmanager" "wheel" "dialout"];
-    hashedPassword = "$6$aGlmHH1OI2haTRMb$HdvQGthHpfDfWfsrD969TcSa/doH5yfL21yZOpH19TZ1sEwfxYbTfcOnB5vGAxcovGxom7VvCJI7xGUJqv808.";
+    extraGroups = [
+      "networkmanager"
+      "dialout"
+    ];
     shell = pkgs.zsh;
   };
 
-  users.users.root.shell = pkgs.zsh;
+  # Sets up the root user account with a hashed password.
+  users.users.root = {
+    shell = pkgs.zsh;
+    hashedPassword = "$6$0qyksVNkFXpXLynw$PgzzPOc55e9eB.vxA6.oxKHe5nrmrBgo0zdltvLGM1T3gqF2sCTG3MF5BZ1UNK1/lxpaVYUmM3G4h0plt4Sy01";
+  };
 
   # Enables the plymouth boot screen to hide some of the boot messages.
   boot = {
@@ -98,7 +115,7 @@
   };
 
   # Enable U2F and set up cue
-  security.pam.services.sudo.u2fAuth = true;
+  security.pam.services.login.u2fAuth = true;
   security.pam.u2f.settings.cue = true;
   environment.systemPackages = with pkgs; [
     pam_u2f

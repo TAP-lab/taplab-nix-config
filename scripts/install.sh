@@ -3,100 +3,67 @@
 set -euo pipefail
 
 # Sets the default values for the installation, which can be overridden by command line arguments.
+FLAKE="https://github.com/tap-lab/taplab-nix-config"
+
 DISK="/dev/sda"
-HOSTNAME="nixos"
+OUTPUT="nixos"
 BRANCH="main"
-SWAP_SIZE="8"
+SKIP_DISKO=false
 SKIP_INSTALL=false
 
 # Displays a help message.
 usage() {
     cat <<EOF
-Usage: $(basename "$0") [--disk <disk>] [--branch <branch>] [--hostname <hostname>] [--swap <size>] [--help]
+Usage:
+    $(basename "$0") [OPTIONS]
 
 Options:
-    --branch    Specify the configuration branch to use (default: main)
-    --disk      Specify the target disk for installation (e.g., /dev/sda)
-    --hostname  Specify the hostname for the new installation (default: nixos)
-    --swap      Specify the swap size in gigabytes (e.g., 4 for 4GB, defaults to no swap)
+    -f              Override the flake path (default: "$FLAKE").
+    -b              Override the flake branch (default: "$BRANCH").
+    -d              Specify the target disk for installation (default: "$DISK").
+    -o              Specify the output to use for the flake (default: "$OUTPUT").
+    --skip-disko    Skip the disk partitioning step (will not mount the filesystem)
     --skip-install  Skip the NixOS installation step (for further customization)
-  -h, --help   Show this help
+    -h, --help      Show this help
 EOF
 }
 
-# Waits for the disk to be available before proceeding.
-# Used to fix a race condition where the disk is not immediately available after partitioning.
-wait_for_path() {
-    local path="$1"
-    local timeout_s="${2:-10}"
-    local start
-    start="$(date +%s)"
-
-    while [[ ! -e "$path" ]]; do
-        if (( $(date +%s) - start >= timeout_s )); then
-            echo "Timed out waiting for $path to appear" >&2
-            return 1
-        fi
-        sleep 0.1
-    done
-}
-
-# Tries to mount the disk, with retries and a timeout to handle cases where the disk is not immediately ready.
-mount_with_retries() {
-    local source="$1"
-    local target="$2"
-    local timeout_s="${3:-10}"
-    local start
-    start="$(date +%s)"
-
-    while true; do
-        if mount "$source" "$target" 2>/dev/null; then
-            return 0
-        fi
-
-        if (( $(date +%s) - start >= timeout_s )); then
-            echo "Timed out mounting $source on $target" >&2
-            mount "$source" "$target"
-            return 1
-        fi
-        sleep 0.2
-    done
-}
+for arg in "$@"; do
+    if [[ "$arg" == "--help" ]]; then
+        usage
+        exit 0
+    fi
+done
 
 # Parses the arguments passed to the script and sets the corresponding variables.
-while [[ $# -gt 0 ]]; do
-	case $1 in
-		-b|--branch)
-			BRANCH="$2"
-			shift 2
+while getopts ":f:b:d:o:h" opt; do
+	case $opt in
+		-h)
+			usage
+			exit 0
 			;;
-		-d|--disk)
-			DISK="$2"
-			shift 2
-			;;
-        -h|--hostname)
-            HOSTNAME="$2"
-            shift 2
-            ;;
-        -s|--swap)
-            SWAP_SIZE="$2"
-            shift 2
-            ;;
-        -i|--skip-install)
-            SKIP_INSTALL=true
-            shift 1
-            ;;
-        --help)
+		f) FLAKE="$OPTARG" ;;
+		b) BRANCH="$OPTARG" ;;
+		d) DISK="$OPTARG" ;;
+		o) OUTPUT="$OPTARG" ;;
+		:)
+            echo "Error: -$OPTARG requires an argument"
             usage
-            exit 0
+            exit 2
             ;;
-        *)
-            echo "Error: Unknown argument: $1"
+        \?)
+            echo "Unknown flag: -$OPTARG"
             usage
-			exit 1
-			;;
+            exit 2
+            ;;
 	esac
 done
+
+mkdir -p ~/.config/nix
+cat <<EOF > ~/.config/nix/nix.conf
+experimental-features = nix-command flakes
+accept-flake-config = true
+EOF
 
 # Validates that the required arguments are provided.
 if [[ -z "$DISK" ]]; then
@@ -106,71 +73,15 @@ if [[ -z "$DISK" ]]; then
 fi
 
 echo "Installing NixOS on disk: $DISK"
-echo "Using hostname: $HOSTNAME"
+echo "Using output: $OUTPUT"
 echo "Using configuration branch: $BRANCH"
 
 echo "Partitioning disk $DISK"
 
-# Ensures that there are no existing mounts or swap.
-umount -R /mnt || true
-swapoff -a || true
-
-# Partitions the disk with a single root partition and an optional swap partition, using parted.
-parted -s $DISK -- mklabel msdos
-
-if [[ "$SWAP_SIZE" != "0" ]]; then
-    echo "Swap enabled: ${SWAP_SIZE}GiB"
-
-    parted -s "$DISK" -- mkpart primary 1MiB -"${SWAP_SIZE}GiB"
-
-    parted -s "$DISK" -- mkpart primary linux-swap -"${SWAP_SIZE}GiB" 100%
-else
-    echo "Swap disabled"
-
-    parted -s "$DISK" -- mkpart primary 1MiB 100%
+if [[ $SKIP_DISKO = false ]]; then
+	nix run github:nix-community/disko/latest \
+	-- --mode destroy,format,mount --flake "git+$FLAKE/?ref=$BRANCH#disko" --argstr disk "$DISK" --yes-wipe-all-disks
 fi
-
-parted -s $DISK -- set 1 boot on
-
-# Formats the partitions.
-mkfs.ext4 -FL nixos "${DISK}1"
-
-if [[ "$SWAP_SIZE" != "0" ]]; then
-    mkswap -L swap "${DISK}2"
-fi
-
-echo "Disk partitioning complete."
-
-# Ensures that the partitioning and formatting is complete before proceeding.
-sync
-partprobe "$DISK" || true
-blockdev --rereadpt "$DISK" || true
-udevadm settle --timeout=10 || true
-
-wait_for_path /dev/disk/by-label/nixos 10
-
-# Mounts the disk and enables swap.
-mount_with_retries /dev/disk/by-label/nixos /mnt 10
-
-if [[ "$SWAP_SIZE" != "0" ]]; then
-    swapon "${DISK}2"
-fi
-
-# Prompts for the laptop number to identify the device on the network (e.g. via DHCP/SSH) without changing its local hostname.
-while true; do
-    read -rp "Enter the laptop number: " LAPTOP_NUMBER
-    [[ "$LAPTOP_NUMBER" =~ ^[0-9]+$ ]] && break
-    echo "Please enter digits only (e.g. 12)." >&2
-done
-mkdir -p /mnt/etc
-echo "$LAPTOP_NUMBER" > /mnt/etc/taplab-laptop-number
-
-# Clones the configuration repository.
-mkdir -p /mnt/etc/nixos
-git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/etc/nixos
-
-# Generates the NixOS hardware configuration file.
-nixos-generate-config --root /mnt
 
 # Stops the script if the user has chosen to skip the installation.
 if [[ $SKIP_INSTALL = true ]]; then
@@ -179,10 +90,9 @@ if [[ $SKIP_INSTALL = true ]]; then
 fi
 
 # Installs NixOS using the configuration.
-nixos-install --no-root-passwd --flake /mnt/etc/nixos#"$HOSTNAME"
+nixos-install --no-root-passwd --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"
 
-# Clones the configuration repository to the new system.
-git clone --branch "$BRANCH" https://github.com/TAP-lab/taplab-nix-config.git /mnt/root/nix-config
+echo "$BRANCH" > /mnt/etc/branch
 
 # Prompts user that the installation and reboots in 10 seconds if not cancelled.
 trap 'echo "Reboot cancelled"; exit 0' SIGINT

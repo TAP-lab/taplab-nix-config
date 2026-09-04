@@ -1,4 +1,15 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
+
+let
+  rebuildScript = pkgs.writeShellApplication {
+    name = "rebuild";
+    runtimeInputs = with pkgs; [
+      openssh
+      curl
+    ];
+    text = builtins.readFile ../scripts/rebuild.sh;
+  };
+in
 
 {
   # Allows installing unfree packages, which is required for some of the apps.
@@ -22,11 +33,13 @@
     pkgs.p7zip
     pkgs.blender
     pkgs.vscode
-    pkgs.luanti
+    # pkgs.luanti
     pkgs.pixelorama
     pkgs.libreoffice
 
     # Imports the custom gb-studio package.
-    (pkgs.callPackage ./apps/gb-studio.nix {})
+    (pkgs.callPackage ./apps/gb-studio.nix { })
+
+    rebuildScript
   ];
 }
