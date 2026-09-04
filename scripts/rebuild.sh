@@ -30,7 +30,7 @@ done
 # Sets the default values for the script.
 GC=0
 ACTION="switch"
-OUTPUT=$(hostname)
+OUTPUT=$(cat /etc/hostname)
 
 if [[ -f /etc/branch ]]; then
     BRANCH=$(cat /etc/branch)
