@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   # Enables the GRUB bootloader.
   boot.loader.grub.enable = true;
@@ -27,11 +26,19 @@
     wantedBy = [ "multi-user.target" ];
     before = [ "network-pre.target" ];
     serviceConfig.Type = "oneshot";
+    path = [ pkgs.nettools ];
     script = ''
       if [ -f /etc/taplab-laptop-number ]; then
-        ${pkgs.systemd}/bin/hostnamectl set-hostname --transient "nixos-$(cat /etc/taplab-laptop-number)"
+        hostname "nixos-$(cat /etc/taplab-laptop-number)"
+      else
+        echo "taplab-laptop-number file not found"
       fi
     '';
+  };
+
+  #Prevents NetworkManager from overriding the hostname
+  networking.networkmanager.settings = {
+    main.hostname-mode = "none";
   };
 
   # Configures timezone and locale settings for New Zealand.
