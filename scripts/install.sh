@@ -28,17 +28,30 @@ Options:
 EOF
 }
 
+args=()
 for arg in "$@"; do
-    if [[ "$arg" == "--help" ]]; then
-        usage
-        exit 0
-    fi
+    case "$arg" in
+        --help)
+            usage
+            exit 0
+            ;;
+        --skip-disko)
+            SKIP_DISKO=true
+            ;;
+        --skip-install)
+            SKIP_INSTALL=true
+            ;;
+        *)
+            args+=("$arg")
+            ;;
+    esac
 done
+set -- "${args[@]}"
 
 # Parses the arguments passed to the script and sets the corresponding variables.
 while getopts ":f:b:d:o:h" opt; do
 	case $opt in
-		-h)
+		h)
 			usage
 			exit 0
 			;;
