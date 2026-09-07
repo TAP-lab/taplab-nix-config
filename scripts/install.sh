@@ -93,7 +93,7 @@ echo "Partitioning disk $DISK"
 
 if [[ $SKIP_DISKO = false ]]; then
 	nix run github:nix-community/disko/latest \
-	-- --mode destroy,format,mount --flake "git+$FLAKE/?ref=$BRANCH#disko" --argstr disk "$DISK" --yes-wipe-all-disks
+	-- --mode destroy,format,mount --refresh --flake "git+$FLAKE/?ref=$BRANCH#disko" --argstr disk "$DISK" --yes-wipe-all-disks
 fi
 
 # Stops the script if the user has chosen to skip the installation.
@@ -103,7 +103,7 @@ if [[ $SKIP_INSTALL = true ]]; then
 fi
 
 # Installs NixOS using the configuration.
-nixos-install --no-root-passwd --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"
+NIX_CONFIG="tarball-ttl = 0" nixos-install --no-root-passwd --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"
 
 echo "$BRANCH" > /mnt/etc/branch
 
