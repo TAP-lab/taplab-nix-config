@@ -4,7 +4,7 @@
 
   nixpkgs.overlays = [
     (final: prev: {
-      libdbusmenu-qt5 = (import inputs.nixpkgs-unstable { system = final.system; }).libdbusmenu-qt5;
+      libdbusmenu-qt5 = (import inputs.nixpkgs { system = final.system; }).libdbusmenu-qt5;
     })
   ];
 
