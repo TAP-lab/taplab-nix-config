@@ -6,6 +6,7 @@
     ./auto-update.nix
     ./debug.nix
     ./credentials.nix
+    ./veyon.nix
   ];
 
   home-manager.backupFileExtension = "backup";
