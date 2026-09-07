@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 
 {
   home.file.".oh-my-zsh/custom/themes/custom.zsh-theme".text = ''

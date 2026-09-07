@@ -3,10 +3,11 @@
 set -e
 
 # Default server lookup file
-LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
+LOOKUP_FILE="/etc/servers.ini"
 
 SERVER=""
 IP=""
+SELECTED_IP=""
 
 # Parses arguments
 while [[ "$#" -gt 0 ]]; do
@@ -74,8 +75,8 @@ echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 pkill msedge || true
 
 # Ensures the config directory exists
-mkdir -p ~/.config/microsoft-edge
-cd ~/.config/microsoft-edge
+mkdir -p /home/taplab/edge/.config/microsoft-edge
+cd /home/taplab/edge/.config/microsoft-edge
 
 # Downloads the pre-configured edge profile (SSH/SFTP first, web fallback)
 if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/edge" Default.tar.xz; then

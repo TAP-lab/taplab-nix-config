@@ -1,111 +1,74 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Sets the path to the config repo.
-CONFIG_REPO="/root/nix-config"
+# Sets the url to the config repo.
+FLAKE="https://github.com/tap-lab/taplab-nix-config"
 
 # Displays a help message.
 usage() {
     cat <<EOF
-Usage: $(basename "$0") [--upgrade] [--help]
+Usage:
+    $(basename "$0") [OPTIONS]
 
 Options:
-  --action <action>    Specify the nixos-rebuild action (default: test)
-  --branch <branch>    Specify the git branch to use (default: main)
-  --hostname <hostname> Specify the hostname to use for the flake (default: current hostname)
-  --upgrade            Pull the latest changes from the config repo (default: false)
-  --help               Show this help message and exit
+    -g              Run garbage collection after rebuilding.
+    -f FLAKE        Override the flake path (default: "$FLAKE").
+    -b BRANCH       Override the flake branch (default: "$BRANCH").
+    -a ACTION       Rebuild action to run (default: switch).
+    -o OUTPUT       Override flake output (default: current hostname).
+    -h, --help      Show this help and exit.
 EOF
 }
 
+for arg in "$@"; do
+    if [[ "$arg" == "--help" ]]; then
+        usage
+        exit 0
+    fi
+done
+
 # Sets the default values for the script.
-UPGRADE=0
-ACTION="test"
-HOSTNAME=$(hostname)
-BRANCH=""
+GC=0
+ACTION="switch"
+OUTPUT=$(cat /etc/hostname)
+
+if [[ -f /etc/branch ]]; then
+    BRANCH=$(cat /etc/branch)
+else
+    BRANCH="main"
+fi
 
 # Parses the command line arguments.
-while [[ ${#} -gt 0 ]]; do
-    case "$1" in
-        -a|--action)
-            if [[ $# -lt 2 ]]; then
-                echo "Error: --action requires an argument"
-                usage
-                exit 2
-            fi
-            ACTION="$2"
-            shift 2
-            ;;
-        -b|--branch)
-            if [[ $# -lt 2 ]]; then
-                echo "Error: --branch requires an argument"
-                usage
-                exit 2
-            fi
-            BRANCH="$2"
-            shift 2
-            ;;
-        -u|--upgrade)
-            UPGRADE=1
-            shift
-            ;;
-        -h|--hostname)
-            if [[ $# -lt 2 ]]; then
-                echo "Error: --hostname requires an argument"
-                usage
-                exit 2
-            fi
-            HOSTNAME="$2"
-            shift 2
-            ;;
-        --help)
+while getopts ":hgf:b:a:o:" opt; do
+    case "$opt" in
+        h)
             usage
             exit 0
             ;;
-        *)
-            echo "Unknown argument: $1"
+        g) GC=1 ;;
+        f) FLAKE="$OPTARG" ;;
+        b) BRANCH="$OPTARG" ;;
+        a) ACTION="$OPTARG" ;;
+        o) OUTPUT="$OPTARG" ;;
+        :)
+            echo "Error: -$OPTARG requires an argument"
+            usage
+            exit 2
+            ;;
+        \?)
+            echo "Unknown flag: -$OPTARG"
             usage
             exit 2
             ;;
     esac
 done
 
-# Checks if the config repo exists, and auto picks the branch to use.
-if [[ -z "$BRANCH" ]]; then
-    if [[ -d "$CONFIG_REPO/.git" ]]; then
-        BRANCH=$(git -C "$CONFIG_REPO" rev-parse --abbrev-ref HEAD)
-    else
-        BRANCH="main"
-    fi
-fi
-
-# Checks if the config repo exists, and pulls the latest changes. If it doesn't exist, clones it.
-if [[ "$UPGRADE" -eq 1 ]]; then
-    if cd "$CONFIG_REPO"; then
-        git pull
-    else
-        git clone https://github.com/TAP-lab/taplab-nix-config.git "$CONFIG_REPO"
-    fi
-fi
-
-if [[ ! -d "$CONFIG_REPO" ]]; then
-    echo "Error: config repo '$CONFIG_REPO' not found"
+if [[ $(whoami) != "root" ]]; then
+    echo "Error: This script must be run as root"
     exit 1
 fi
 
-# Changes working directory.
-cd "$CONFIG_REPO"
-
-# Copies the hardware configuration file to the config repo to ensure it is included in the rebuild.
-cp /etc/nixos/hardware-configuration.nix "$CONFIG_REPO"
-
-# Ensures the correct branch is being used.
-git checkout "$BRANCH" || { echo "Error: branch '$BRANCH' not found in $CONFIG_REPO"; exit 1; }
-
-echo "Using hostname: $HOSTNAME"
-
-# this file breaks the rebuild for some reason, quick workaround.
-rm /home/taplab/.gtkrc-2.0 || true
+echo "Using output: $OUTPUT"
 
 # Prompts for the laptop number if it hasn't been set yet, (used for identifying the device on the network)
 # Will only prompt if rebuild.sh is manually run with an interactive terminal
@@ -115,10 +78,19 @@ if [[ ! -f /etc/taplab-laptop-number && -t 0 ]]; then
 fi
 
 # Rebuilds the system using specified parameters.
-echo "==> Rebuild/$ACTION system for flake: $CONFIG_REPO#$HOSTNAME"
-if nixos-rebuild $ACTION --flake "$CONFIG_REPO#$HOSTNAME"; then
-    echo "==> Rebuild/$ACTION complete"
+rebuild_start=$(date +%s)
+if nixos-rebuild "$ACTION" --refresh --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"; then
+    rebuild_elapsed=$(( $(date +%s) - rebuild_start ))
+    echo "==> Rebuild/$ACTION complete in $(( rebuild_elapsed / 60 ))m $(( rebuild_elapsed % 60 ))s"
 else
-    echo "Error: nixos-rebuild failed"
+    echo "Error: nixos-rebuild $ACTION failed"
     exit 1
+fi
+
+echo "$BRANCH" > /etc/branch
+
+if [[ "$GC" -eq 1 ]]; then
+    echo "==> Running garbage collection"
+    nix-collect-garbage -d 2>/dev/null | tail -n 1
+    echo "==> Garbage collection complete"
 fi

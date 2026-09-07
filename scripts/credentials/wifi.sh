@@ -3,10 +3,11 @@
 set -e
 
 # Default server lookup file
-LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
+LOOKUP_FILE="/etc/servers.ini"
 
 SERVER=""
 IP=""
+SELECTED_IP=""
 
 # Parses arguments
 while [[ "$#" -gt 0 ]]; do

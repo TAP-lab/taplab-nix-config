@@ -3,7 +3,7 @@
 set -e
 
 # Default server lookup file
-LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
+LOOKUP_FILE="/etc/servers.ini"
 
 SERVER=""
 IP=""

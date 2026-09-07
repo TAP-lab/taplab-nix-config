@@ -3,10 +3,11 @@
 set -e
 
 # Default server lookup file
-LOOKUP_FILE="$HOME/nix-config/resources/servers.ini"
+LOOKUP_FILE="/etc/servers.ini"
 
 SERVER=""
 IP=""
+SELECTED_IP=""
 
 # Parses arguments
 while [[ "$#" -gt 0 ]]; do
@@ -70,7 +71,7 @@ fi
 
 echo "Pulling from server: '$SERVER' at '$SELECTED_IP'"
 
-cd $HOME/.local/share/PrismLauncher/
+cd /home/taplab/.local/share/PrismLauncher/
 
 if scp -q -o BatchMode=yes -o ConnectTimeout=5 -o IdentitiesOnly=yes -i "$HOME/.ssh/credserver.key" -o UserKnownHostsFile="$HOME/.ssh/taplab_known_hosts" "nix@$SELECTED_IP:/srv/minecraft" accounts.json_ORIGINAL; then
     echo "Minecraft account downloaded successfully via SSH/SFTP."
@@ -80,3 +81,5 @@ else
     echo "Failed to download Minecraft account via SSH/SFTP and web fallback." >&2
     exit 1
 fi
+
+cp accounts.json_ORIGINAL accounts.json

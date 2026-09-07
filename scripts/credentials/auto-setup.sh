@@ -3,23 +3,21 @@
 # Simple wrapper script to run all of the credential setup scripts in one go.
 set -euo pipefail
 
-SCRIPT_DIR="$HOME/nix-config/scripts/credentials"
-
 echo "Running auto-setup for credentials..."
 
 echo "Running wifi setup..."
-sh "$SCRIPT_DIR/wifi.sh"
+wifi-setup
 
 echo "Running mema nas share setup..."
-sh "$SCRIPT_DIR/mema.sh"
+mema-setup
 
 echo "Running Minecraft account setup..."
-sh "$SCRIPT_DIR/minecraft-account.sh"
+minecraft-setup
 
 echo "Running edge setup..."
-sh "$SCRIPT_DIR/edge.sh"
+edge-setup
 
 echo "Running OrcaSlicer setup..."
-sh "$SCRIPT_DIR/orcaslicer.sh"
+orcaslicer-setup
 
 echo "All credentials setup complete!"
