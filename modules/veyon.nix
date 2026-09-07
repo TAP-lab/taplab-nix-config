@@ -20,6 +20,12 @@
     # VNC grabber alone won't work under Wayland.
     package = pkgs.veyon.overrideAttrs (old: {
       buildInputs = old.buildInputs ++ [ pkgs.pipewire ];
+      preInstall = (old.preInstall or "") + ''
+        find . -name 'cmake_install.cmake' -exec sed -i \
+          -e 's/[[:space:]]*SETUID//g' \
+          -e 's/[[:space:]]*SETGID//g' \
+          {} +
+      '';
     });
   };
 
