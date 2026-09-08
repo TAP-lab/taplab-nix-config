@@ -15,11 +15,13 @@
     file:///mnt/nas/Inventors-Guild Inventors Guild
     file:///mnt/nas/manuhiri manuhiri
     file:///mnt/nas/mema mema
+    file:///mnt/nas/project-library Project Library
   '';
 
   home.file."/.config/gtk-4.0/bookmarks".text = ''
     file:///mnt/nas/Inventors-Guild Inventors Guild
     file:///mnt/nas/manuhiri manuhiri
     file:///mnt/nas/mema mema
+    file:///mnt/nas/project-library Project Library
   '';
 }
