@@ -1,4 +1,21 @@
 { inputs, pkgs, ... }:
+let
+  veyonPkg = pkgs.veyon.overrideAttrs (old: {
+    buildInputs = old.buildInputs ++ [ pkgs.pipewire ];
+    preInstall = (old.preInstall or "") + ''
+      find . -name 'cmake_install.cmake' -exec sed -i \
+        -e 's/[[:space:]]*SETUID//g' \
+        -e 's/[[:space:]]*SETGID//g' \
+        {} +
+    '';
+    postFixup = (old.postFixup or "") + ''
+      for f in $out/share/polkit-1/actions/*.policy; do
+        substituteInPlace "$f" \
+          --replace "$out/bin/veyon-configurator" "$out/bin/.veyon-configurator-wrapped"
+      done
+    '';
+  });
+in
 {
   imports = [ inputs.veyon.outputs.nixosModules.default ];
 
@@ -14,20 +31,10 @@
       name = "alex";
       value = builtins.readFile ../resources/veyon/alex.pub;
     };
-
-    # Pull in PipeWire so the portal/Wayland screen-capture plugin builds -
-    # needed since this machine runs a KDE session, where the legacy X11
-    # VNC grabber alone won't work under Wayland.
-    package = pkgs.veyon.overrideAttrs (old: {
-      buildInputs = old.buildInputs ++ [ pkgs.pipewire ];
-      preInstall = (old.preInstall or "") + ''
-        find . -name 'cmake_install.cmake' -exec sed -i \
-          -e 's/[[:space:]]*SETUID//g' \
-          -e 's/[[:space:]]*SETGID//g' \
-          {} +
-      '';
-    });
+    package = veyonPkg;
   };
+
+  environment.systemPackages = [ veyonPkg ];
 
   # The upstream module only exposes a single named key via
   # services.veyon.publicKey, but it just drops the key at
