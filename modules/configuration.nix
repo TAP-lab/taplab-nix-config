@@ -21,21 +21,6 @@
   networking.hostName = "nixos";
   networking.domain = "taplab.nz";
 
-  # Sets the network-facing hostname from the number in /etc/taplab-laptop-number, if it exists. This is used to identify the device on the network (e.g. via DHCP/SSH) without changing its local hostname from nixos
-  systemd.services.set-network-hostname = {
-    wantedBy = [ "multi-user.target" ];
-    before = [ "network-pre.target" ];
-    serviceConfig.Type = "oneshot";
-    path = [ pkgs.nettools ];
-    script = ''
-      if [ -f /etc/taplab-laptop-number ]; then
-        hostname "nixos-$(cat /etc/taplab-laptop-number)"
-      else
-        echo "taplab-laptop-number file not found"
-      fi
-    '';
-  };
-
   #Prevents NetworkManager from overriding the hostname
   networking.networkmanager.settings = {
     main.hostname-mode = "none";
