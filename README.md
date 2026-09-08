@@ -8,10 +8,11 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 - [Table of Contents](#table-of-contents)
 - [Quick Start Guide](#quick-start-guide)
 - [Usage Guide](#usage-guide)
+  - [Credential Scripts](#credential-scripts)
+    - [SSH key setup](#ssh-key-setup)
 - [Full Instructions](#full-instructions)
+      - [In case of any issues, please Contact Callum (callum@taplab.nz).](#in-case-of-any-issues-please-contact-callum-callumtaplabnz)
 - [Rebuild Script](#rebuild-script)
-
-- [TAP-lab NixOS Config Wiki](https://github.com/TAP-lab/taplab-nix-config/wiki)
 
 # Quick Start Guide
 
@@ -39,7 +40,7 @@ This NixOS configuration is made to be used with the TAP-lab laptops, with all o
 
 - The system is set up to automatically log into the `taplab` user account without needing a password. The account still has a sudo password for performing admin tasks (e.g updating the system). The system should be fully usable without needing a password however.
 
-- The system has 4 network shares automatically mounted, manuhiri, Hacklings, Inventors Guild, and mema. The first 3 should mount automatically provided the laptop is on the TAP-lab network. The mema share requires credentials to access, which can be pulled from the local server by running the `mema-setup` command in terminal.
+- The system has 4 network shares automatically mounted, manuhiri, Inventors Guild, Project Library, and mema. The first 3 should mount automatically provided the laptop is on the TAP-lab network. The mema share requires credentials to access, which can be pulled from the local server by running the `mema-setup` command in terminal.
 
 - There is a script to automatically set up Microsoft Edge to log in to the TAP-lab account. This can be run by executing the `edge-setup` command in terminal. This also requires the laptop to be on the TAP-lab network.
 
