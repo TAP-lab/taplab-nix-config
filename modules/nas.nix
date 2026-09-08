@@ -36,7 +36,7 @@
   };
 
   fileSystems."/mnt/nas/Inventors-Guild" = {
-    device = "//nas.taplab.nz/awheawhe/Inventors Guild";
+    device = "//nas.taplab.nz/inventors";
     fsType = "cifs";
     options = [
       "guest"
