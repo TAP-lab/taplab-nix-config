@@ -104,6 +104,10 @@
     enable = true;
     control = "sufficient";
     settings.authfile = "/etc/Yubico/u2f_keys";
+    
+    # Lock the u2f origin to nixos to allow hostname changes.
+    settings.origin = "pam://nixos";
+    settings.appId = "pam://nixos";
   };
 
   # Copy the U2F key file to the appropriate location with correct permissions.
