@@ -21,6 +21,21 @@
   networking.hostName = "nixos";
   networking.domain = "taplab.nz";
 
+  # Sets the network-facing hostname from the number in /etc/taplab-laptop-number, if it exists. This is used to identify the device on the network (e.g. via DHCP/SSH) without changing its local hostname from nixos
+  systemd.services.set-network-hostname = {
+    wantedBy = [ "multi-user.target" ];
+    before = [ "network-pre.target" ];
+    serviceConfig.Type = "oneshot";
+    path = [ pkgs.nettools ];
+    script = ''
+      if [ -f /etc/taplab-laptop-number ]; then
+        hostname "nixos-$(cat /etc/taplab-laptop-number)"
+      else
+        echo "taplab-laptop-number file not found"
+      fi
+    '';
+  };
+
   #Prevents NetworkManager from overriding the hostname
   networking.networkmanager.settings = {
     main.hostname-mode = "none";
@@ -89,6 +104,10 @@
     enable = true;
     control = "sufficient";
     settings.authfile = "/etc/Yubico/u2f_keys";
+    
+    # Lock the u2f origin to nixos to allow hostname changes.
+    settings.origin = "pam://nixos";
+    settings.appId = "pam://nixos";
   };
 
   # Copy the U2F key file to the appropriate location with correct permissions.
