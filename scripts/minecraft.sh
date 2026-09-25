@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+pkill prismlauncher
+
 # Ensures it is working in the correct directory
 cd ~/.local/share/PrismLauncher/
 
@@ -9,8 +11,22 @@ cp accounts.json_ORIGINAL accounts.json
 # Fixes rendering issues with zenity on Wayland by forcing X11
 export GDK_BACKEND=x11
 
-# Prompts user for a name using a Zenity GUI
-input_name=$(zenity --entry --title="Enter Your Username" --text="Username:")
+while true; do
+    # Prompts user for a name using a Zenity GUI
+    input_name=$(zenity --entry --title="Enter Your Username" --text="Username:")
+
+    if [[ $? -ne 0 ]]; then
+        echo "Operation cancelled."
+        exit 1
+    fi
+
+    if [[ "$input_name" =~ ^[A-Za-z0-9_]{1,16}$ ]]; then
+        break
+    else
+        zenity --error --title="Invalid Username" --text="Username must be 1-16 characters long and contain only letters, numbers, and underscores."
+    fi
+done
+
 
 if [[ $? -ne 0 ]]; then
     echo "Operation cancelled."
@@ -51,5 +67,19 @@ if [[ $? -ne 0 || -z "$selected_instance" ]]; then
     exit 1
 fi
 
-# Launches the selected instance and automatically connects to the TAPLab server
-prismlauncher -l "$selected_instance" -a "$input_name"
+prismlauncher -l "$selected_instance" -a "$input_name" &
+
+# Shows a loading indicator
+zenity --progress \
+--title="Launching Minecraft" \
+--text="Starting $selected_instance..." \
+--pulsate \
+--no-cancel &
+
+while true; do
+    if [[ -n "$(kdotool search --name "^Minecraft")" ]]; then
+        pkill zenity
+        break
+    fi
+    sleep 0.5
+done
