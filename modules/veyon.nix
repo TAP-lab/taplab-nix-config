@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, lib, pkgs, ... }:
 let
   veyonPkg = pkgs.veyon.overrideAttrs (old: {
     buildInputs = old.buildInputs ++ [ pkgs.pipewire ];
@@ -53,7 +53,7 @@ in
       Method=1
 
       [AccessControl]
-      AccessRestrictedToUserGroups=true
+      AccessRestrictedToUserGroups=false
       AuthorizedUserGroups=users
 
       [UserGroups]
@@ -89,4 +89,15 @@ in
     "veyon/keys/public/minecraft/key".source = ../resources/veyon/minecraft.pem;
     "veyon/keys/public/facilitators/key".source = ../resources/veyon/facilitators.pem;
   };
+
+  # Setting user/group/mode makes NixOS install real copies (replaced on each
+  # activation) instead of store symlinks, owned by taplab:users. This also
+  # covers the devops key declared by services.veyon.publicKey.
+  environment.etc = lib.genAttrs
+    (map (n: "veyon/keys/public/${n}/key") [ "devops" "alex" "holly" "minecraft" "facilitators" ])
+    (_: {
+      user = "taplab";
+      group = "users";
+      mode = "0644";
+    });
 }
