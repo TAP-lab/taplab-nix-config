@@ -28,8 +28,8 @@ in
   services.veyon = {
     enable = true;
     publicKey = {
-      name = "alex";
-      value = builtins.readFile ../resources/veyon/alex.pub;
+      name = "devops";
+      value = builtins.readFile ../resources/veyon/devops.pem;
     };
     package = veyonPkg;
   };
@@ -42,9 +42,9 @@ in
   # (one per admin/user) are installed the same way here. Add one entry
   # per keypair, named after who it belongs to.
   environment.etc = {
-    "veyon/keys/public/devops/key".source = ../resources/veyon/devops.pub;
-    "veyon/keys/public/holly/key".source = ../resources/veyon/holly.pub;
-    "veyon/keys/public/minecraft/key".source = ../resources/veyon/minecraft.pub;
-    "veyon/keys/public/facilitators/key".source = ../resources/veyon/facilitators.pub;
+    "veyon/keys/public/alex/key".source = ../resources/veyon/alex.pem;
+    "veyon/keys/public/holly/key".source = ../resources/veyon/holly.pem;
+    "veyon/keys/public/minecraft/key".source = ../resources/veyon/minecraft.pem;
+    "veyon/keys/public/facilitators/key".source = ../resources/veyon/facilitators.pem;
   };
 }
