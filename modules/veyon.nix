@@ -47,6 +47,7 @@ in
     # Method is VeyonCore::AuthenticationMethod (0 = logon, 1 = key file).
     # UserGroups/Backend is the system user groups plugin, needed to resolve
     # group membership.
+    "xdg/Veyon Solutions/Veyon.conf".mode = "0644";
     "xdg/Veyon Solutions/Veyon.conf".text = ''
       [Authentication]
       Method=1
