@@ -41,7 +41,8 @@ in
   # /etc/veyon/keys/public/<name>/key - so additional master keypairs
   # (one per admin/user) are installed the same way here. Add one entry
   # per keypair, named after who it belongs to.
-  environment.etc = {
+  environment.etc = lib.mkMerge [
+  {
     # System-wide Veyon config (QSettings system scope): authenticate with
     # key files only, and restrict access to members of the "users" group.
     # Method is VeyonCore::AuthenticationMethod (0 = logon, 1 = key file).
@@ -88,16 +89,17 @@ in
     "veyon/keys/public/holly/key".source = ../resources/veyon/holly.pem;
     "veyon/keys/public/minecraft/key".source = ../resources/veyon/minecraft.pem;
     "veyon/keys/public/facilitators/key".source = ../resources/veyon/facilitators.pem;
-  };
+  }
 
   # Setting user/group/mode makes NixOS install real copies (replaced on each
   # activation) instead of store symlinks, owned by taplab:users. This also
   # covers the devops key declared by services.veyon.publicKey.
-  environment.etc = lib.genAttrs
+  (lib.genAttrs
     (map (n: "veyon/keys/public/${n}/key") [ "devops" "alex" "holly" "minecraft" "facilitators" ])
     (_: {
       user = "taplab";
       group = "users";
       mode = "0644";
-    });
+    }))
+  ];
 }
