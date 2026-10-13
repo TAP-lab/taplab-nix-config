@@ -69,15 +69,6 @@
     configFile."ksmserverrc"."General" = {
       loginMode = "emptySession";
     };
-
-    # System Settings > Legacy X11 App Support > "Control of pointer and
-    # keyboard: Allow without asking for permission". Stops KWin prompting
-    # when an X11 (XWayland) app injects input, e.g. Veyon remote control.
-    # Native Wayland portal clients are covered by veyon-portal-preauth in
-    # modules/veyon.nix instead.
-    configFile."kwinrc"."Xwayland" = {
-      XwaylandEisNoPrompt = true;
-    };
   };
 
   xdg.configFile."kwalletrc".text = ''
