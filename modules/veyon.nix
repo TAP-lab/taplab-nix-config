@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, ... }:
+{ inputs, pkgs, ... }:
 let
   veyonPkg = pkgs.veyon.overrideAttrs (old: {
     buildInputs = old.buildInputs ++ [ pkgs.pipewire ];
@@ -36,96 +36,15 @@ in
 
   environment.systemPackages = [ veyonPkg ];
 
-  # The configurator/CLI run `systemctl start veyon`, but the upstream module
-  # names its unit veyon-service. Alias it so veyon.service resolves.
-  systemd.services.veyon-service.aliases = [ "veyon.service" ];
-
-  systemd.user.services.veyon-portal-preauth = {
-    description = "Pre-authorise Veyon for KDE remote desktop";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    serviceConfig.Type = "oneshot";
-    script = ''
-      ${pkgs.glib}/bin/gdbus call --session \
-        --dest org.freedesktop.impl.portal.PermissionStore \
-        --object-path /org/freedesktop/impl/portal/PermissionStore \
-        --method org.freedesktop.impl.portal.PermissionStore.SetPermission \
-        "'kde-authorized'" true "'remote-desktop'" "'io.veyon.veyon-server'" "['yes']"
-
-      # Remove the broader empty app id grant set by an earlier version of this
-      # service. Fails harmlessly once it's gone.
-      ${pkgs.glib}/bin/gdbus call --session \
-        --dest org.freedesktop.impl.portal.PermissionStore \
-        --object-path /org/freedesktop/impl/portal/PermissionStore \
-        --method org.freedesktop.impl.portal.PermissionStore.DeletePermission \
-        "'kde-authorized'" "'remote-desktop'" "'''" || true
-    '';
-  };
-
   # The upstream module only exposes a single named key via
   # services.veyon.publicKey, but it just drops the key at
   # /etc/veyon/keys/public/<name>/key - so additional master keypairs
   # (one per admin/user) are installed the same way here. Add one entry
   # per keypair, named after who it belongs to.
-  environment.etc = lib.mkMerge [
-  {
-    # System-wide Veyon config (QSettings system scope): authenticate with
-    # key files only, and restrict access to members of the "users" group.
-    # Method is VeyonCore::AuthenticationMethod (0 = logon, 1 = key file).
-    # UserGroups/Backend is the system user groups plugin, needed to resolve
-    # group membership.
-    "xdg/Veyon Solutions/Veyon.conf".mode = "0644";
-    "xdg/Veyon Solutions/Veyon.conf".text = ''
-      [Authentication]
-      Method=1
-
-      [AccessControl]
-      AccessRestrictedToUserGroups=false
-      AuthorizedUserGroups=users
-
-      [UserGroups]
-      Backend={2917cdeb-ac13-4099-8715-20368254a367}
-      UseDomainUserGroups=false
-
-      [Master]
-      AllowAddingHiddenLocations=false
-      AutoAdjustMonitoringIconSize=false
-      AutoOpenComputerSelectPanel=false
-      AutoSelectCurrentLocation=false
-      ComputerMonitoringSortOrder=0
-      ComputerMonitoringVisibilityMode=2
-      ConfirmUnsafeActions=false
-      HideComputerFilter=true
-      HideEmptyLocations=true
-      HideLocalComputer=true
-      HideOwnSession=true
-      ShowCurrentLocationOnly=false
-
-      [Network]
-      VeyonServerPort=11100
-
-      [NetworkObjectDirectory]
-      Plugin=14bacaaa-ebe5-449c-b881-5b382f952571
-
-      [Service]
-      FailedAuthenticationNotifications=false
-    '';
-
+  environment.etc = {
     "veyon/keys/public/alex/key".source = ../resources/veyon/alex.pem;
     "veyon/keys/public/holly/key".source = ../resources/veyon/holly.pem;
     "veyon/keys/public/minecraft/key".source = ../resources/veyon/minecraft.pem;
     "veyon/keys/public/facilitators/key".source = ../resources/veyon/facilitators.pem;
-  }
-
-  # Setting user/group/mode makes NixOS install real copies (replaced on each
-  # activation) instead of store symlinks, owned by taplab:users. This also
-  # covers the devops key declared by services.veyon.publicKey.
-  (lib.genAttrs
-    (map (n: "veyon/keys/public/${n}/key") [ "devops" "alex" "holly" "minecraft" "facilitators" ])
-    (_: {
-      user = "taplab";
-      group = "users";
-      mode = "0644";
-    }))
-  ];
+  };
 }

@@ -1,23 +1,5 @@
 {
   "nodes": {
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1791914995,
-        "narHash": "sha256-Zf/xfQEAasnwnmEfHqW/4hjDE/s44yn2hD4RuVIZRjA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "b7a79d3fea1e214f6d668d521cecec0c01e26544",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -82,47 +64,7 @@
       "inputs": {
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
-        "plasma-manager": "plasma-manager",
-        "veyon": "veyon"
-      }
-    },
-    "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "veyon": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1789470936,
-        "narHash": "sha256-k2/QOehw1wvt5auoyDV5TsiXaMZDOcCB7oDUrBUNM6M=",
-        "ref": "refs/tags/v4.11.3",
-        "rev": "0c629d9931810a5974038fc1a207d52fbd0e65f6",
-        "revCount": 6877,
-        "submodules": true,
-        "type": "git",
-        "url": "https://github.com/veyon/veyon.git"
-      },
-      "original": {
-        "ref": "refs/tags/v4.11.3",
-        "submodules": true,
-        "type": "git",
-        "url": "https://github.com/veyon/veyon.git"
+        "plasma-manager": "plasma-manager"
       }
     }
   },
