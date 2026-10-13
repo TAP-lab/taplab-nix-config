@@ -36,6 +36,10 @@ in
 
   environment.systemPackages = [ veyonPkg ];
 
+  # The configurator/CLI run `systemctl start veyon`, but the upstream module
+  # names its unit veyon-service. Alias it so veyon.service resolves.
+  systemd.services.veyon-service.aliases = [ "veyon.service" ];
+
   # The upstream module only exposes a single named key via
   # services.veyon.publicKey, but it just drops the key at
   # /etc/veyon/keys/public/<name>/key - so additional master keypairs
