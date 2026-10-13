@@ -40,6 +40,20 @@ in
   # names its unit veyon-service. Alias it so veyon.service resolves.
   systemd.services.veyon-service.aliases = [ "veyon.service" ];
 
+  systemd.user.services.veyon-portal-preauth = {
+    description = "Pre-authorise Veyon for KDE remote desktop";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      ${pkgs.glib}/bin/gdbus call --session \
+        --dest org.freedesktop.impl.portal.PermissionStore \
+        --object-path /org/freedesktop/impl/portal/PermissionStore \
+        --method org.freedesktop.impl.portal.PermissionStore.SetPermission \
+        "'kde-authorized'" true "'remote-desktop'" "'''" "['yes']"
+    '';
+  };
+
   # The upstream module only exposes a single named key via
   # services.veyon.publicKey, but it just drops the key at
   # /etc/veyon/keys/public/<name>/key - so additional master keypairs
