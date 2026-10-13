@@ -50,7 +50,15 @@ in
         --dest org.freedesktop.impl.portal.PermissionStore \
         --object-path /org/freedesktop/impl/portal/PermissionStore \
         --method org.freedesktop.impl.portal.PermissionStore.SetPermission \
-        "'kde-authorized'" true "'remote-desktop'" "'''" "['yes']"
+        "'kde-authorized'" true "'remote-desktop'" "'io.veyon.veyon-server'" "['yes']"
+
+      # Remove the broader empty app id grant set by an earlier version of this
+      # service. Fails harmlessly once it's gone.
+      ${pkgs.glib}/bin/gdbus call --session \
+        --dest org.freedesktop.impl.portal.PermissionStore \
+        --object-path /org/freedesktop/impl/portal/PermissionStore \
+        --method org.freedesktop.impl.portal.PermissionStore.DeletePermission \
+        "'kde-authorized'" "'remote-desktop'" "'''" || true
     '';
   };
 
