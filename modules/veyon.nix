@@ -125,6 +125,7 @@ in
 
         [Network]
         VeyonServerPort=11100
+        DemoServerPort=11400
 
         [NetworkObjectDirectory]
         Plugin=14bacaaa-ebe5-449c-b881-5b382f952571
