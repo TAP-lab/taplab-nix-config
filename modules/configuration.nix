@@ -1,10 +1,33 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
+let
+  # The disk GRUB is installed to. Set by the install script via TAPLAB_GRUB_DEVICE (requires --impure),
+  # and remembered in /etc/grub-device for rebuilds. Falls back to /dev/sda.
+  grubDevice =
+    let
+      d = builtins.getEnv "TAPLAB_GRUB_DEVICE";
+    in
+    if d != "" then d else "/dev/sda";
+
+  # "uefi" or "bios". Set by the install script via TAPLAB_BOOT_MODE (requires --impure),
+  # and remembered in /etc/boot-mode for rebuilds. Falls back to bios.
+  uefi = builtins.getEnv "TAPLAB_BOOT_MODE" == "uefi";
+in
 {
-  # Enables the GRUB bootloader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.devices = [ "/dev/sda" ];
-  boot.loader.grub.efiSupport = false;
+  # Enables the GRUB bootloader (BIOS: installed to the disk's MBR, UEFI: installed to the ESP).
+  boot.loader.grub = {
+    enable = true;
+    devices = if uefi then [ "nodev" ] else [ grubDevice ];
+    efiSupport = uefi;
+    efiInstallAsRemovable = uefi;
+  };
+  boot.loader.efi.canTouchEfiVariables = false;
   boot.loader.timeout = 1;
+
+  # The EFI system partition (created by disko.nix on UEFI machines).
+  fileSystems."/boot" = lib.mkIf uefi {
+    device = "/dev/disk/by-label/boot";
+    fsType = "vfat";
+  };
 
   # Specifies the kernal to use.
   boot.kernelPackages = pkgs.linuxPackages_latest;

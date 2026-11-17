@@ -14,6 +14,7 @@
     "xhci-pci"
     "ehci-pci"
     "ahci"
+    "nvme"
     "usbhid"
     "sd_mod"
     "rtsx_pci_sdmmc"
