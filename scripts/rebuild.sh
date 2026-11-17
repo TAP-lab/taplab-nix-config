@@ -80,10 +80,12 @@ fi
 # Rebuilds the system using specified parameters.
 rebuild_start=$(date +%s)
 if [[ -f /etc/grub-device ]]; then
-    export TAPLAB_GRUB_DEVICE=$(cat /etc/grub-device)
+    TAPLAB_GRUB_DEVICE=$(cat /etc/grub-device)
+    export TAPLAB_GRUB_DEVICE
 fi
 if [[ -f /etc/boot-mode ]]; then
-    export TAPLAB_BOOT_MODE=$(cat /etc/boot-mode)
+    TAPLAB_BOOT_MODE=$(cat /etc/boot-mode)
+    export TAPLAB_BOOT_MODE
 fi
 
 if nixos-rebuild "$ACTION" --impure --refresh --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT" --no-write-lock-file; then
