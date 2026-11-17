@@ -79,7 +79,14 @@ fi
 
 # Rebuilds the system using specified parameters.
 rebuild_start=$(date +%s)
-if nixos-rebuild "$ACTION" --refresh --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT" --no-write-lock-file; then
+if [[ -f /etc/grub-device ]]; then
+    export TAPLAB_GRUB_DEVICE=$(cat /etc/grub-device)
+fi
+if [[ -f /etc/boot-mode ]]; then
+    export TAPLAB_BOOT_MODE=$(cat /etc/boot-mode)
+fi
+
+if nixos-rebuild "$ACTION" --impure --refresh --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT" --no-write-lock-file; then
     rebuild_elapsed=$(( $(date +%s) - rebuild_start ))
     echo "==> Rebuild/$ACTION complete in $(( rebuild_elapsed / 60 ))m $(( rebuild_elapsed % 60 ))s"
 else

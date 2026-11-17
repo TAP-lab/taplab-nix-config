@@ -89,11 +89,19 @@ echo "Installing NixOS on disk: $DISK"
 echo "Using output: $OUTPUT"
 echo "Using configuration branch: $BRANCH"
 
+# Boot mode follows how the installer was booted: UEFI if /sys/firmware/efi exists, otherwise legacy BIOS.
+if [[ -d /sys/firmware/efi ]]; then
+	BOOT_MODE="uefi"
+else
+	BOOT_MODE="bios"
+fi
+echo "Boot mode: $BOOT_MODE"
+
 echo "Partitioning disk $DISK"
 
 if [[ $SKIP_DISKO = false ]]; then
 	nix run github:nix-community/disko/latest \
-	-- --mode destroy,format,mount --refresh --flake "git+$FLAKE/?ref=$BRANCH#disko" --argstr disk "$DISK" --yes-wipe-all-disks
+	-- --mode destroy,format,mount --refresh --flake "git+$FLAKE/?ref=$BRANCH#disko" --argstr disk "$DISK" --argstr bootMode "$BOOT_MODE" --yes-wipe-all-disks
 fi
 
 # Stops the script if the user has chosen to skip the installation.
@@ -103,9 +111,11 @@ if [[ $SKIP_INSTALL = true ]]; then
 fi
 
 # Installs NixOS using the configuration.
-NIX_CONFIG="tarball-ttl = 0" nixos-install --no-root-passwd --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"
+TAPLAB_GRUB_DEVICE="$DISK" TAPLAB_BOOT_MODE="$BOOT_MODE" NIX_CONFIG="tarball-ttl = 0" nixos-install --impure --no-root-passwd --flake "git+$FLAKE/?ref=$BRANCH#$OUTPUT"
 
 echo "$BRANCH" > /mnt/etc/branch
+echo "$DISK" > /mnt/etc/grub-device
+echo "$BOOT_MODE" > /mnt/etc/boot-mode
 
 # Prompts user that the installation and reboots in 10 seconds if not cancelled.
 trap 'echo "Reboot cancelled"; exit 0' SIGINT

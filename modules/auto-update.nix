@@ -19,7 +19,17 @@ let
         BRANCH="main"
       fi
 
-      systemd-run --no-block --collect --unit=nixos-auto-rebuild nixos-rebuild switch --flake "$REPO/?ref=$BRANCH#$(cat /etc/hostname)"
+      GRUB_DEVICE="/dev/sda"
+      if [[ -f /etc/grub-device ]]; then
+        GRUB_DEVICE=$(cat /etc/grub-device)
+      fi
+
+      BOOT_MODE="bios"
+      if [[ -f /etc/boot-mode ]]; then
+        BOOT_MODE=$(cat /etc/boot-mode)
+      fi
+
+      systemd-run --no-block --collect --unit=nixos-auto-rebuild --setenv=TAPLAB_GRUB_DEVICE="$GRUB_DEVICE" --setenv=TAPLAB_BOOT_MODE="$BOOT_MODE" nixos-rebuild switch --impure --flake "$REPO/?ref=$BRANCH#$(cat /etc/hostname)"
       echo "$BRANCH" > /etc/branch
       echo "Rebuild complete"
       echo "Running garbage collection"

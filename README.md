@@ -86,7 +86,8 @@ If either of these is missing or invalid, the scripts silently fall back to the 
     ```
     - The script has many flags that can be used to customize the installation, but the defaults should work for most cases.
     - `--branch` can be used to specify which branch of the config repo to use. The default is `main` and should be used unless you want to test out a specific branch.
-    - `--disk` can be used to specify which disk to install to. The default is `/dev/sda` and should be correct when installing on any of the TAP-lab laptops, however make sure to double check if the computer has anything you want to keep on it.
+    - `-d` can be used to specify which disk to install to, e.g. `-d /dev/nvme0n1`. The default is `/dev/sda`, so use this for NVMe machines. Make sure to double check the disk doesn't have anything you want to keep on it. The chosen disk is saved to `/etc/grub-device` so that later rebuilds keep using it.
+    - Both legacy BIOS and UEFI machines are supported. The boot mode is detected automatically from how the installer USB was booted (UEFI if `/sys/firmware/efi` exists), so make sure to boot the USB in UEFI mode on UEFI machines. BIOS installs use an msdos partition table with GRUB in the MBR. UEFI installs use a GPT partition table with a 512MiB EFI partition mounted at `/boot`. The detected mode is saved to `/etc/boot-mode`.
     - `--output` can be used to specify the output to use for the nix flake. This is currently only `nixos` and should not be changed.
     - `swap` defines the swap size in GB, the default is 8 which is the correct amount for the TAP-lab laptops. Setting this to 0 will disable swap.
     - `--skip-install` can be used to skip the installation step, allowing for further configuration before installing. This should not be necessary for normal use.
